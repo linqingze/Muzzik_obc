@@ -1,0 +1,38 @@
+//
+//  muzzik-PrefixHeader.pch
+//  muzzik
+//
+//  Created by 林清泽 on 15/3/16.
+//  Copyright (c) 2015年 muzziker. All rights reserved.
+//
+#import <Availability.h>
+#ifndef muzzik_muzzik_PrefixHeader_pch
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import "appConfiguration.h"
+#import "muzzik.h"
+#import "userInfo.h"
+#import "musicPlayer.h"
+#import "ASIHTTPRequest.h"
+#import "WXApiObject.h"
+#import <TencentOpenAPI/QQApiInterface.h>
+#import "MuzzikItem.h"
+#import "UIColor+HexColor.h"
+#import "MJRefresh.h"
+#import "UserHomePage.h"
+#import "StringConstantConfigure.h"
+#import "DeleGateMethodConfigure.h"
+#import "AppDelegate.h"
+#import "MobClick.h"
+#import "MuzzikObject.h"
+#import "WeiboSDK.h"
+#import "MuzzikRequestCenter.h"
+#endif
+#define muzzik_muzzik_PrefixHeader_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+
+#endif
+
