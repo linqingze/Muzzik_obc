@@ -731,12 +731,11 @@
 -(void)playMusicAction{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
-    [musicPlayer shareClass].listType = suggestList;
-    audioPlayerViewController *player = [audioPlayerViewController shareClass];
+    MuzzikPlayer *player = [MuzzikPlayer shareClass];
+    player.listType = suggestList;
     player.MusicArray = [NSMutableArray arrayWithArray:suggestArray];
     [player playSongWithSongModel:suggestMuzzik Title:@"推荐歌曲"];
     [MuzzikItem SetUserInfoWithMuzziks:suggestArray title:Constant_userInfo_temp description:@"推荐列表"];
-    [self.navigationController pushViewController:player animated:YES];
     
 }
 -(void) tapForMoreUser{
@@ -753,7 +752,7 @@
 }
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
-    BOOL isPlaying = [[audioPlayerViewController shareClass].playingMuzzik.muzzik_id isEqualToString:suggestMuzzik.muzzik_id]&&!glob.isPause;
+    BOOL isPlaying = [[MuzzikPlayer shareClass].playingMuzzik.muzzik_id isEqualToString:suggestMuzzik.muzzik_id]&&!glob.isPause;
     if ([suggestMuzzik.color longLongValue]==1) {
         if (isPlaying) {
             [playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
@@ -778,7 +777,10 @@
         }
         
     }
-    
+    if (self.isViewLoaded &&self.view.window) {
+         [self updateAnimation];
+    }
+   
 }
 
 -(void)dataSourceUserUpdate:(NSNotification *)notify{

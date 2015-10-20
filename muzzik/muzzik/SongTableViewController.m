@@ -8,7 +8,6 @@
 
 #import "SongTableViewController.h"
 #import "MusicCell.h"
-#import "musicPlayer.h"
 #import "ASIFormDataRequest.h"
 #import "MessageStepViewController.h"
 @interface SongTableViewController (){
@@ -208,7 +207,7 @@
     cell.Artist.text = localMuzzik.music.artist;
     cell.index = indexPath.row;
     cell.songVC = self;
-    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key]&&!glob.isPause && glob.isPlaying) {
+    if ([[MuzzikPlayer shareClass].playingMuzzik.music.key isEqualToString:localMuzzik.music.key]&&!glob.isPause && glob.isPlaying) {
         [cell.playButton setImage:[UIImage imageNamed:@"stopImage_new"] forState:UIControlStateNormal];
     }else{
         [cell.playButton setImage:[UIImage imageNamed:@"playImage_new"] forState:UIControlStateNormal];
@@ -263,7 +262,7 @@
         center.page = page;
     }
     
-    musicPlayer *player = [musicPlayer shareClass];
+    MuzzikPlayer *player = [MuzzikPlayer shareClass];
     player.listType = MovedList;
     player.MusicArray = [[self.searchArray count]>0 ?self.searchArray:self.movedMusicArray mutableCopy];
     [player playSongWithSongModel:isSearch ?self.searchArray[index]:self.movedMusicArray[index] Title:isSearch? [NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText] : @"喜欢列表"];

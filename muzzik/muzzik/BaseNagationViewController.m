@@ -7,10 +7,10 @@
 //
 
 #import "BaseNagationViewController.h"
-#import "AppConfiguration.h"
-
+#import "audioPlayerViewController.h"
 @interface BaseNagationViewController ()<UIScrollViewDelegate>{
     NSInteger rightNumber;
+    BOOL isContained;
 }
 
 @end
@@ -111,15 +111,7 @@
     [self.navigationController.navigationBar setTranslucent:NO];
 }
 
-- (void)tapAction:(UITapGestureRecognizer *)tap
-{
-    if ([[self.navigationController childViewControllers] count]>1) {
-        [self.navigationController popViewControllerAnimated:YES];
-    }else{
-        [self dismissViewControllerAnimated:YES completion:NULL];
-    }
-    
-}
+
 
 - (void)longPressAction:(UILongPressGestureRecognizer *)longPressGesture
 {
@@ -171,19 +163,38 @@
 - (void)rightBtnAction:(UIButton *)sender
 {
     if(rightNumber == 0 && [Globle shareGloble].isPlaying){
-       NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
-        if ([array containsObject:[audioPlayerViewController shareClass]]) {
-            [array removeObject:[audioPlayerViewController shareClass]];
-            [array addObject:[audioPlayerViewController shareClass]];
-            [self.navigationController setViewControllers:array animated:YES];
-        }else{
-            [self.navigationController pushViewController:[audioPlayerViewController shareClass] animated:YES];
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[audioPlayerViewController class]]) {
+                isContained = YES;
+                break;
+            }
         }
+     [self.navigationController pushViewController:[[audioPlayerViewController alloc]init] animated:YES];
         
         
     }
 }
-
+- (void)tapAction:(UITapGestureRecognizer *)tap
+{
+    if (isContained) {
+        NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[audioPlayerViewController class]]) {
+                [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:vc]];
+            }
+        }
+        [array removeLastObject];
+        [self.navigationController setViewControllers:array animated:YES];
+    }else{
+        if ([[self.navigationController childViewControllers] count]>1) {
+            [self.navigationController popViewControllerAnimated:YES];
+        }else{
+            [self dismissViewControllerAnimated:YES completion:NULL];
+        }
+    }
+    
+    
+}
 
 - (void)setLeftBtnHide:(BOOL)isHide
 {

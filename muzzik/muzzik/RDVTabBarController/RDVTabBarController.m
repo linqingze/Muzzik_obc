@@ -103,7 +103,7 @@
         UINavigationController * viewcontroller = (UINavigationController *)[self selectedViewController];
         if ([user.token length]>0) {
             //new po
-            user.poController = self;
+            user.poController = viewcontroller.viewControllers.lastObject;
             ChooseMusicVC *choosevc = [[ChooseMusicVC alloc] init];
             [viewcontroller pushViewController:choosevc animated:YES];
             

@@ -10,5 +10,5 @@
 
 @interface userDetailInfo : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *uid;
-@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic) MuzzikPlayer *musicplayer;
 @end

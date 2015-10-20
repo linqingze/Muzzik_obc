@@ -8,15 +8,6 @@
 
 #import <QuartzCore/QuartzCore.h>
 
-@protocol searchSource <NSObject>
-
-
-@optional
-// The content for any tab. Return a view controller and ViewPager will use its view to show as content
--(void)updateDataSource:(NSString *)searchText;
--(void)searchDataSource:(NSString *)searchText;
-
-@end
 @interface ChooseMusicVC : AMScrollingNavbarViewController
 @property (nonatomic,weak) id<searchSource> activityVC;
 @property (nonatomic,copy) NSString *comeInType;

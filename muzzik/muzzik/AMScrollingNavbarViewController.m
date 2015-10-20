@@ -36,21 +36,6 @@
     [super viewWillAppear:animated];
     [self updateAnimation];
     [MobClick beginLogPageView:self.HtitleName];
-    for (UIView *view in [self.navigationController.view subviews]) {
-        if ([view isKindOfClass:[RFRadioView class]]) {
-            RFRadioView *musicview = (RFRadioView *)view;
-            if (musicview.IsShowDetail) {
-                [musicview setAlpha:1];
-            }else{
-                [view setAlpha:0];
-                [self.leftBtn setAlpha:1];
-                [self.rightBtn setAlpha:1];
-                [self.headerView setAlpha:1];
-            }
-            
-            break;
-        }
-    }
     
 }
 
@@ -58,12 +43,6 @@
 {
     [super viewWillDisappear:animated];
     [MobClick endLogPageView:self.HtitleName];
-    for (UIView *view in [self.navigationController.view subviews]) {
-        if ([view isKindOfClass:[RFRadioView class]]) {
-            [view setAlpha:0];
-            break;
-        }
-    }
     [self.leftBtn setAlpha:1];
     [self.rightBtn setAlpha:1];
     [self.headerView setAlpha:1];
@@ -138,43 +117,6 @@
     if ([gesture state] == UIGestureRecognizerStateBegan) {
         self.lastContentOffset = translation.y;
     }
-    float delta = self.lastContentOffset - translation.y;
-    for (UIView *view in [self.navigationController.view subviews]) {
-        if ([view isKindOfClass:[RFRadioView class]]) {
-            RFRadioView *musicView = (RFRadioView*)view;
-            if (self.lastContentOffset != 0 &&delta < -2 &&[[musicPlayer shareClass].MusicArray count]>0) {
-                musicView.isOpen = YES;
-                [UIView animateWithDuration:Play_timeinterval animations:^{
-                    [self.leftBtn setAlpha:0];
-                    [self.rightBtn setAlpha:0];
-                    [self.headerView setAlpha:0];
-                } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:Play_timeinterval animations:^{
-                        [musicView setAlpha:1];
-                    }];
-                    
-                }];
-            }
-            
-            if (delta > 2&&self.lastContentOffset != 0  ) {
-                musicView.isOpen = NO;
-                musicView.IsShowDetail = NO;
-                [UIView animateWithDuration:Play_timeinterval animations:^{
-                    [musicView setAlpha:0];
-                }completion:^(BOOL finished) {
-                    [UIView animateWithDuration:Play_timeinterval animations:^{
-                        [self.leftBtn setAlpha:1];
-                        [self.rightBtn setAlpha:1];
-                        [self.headerView setAlpha:1];
-                        
-                    }];
-                }];
-                
-                
-            }
-            break;
-        }
-    }
     if ([gesture state] == UIGestureRecognizerStateEnded) {
         // Reset the nav bar if the scroll is partial
         self.lastContentOffset = 0;
@@ -191,7 +133,7 @@
 {
     NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
     if (![shakeSwitch isEqualToString:@"close"]) {
-        musicPlayer *player = [musicPlayer shareClass];
+        MuzzikPlayer *player = [MuzzikPlayer shareClass];
         //摇动结束
         if (event.subtype == UIEventSubtypeMotionShake && [player.MusicArray count]>0) {
             [player playNext];

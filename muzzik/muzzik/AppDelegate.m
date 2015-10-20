@@ -6,12 +6,12 @@
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
 #import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "WXApi.h"
 #import "WeiboSDK.h"
 #import "AppDelegate.h"
 #import "appConfiguration.h"
-#import "musicPlayer.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "ASIHTTPRequest.h"
 #import "userInfo.h"
@@ -211,7 +211,7 @@
 {
     NSString * shakeSwitch = [MuzzikItem getStringForKey:@"User_shakeActionSwitch"];
     if (![shakeSwitch isEqualToString:@"close"]) {
-        musicPlayer *player = [musicPlayer shareClass];
+        MuzzikPlayer *player = [MuzzikPlayer shareClass];
         //摇动结束
         if (event.subtype == UIEventSubtypeMotionShake && [player.MusicArray count]>0) {
             [player playNext];
@@ -224,20 +224,20 @@
 - (void)remoteControlReceivedWithEvent:(UIEvent *)receivedEvent {
     
     if (receivedEvent.type == UIEventTypeRemoteControl) {
-        musicPlayer * player = [musicPlayer shareClass];
+        MuzzikPlayer * player = [MuzzikPlayer shareClass];
         NSLog(@"");
         switch (receivedEvent.subtype) {
                 
             case UIEventSubtypeRemoteControlPause:
-                [player play];
+                [player playnow];
                 NSLog(@"RemoteControlEvents: pause");
                 break;
             case UIEventSubtypeRemoteControlTogglePlayPause:
-                [player play];
+                [player playnow];
                 NSLog(@"RemoteControlEvents: pause");
                 break;
             case UIEventSubtypeRemoteControlPlay:
-                [player play];
+                [player playnow];
                 NSLog(@"RemoteControlEvents: play");
                 [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
                 break;
@@ -246,7 +246,7 @@
                 NSLog(@"RemoteControlEvents: playModeNext");
                 break;
             case UIEventSubtypeRemoteControlPreviousTrack:
-                [player PlayPre];
+                [player playPre];
                 NSLog(@"RemoteControlEvents: playPrev");
                 break;
             default:

@@ -9,17 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "AMScrollingNavbarViewController.h"
 #import "TTTAttributedLabel.h"
-#import "AudioPlayer.h"
-#import "musicPlayer.h"
 #import "WXApiObject.h"
 #import "UserMuzzikVC.h"
 @interface MuzzikTableVC : AMScrollingNavbarViewController<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
-    AudioPlayer* audioPlayer;
     NSInteger isPlayBack;
     
 }
 @property(nonatomic) NSMutableArray *muzziks;
-@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic) MuzzikPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
 @property(nonatomic) NSURL *imageURL;
 @property(nonatomic,copy)NSString *uid;

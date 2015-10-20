@@ -97,7 +97,7 @@
 @property(nonatomic,retain)UILabel *fansCount;
 @property(nonatomic,retain)UILabel *songCount;
 @property(nonatomic,retain)UIImageView *coverImage;
-@property(nonatomic,retain) musicPlayer *musicplayer;
+@property(nonatomic,retain) MuzzikPlayer *musicplayer;
 //muzzik
 @property (nonatomic,retain) UIView *muzzikView;
 @property (nonatomic) UILabel *repostUserName;                 //转发用户名
@@ -188,7 +188,7 @@
     [muzzikTableView registerClass:[CommentMuzzikCell class] forCellReuseIdentifier:@"CommentMuzzikCell"];
     
     page = 1;
-    self.musicplayer = [musicPlayer shareClass];
+    self.musicplayer = [MuzzikPlayer shareClass];
     headView = [[UIView alloc] initWithFrame:CGRectMake(0, -SCREEN_WIDTH/2, SCREEN_WIDTH, SCREEN_WIDTH/2)];
     [muzzikTableView insertSubview:headView atIndex:[[muzzikTableView subviews] count]-1];
     
@@ -382,7 +382,7 @@
     cell.delegate = self;
     Globle *glob = [Globle shareGloble];
     BOOL ispalying = false;
-    if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause) {
+    if ([tempMuzzik.muzzik_id isEqualToString:_musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause) {
         ispalying = YES;
     }
     cell.MuzzikModel = tempMuzzik;
@@ -1123,7 +1123,7 @@
 
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
-    if ([[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:self.localmuzzik.muzzik_id]&&!glob.isPause) {
+    if ([_musicplayer.playingMuzzik.muzzik_id isEqualToString:self.localmuzzik.muzzik_id]&&!glob.isPause) {
         self.isPlaying = YES;
     }else{
         self.isPlaying = NO;
@@ -1317,18 +1317,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     _musicplayer.MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
     [MuzzikItem SetUserInfoWithMuzziks:[NSMutableArray arrayWithArray:@[songModel]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
     [_musicplayer playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
-    if ([[musicPlayer shareClass].MusicArray count]>0) {
-        for (UIView *view in [self.navigationController.view subviews]) {
-            if ([view isKindOfClass:[RFRadioView class]]) {
-                RFRadioView *musicView = (RFRadioView*)view;
-                musicView.isOpen = YES;
-                [UIView animateWithDuration:0.3 animations:^{
-                    [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-                }];
-                break;
-            }
-        }
-    }
+
     
     
     

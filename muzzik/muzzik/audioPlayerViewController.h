@@ -9,11 +9,4 @@
 #import <UIKit/UIKit.h>
 
 @interface audioPlayerViewController : UIViewController
-+(audioPlayerViewController *) shareClass;
--(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title;
-@property (nonatomic,strong) NSMutableArray * MusicArray;
-@property (nonatomic,retain) muzzik *playingMuzzik;
--(void) play;
--(void) playNext;
--(void) playBefore;
 @end

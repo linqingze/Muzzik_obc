@@ -10,6 +10,6 @@
 @class MainMuzzikViewController;
 @interface FeedViewController : AMScrollingNavbarViewController
 @property (nonatomic,weak) MainMuzzikViewController *keeper;
-@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic) MuzzikPlayer *musicplayer;
 
 @end

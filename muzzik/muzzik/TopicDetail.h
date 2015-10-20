@@ -10,5 +10,5 @@
 
 @interface TopicDetail : AMScrollingNavbarViewController
 @property (nonatomic,copy) NSString *topic_id;
-@property(nonatomic) musicPlayer *musicplayer;
+@property(nonatomic,retain) MuzzikPlayer *musicplayer;
 @end

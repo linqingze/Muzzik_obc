@@ -13,7 +13,6 @@
 #import "appConfiguration.h"
 #import "muzzik.h"
 #import "userInfo.h"
-#import "musicPlayer.h"
 #import "ASIHTTPRequest.h"
 #import "WXApiObject.h"
 #import <TencentOpenAPI/QQApiInterface.h>
@@ -26,9 +25,11 @@
 #import "AppDelegate.h"
 #import "MobClick.h"
 #import "MuzzikObject.h"
+#import "Globle.h"
 #import "WeiboSDK.h"
 #import "MuzzikRequestCenter.h"
-#import "audioPlayerViewController.h"
+#import "UIButton_UserMuzzik.h"
+#import "MuzzikPlayer.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

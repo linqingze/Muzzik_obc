@@ -170,7 +170,7 @@
     cell.cellMuzzik = tempMuzzik;
     cell.delegate = self;
     BOOL isplaying = NO;
-    if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+    if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
         isplaying = YES;
     }else{
         isplaying = NO;
@@ -269,7 +269,7 @@
     center.MuzzikType = Type_Muzzik_Muzzik;
     center.lastId = lastId;
     
-    musicPlayer *player = [musicPlayer shareClass];
+    MuzzikPlayer *player = [MuzzikPlayer shareClass];
     player.listType = TempList;
     player.MusicArray = [self.muzziks mutableCopy];
     NSString *titleName;
@@ -301,5 +301,8 @@
 
 -(void)playnextMuzzikUpdate{
     [songTableView reloadData];
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
 }
 @end

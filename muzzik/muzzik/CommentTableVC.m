@@ -243,7 +243,7 @@
     cell.delegate = self;
     Globle *glob = [Globle shareGloble];
     BOOL ispalying = false;
-    if ([tempMuzzik.muzzik_id isEqualToString:[musicPlayer shareClass].localMuzzik.muzzik_id] &&!glob.isPause) {
+    if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause) {
         ispalying = YES;
     }
     cell.MuzzikModel = tempMuzzik;
@@ -361,23 +361,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
-    [musicPlayer shareClass].listType = TempList;
-    [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
-    [[musicPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
+    [MuzzikPlayer shareClass].listType = TempList;
+    [MuzzikPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:@[songModel]];
+    [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
     [MuzzikItem SetUserInfoWithMuzziks: [NSMutableArray arrayWithArray:@[songModel]] title:Constant_userInfo_temp description:[NSString stringWithFormat:@"单曲<%@>",songModel.music.name]];
-    
-    if ([[musicPlayer shareClass].MusicArray count]>0) {
-        for (UIView *view in [self.keeper.navigationController.view subviews]) {
-            if ([view isKindOfClass:[RFRadioView class]]) {
-                RFRadioView *musicView = (RFRadioView*)view;
-                musicView.isOpen = YES;
-                [UIView animateWithDuration:0.3 animations:^{
-                    [musicView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 64)];
-                }];
-                break;
-            }
-        }
-    }
+
     
     
     
@@ -385,5 +373,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playnextMuzzikUpdate{
 
     [MytableView reloadData];
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
 }
 @end

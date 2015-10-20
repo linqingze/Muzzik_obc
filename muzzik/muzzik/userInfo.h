@@ -7,6 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
+@protocol searchSource <NSObject>
+
+
+@optional
+// The content for any tab. Return a view controller and ViewPager will use its view to show as content
+-(void)updateDataSource:(NSString *)searchText;
+-(void)searchDataSource:(NSString *)searchText;
+
+@end
+
 @interface userInfo : NSObject
 @property (nonatomic,assign) BOOL launched;
 @property (nonatomic,retain) muzzik *poMuzzik;

@@ -102,7 +102,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSendMuzzik:) name:String_SendNewMuzzikDataSource_update object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    _musicplayer = [musicPlayer shareClass];
+    _musicplayer = [MuzzikPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     feedTableView = [[UITableView alloc] initWithFrame:self.view.bounds];
@@ -832,7 +832,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -922,7 +922,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1010,7 +1010,7 @@
             else{
                 MuzzikNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1065,7 +1065,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1174,7 +1174,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1282,7 +1282,7 @@
             else {
                 MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1369,7 +1369,7 @@
         cell.musicName.text = tempMuzzik.music.name;
         cell.songModel = tempMuzzik;
         cell.delegate = self;
-        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.localMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
             [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
         }else{
              [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
@@ -1545,7 +1545,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             
             
             self.repostMuzzik.isReposted = NO;
-            self.repostMuzzik.reposts = [NSString stringWithFormat:@"%ld",[self.repostMuzzik.reposts integerValue]-1];
+            self.repostMuzzik.reposts = [NSString stringWithFormat:@"%d",[self.repostMuzzik.reposts integerValue]-1];
             [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.repostMuzzik];
             
             ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@/repost",BaseURL,self.repostMuzzik.muzzik_id]]];
@@ -1835,6 +1835,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playnextMuzzikUpdate{
     [feedTableView reloadData];
     [trendTableView reloadData];
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
@@ -1848,7 +1851,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             center.singleMusic = NO;
             center.MuzzikType = Type_Muzzik_Muzzik;
             center.lastId = trendLastId;
-            [musicPlayer shareClass].MusicArray = [self.trendMuzziks mutableCopy];
+            _musicplayer.MusicArray = [self.trendMuzziks mutableCopy];
             [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:[NSString stringWithFormat:@"广场列表"]];
             [_musicplayer playSongWithSongModel:songModel Title:@"广场列表"];
             _musicplayer.listType = SquareList;
@@ -1860,7 +1863,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             center.MuzzikType = Type_Muzzik_Muzzik;
             center.lastId = feedLastId;
             
-            [musicPlayer shareClass].MusicArray = [self.feedMuzziks mutableCopy];
+            _musicplayer.MusicArray = [self.feedMuzziks mutableCopy];
             [MuzzikItem SetUserInfoWithMuzziks:self.feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
             [_musicplayer playSongWithSongModel:songModel Title:@"关注列表"];
             _musicplayer.listType = SquareList;
@@ -1872,10 +1875,13 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         center.singleMusic = NO;
         center.MuzzikType = Type_Muzzik_Muzzik;
         center.lastId = trendLastId;
-        [musicPlayer shareClass].MusicArray = [self.trendMuzziks mutableCopy];
+        _musicplayer.MusicArray = [self.trendMuzziks mutableCopy];
         [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:[NSString stringWithFormat:@"广场列表"]];
         [_musicplayer playSongWithSongModel:songModel Title:@"广场列表"];
         _musicplayer.listType = SquareList;
+    }
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
     }
     //[self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     

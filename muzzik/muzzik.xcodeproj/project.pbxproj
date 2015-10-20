@@ -54,25 +54,16 @@
 		E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7C1AB4442B0001A61C /* CoreTelephony.framework */; };
 		E162BD7F1AB444370001A61C /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7E1AB444370001A61C /* libstdc++.dylib */; };
 		E16716251AAD77830068AE98 /* userInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E16716241AAD77830068AE98 /* userInfo.m */; };
-		E16716281AAD790F0068AE98 /* musicPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = E16716271AAD790F0068AE98 /* musicPlayer.m */; };
 		E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B2302F1AB5BF22004E50DA /* FMDatabase.m */; };
 		E1B2303A1AB5BF22004E50DA /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230311AB5BF22004E50DA /* FMDatabaseAdditions.m */; };
 		E1B2303B1AB5BF22004E50DA /* FMDatabasePool.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230331AB5BF22004E50DA /* FMDatabasePool.m */; };
 		E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230351AB5BF22004E50DA /* FMDatabaseQueue.m */; };
 		E1B2303D1AB5BF22004E50DA /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = E1B230381AB5BF22004E50DA /* FMResultSet.m */; };
 		E1FA12A91AB148B1005EDA1D /* FMLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12A61AB148B1005EDA1D /* FMLrcView.m */; };
-		E1FA12AA1AB148B1005EDA1D /* RFRadioView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12A81AB148B1005EDA1D /* RFRadioView.m */; };
 		E1FA12AD1AB14922005EDA1D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12AC1AB14922005EDA1D /* AVFoundation.framework */; };
 		E1FA12AF1AB14939005EDA1D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12AE1AB14939005EDA1D /* AudioToolbox.framework */; };
 		E1FA12B11AB1494A005EDA1D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12B01AB1494A005EDA1D /* Security.framework */; };
 		E1FA12B31AB1495B005EDA1D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12B21AB1495B005EDA1D /* QuartzCore.framework */; };
-		E1FA12C31AB1499F005EDA1D /* AudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12B61AB1499F005EDA1D /* AudioPlayer.m */; };
-		E1FA12C41AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12B81AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m */; };
-		E1FA12C51AB1499F005EDA1D /* CoreFoundationDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12BA1AB1499F005EDA1D /* CoreFoundationDataSource.m */; };
-		E1FA12C61AB1499F005EDA1D /* DataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12BC1AB1499F005EDA1D /* DataSource.m */; };
-		E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12BE1AB1499F005EDA1D /* DataSourceWrapper.m */; };
-		E1FA12C81AB1499F005EDA1D /* HttpDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12C01AB1499F005EDA1D /* HttpDataSource.m */; };
-		E1FA12C91AB1499F005EDA1D /* LocalFileDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12C21AB1499F005EDA1D /* LocalFileDataSource.m */; };
 		E1FA12D01AB14CEF005EDA1D /* NSDate+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12CB1AB14CEF005EDA1D /* NSDate+Additions.m */; };
 		E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12CD1AB14CEF005EDA1D /* NSError+Additions.m */; };
 		E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12CF1AB14CEF005EDA1D /* UIView+Additions.m */; };
@@ -141,6 +132,7 @@
 		F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76B1AF4E52E005B14DD /* showUserVC.m */; };
 		F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */; };
 		F216ACC61BD554110074ADF4 /* LineSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = F216ACC51BD554110074ADF4 /* LineSlider.m */; settings = {ASSET_TAGS = (); }; };
+		F216ACC91BD62EF40074ADF4 /* MuzzikPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F216ACC81BD62EF40074ADF4 /* MuzzikPlayer.m */; settings = {ASSET_TAGS = (); }; };
 		F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */; };
 		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
 		F2190DBB1BBA86CA00588A7D /* NLCropViewLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */; settings = {ASSET_TAGS = (); }; };
@@ -366,8 +358,6 @@
 		E162BD7E1AB444370001A61C /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		E16716231AAD77830068AE98 /* userInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userInfo.h; sourceTree = "<group>"; };
 		E16716241AAD77830068AE98 /* userInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userInfo.m; sourceTree = "<group>"; };
-		E16716261AAD790F0068AE98 /* musicPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = musicPlayer.h; sourceTree = "<group>"; };
-		E16716271AAD790F0068AE98 /* musicPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = musicPlayer.m; sourceTree = "<group>"; };
 		E167163D1AAED0AA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		E1B2302E1AB5BF22004E50DA /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
 		E1B2302F1AB5BF22004E50DA /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
@@ -383,26 +373,10 @@
 		E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "muzzik-PrefixHeader.pch"; sourceTree = "<group>"; };
 		E1FA12A51AB148B1005EDA1D /* FMLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMLrcView.h; sourceTree = "<group>"; };
 		E1FA12A61AB148B1005EDA1D /* FMLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMLrcView.m; sourceTree = "<group>"; };
-		E1FA12A71AB148B1005EDA1D /* RFRadioView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFRadioView.h; sourceTree = "<group>"; };
-		E1FA12A81AB148B1005EDA1D /* RFRadioView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFRadioView.m; sourceTree = "<group>"; };
 		E1FA12AC1AB14922005EDA1D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E1FA12AE1AB14939005EDA1D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E1FA12B01AB1494A005EDA1D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		E1FA12B21AB1495B005EDA1D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		E1FA12B51AB1499F005EDA1D /* AudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioPlayer.h; sourceTree = "<group>"; };
-		E1FA12B61AB1499F005EDA1D /* AudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioPlayer.m; sourceTree = "<group>"; };
-		E1FA12B71AB1499F005EDA1D /* AutoRecoveringHttpDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AutoRecoveringHttpDataSource.h; sourceTree = "<group>"; };
-		E1FA12B81AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AutoRecoveringHttpDataSource.m; sourceTree = "<group>"; };
-		E1FA12B91AB1499F005EDA1D /* CoreFoundationDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreFoundationDataSource.h; sourceTree = "<group>"; };
-		E1FA12BA1AB1499F005EDA1D /* CoreFoundationDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreFoundationDataSource.m; sourceTree = "<group>"; };
-		E1FA12BB1AB1499F005EDA1D /* DataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSource.h; sourceTree = "<group>"; };
-		E1FA12BC1AB1499F005EDA1D /* DataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSource.m; sourceTree = "<group>"; };
-		E1FA12BD1AB1499F005EDA1D /* DataSourceWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataSourceWrapper.h; sourceTree = "<group>"; };
-		E1FA12BE1AB1499F005EDA1D /* DataSourceWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DataSourceWrapper.m; sourceTree = "<group>"; };
-		E1FA12BF1AB1499F005EDA1D /* HttpDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpDataSource.h; sourceTree = "<group>"; };
-		E1FA12C01AB1499F005EDA1D /* HttpDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpDataSource.m; sourceTree = "<group>"; };
-		E1FA12C11AB1499F005EDA1D /* LocalFileDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalFileDataSource.h; sourceTree = "<group>"; };
-		E1FA12C21AB1499F005EDA1D /* LocalFileDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocalFileDataSource.m; sourceTree = "<group>"; };
 		E1FA12CA1AB14CEF005EDA1D /* NSDate+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+Additions.h"; sourceTree = "<group>"; };
 		E1FA12CB1AB14CEF005EDA1D /* NSDate+Additions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDate+Additions.m"; sourceTree = "<group>"; };
 		E1FA12CC1AB14CEF005EDA1D /* NSError+Additions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError+Additions.h"; sourceTree = "<group>"; };
@@ -530,6 +504,8 @@
 		F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetaiMuzzikVC.m; sourceTree = "<group>"; };
 		F216ACC41BD554110074ADF4 /* LineSlider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LineSlider.h; sourceTree = "<group>"; };
 		F216ACC51BD554110074ADF4 /* LineSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineSlider.m; sourceTree = "<group>"; };
+		F216ACC71BD62EF40074ADF4 /* MuzzikPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikPlayer.h; sourceTree = "<group>"; };
+		F216ACC81BD62EF40074ADF4 /* MuzzikPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikPlayer.m; sourceTree = "<group>"; };
 		F218144B1AF234CE00AA06AA /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
 		F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
 		F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
@@ -829,6 +805,8 @@
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
 				F27902D11BD249E100B802A7 /* audioPlayerViewController.h */,
 				F27902D21BD249E100B802A7 /* audioPlayerViewController.m */,
+				F216ACC71BD62EF40074ADF4 /* MuzzikPlayer.h */,
+				F216ACC81BD62EF40074ADF4 /* MuzzikPlayer.m */,
 				F200B7B21B2D4252002A6F61 /* 设置 */,
 				E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */,
 				E11246921AAABFED0014D461 /* appConfiguration.h */,
@@ -904,7 +882,6 @@
 			children = (
 				F2F68F611B25C888005F19E6 /* Addition Class */,
 				F2A5E20D1AD9123000FD8B3E /* model */,
-				E1FA12B41AB1499F005EDA1D /* AudioPlayer */,
 				E1FA12AB1AB148B6005EDA1D /* musicPlay */,
 				E16716221AAD5EF90068AE98 /* user */,
 				E11246931AAAC0090014D461 /* NavBar */,
@@ -1150,12 +1127,8 @@
 				F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
 				F2B81FF01ADD6C6A00012ED6 /* MuzzikItem.m */,
-				E1FA12A71AB148B1005EDA1D /* RFRadioView.h */,
-				E1FA12A81AB148B1005EDA1D /* RFRadioView.m */,
 				F20553A91B3D7FC70093AE8A /* MusicLyricCell.h */,
 				F20553AA1B3D7FC70093AE8A /* MusicLyricCell.m */,
-				E16716261AAD790F0068AE98 /* musicPlayer.h */,
-				E16716271AAD790F0068AE98 /* musicPlayer.m */,
 			);
 			name = user;
 			sourceTree = "<group>";
@@ -1214,27 +1187,6 @@
 				F2641F221AD9A652003BECDD /* NSString+MD5.m */,
 			);
 			name = musicPlay;
-			sourceTree = "<group>";
-		};
-		E1FA12B41AB1499F005EDA1D /* AudioPlayer */ = {
-			isa = PBXGroup;
-			children = (
-				E1FA12B51AB1499F005EDA1D /* AudioPlayer.h */,
-				E1FA12B61AB1499F005EDA1D /* AudioPlayer.m */,
-				E1FA12B71AB1499F005EDA1D /* AutoRecoveringHttpDataSource.h */,
-				E1FA12B81AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m */,
-				E1FA12B91AB1499F005EDA1D /* CoreFoundationDataSource.h */,
-				E1FA12BA1AB1499F005EDA1D /* CoreFoundationDataSource.m */,
-				E1FA12BB1AB1499F005EDA1D /* DataSource.h */,
-				E1FA12BC1AB1499F005EDA1D /* DataSource.m */,
-				E1FA12BD1AB1499F005EDA1D /* DataSourceWrapper.h */,
-				E1FA12BE1AB1499F005EDA1D /* DataSourceWrapper.m */,
-				E1FA12BF1AB1499F005EDA1D /* HttpDataSource.h */,
-				E1FA12C01AB1499F005EDA1D /* HttpDataSource.m */,
-				E1FA12C11AB1499F005EDA1D /* LocalFileDataSource.h */,
-				E1FA12C21AB1499F005EDA1D /* LocalFileDataSource.m */,
-			);
-			path = AudioPlayer;
 			sourceTree = "<group>";
 		};
 		E1FA12D31AB1823E005EDA1D /* FSCommon */ = {
@@ -1855,7 +1807,6 @@
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
 				F24F0A681BB320910073F6FA /* JSImagePickerViewController.m in Sources */,
 				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,
-				E1FA12C71AB1499F005EDA1D /* DataSourceWrapper.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
 				F2F7EE3C1AEE23E400265596 /* HanyuPinyinOutputFormat.m in Sources */,
 				F20553B61B400C840093AE8A /* HotSearchTopic.m in Sources */,
@@ -1866,7 +1817,6 @@
 				E11245FB1AAAAE4B0014D461 /* AppDelegate.m in Sources */,
 				F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */,
 				F200B7A41B28B727002A6F61 /* SDLoopProgressView.m in Sources */,
-				E1FA12C91AB1499F005EDA1D /* LocalFileDataSource.m in Sources */,
 				E11245F81AAAAE4B0014D461 /* main.m in Sources */,
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
 				F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */,
@@ -1885,7 +1835,6 @@
 				F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */,
 				E11246421AAAB1F20014D461 /* ASIAuthenticationDialog.m in Sources */,
 				F20B682A1AF39FC00058820D /* MuzzikCard.m in Sources */,
-				E16716281AAD790F0068AE98 /* musicPlayer.m in Sources */,
 				F20878AE1B9EE5B600A9FA45 /* NotificationCategoryCell.m in Sources */,
 				E11246461AAAB1F20014D461 /* ASIFormDataRequest.m in Sources */,
 				F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */,
@@ -1919,8 +1868,8 @@
 				F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
 				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
+				F216ACC91BD62EF40074ADF4 /* MuzzikPlayer.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
-				E1FA12C81AB1499F005EDA1D /* HttpDataSource.m in Sources */,
 				F2F7EE461AEE24B700265596 /* TransfromTime.m in Sources */,
 				F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */,
 				E1B230391AB5BF22004E50DA /* FMDatabase.m in Sources */,
@@ -1940,7 +1889,6 @@
 				F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */,
 				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
 				F2641F201AD988CC003BECDD /* registerVC.m in Sources */,
-				E1FA12C41AB1499F005EDA1D /* AutoRecoveringHttpDataSource.m in Sources */,
 				F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */,
 				F2E558AE1B164D420080F9C9 /* UIView+MJExtension.m in Sources */,
 				F2F7EE0D1AED333C00265596 /* SearchMusicCell.m in Sources */,
@@ -1967,7 +1915,6 @@
 				E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */,
 				E11246471AAAB1F20014D461 /* ASIHTTPRequest.m in Sources */,
 				F20C4EDA1B68CA4200331101 /* MuzzikSongCell.m in Sources */,
-				E1FA12C61AB1499F005EDA1D /* DataSource.m in Sources */,
 				E11246731AAAB20B0014D461 /* SDWebImageManager.m in Sources */,
 				E11246711AAAB20B0014D461 /* SDWebImageDownloader.m in Sources */,
 				E14F4A511ACD496E00270903 /* UIColor+HexColor.m in Sources */,
@@ -2022,9 +1969,7 @@
 				F2EF73711B4C625300E3A33A /* InformCell.m in Sources */,
 				F2E558AA1B164D420080F9C9 /* MJRefreshFooterView.m in Sources */,
 				E11246771AAAB20B0014D461 /* UIImage+MultiFormat.m in Sources */,
-				E1FA12C31AB1499F005EDA1D /* AudioPlayer.m in Sources */,
 				E11246701AAAB20B0014D461 /* SDWebImageDecoder.m in Sources */,
-				E1FA12C51AB1499F005EDA1D /* CoreFoundationDataSource.m in Sources */,
 				F2F7EE1E1AEE094300265596 /* emojiCollectionCell.m in Sources */,
 				F2F0FC8C1ADD8B7100668103 /* TeachViewController.m in Sources */,
 				E1FA12E71AB18252005EDA1D /* FSPlaylistItem.m in Sources */,
@@ -2035,7 +1980,6 @@
 				E112467B1AAAB20B0014D461 /* UIView+WebCacheOperation.m in Sources */,
 				F2E558AC1B164D420080F9C9 /* UIScrollView+MJExtension.m in Sources */,
 				E1B2303D1AB5BF22004E50DA /* FMResultSet.m in Sources */,
-				E1FA12AA1AB148B1005EDA1D /* RFRadioView.m in Sources */,
 				F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */,
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				E1B2303C1AB5BF22004E50DA /* FMDatabaseQueue.m in Sources */,

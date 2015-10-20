@@ -191,7 +191,7 @@
     [cell.message setFrame:CGRectMake(cell.message.frame.origin.x, cell.message.frame.origin.y, cell.message.frame.size.width,height )];
     //[cell.ActionView setFrame:CGRectMake(25, cell.message.frame.origin.y+height+15, SCREEN_WIDTH-50, 40)];
     [cell.scroll setContentSize:CGSizeMake(SCREEN_WIDTH, cell.message.frame.origin.y+height+65)];
-    if ([[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id] && ![Globle shareGloble].isPause) {
+    if ([[MuzzikPlayer shareClass].playingMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id] && ![Globle shareGloble].isPause) {
         [cell.playButton setHidden:YES];
     }else{
         [cell.playButton setHidden:NO];
@@ -646,13 +646,16 @@
 }
 -(void)playnextMuzzikUpdate{
     [_suggestCollectionView reloadData];
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
-    [musicPlayer shareClass].listType = suggestList;
-    [musicPlayer shareClass].MusicArray = self.suggestArray;
-    [[musicPlayer shareClass] playSongWithSongModel:songModel Title:@"推荐列表"];
+    [MuzzikPlayer shareClass].listType = suggestList;
+    [MuzzikPlayer shareClass].MusicArray = self.suggestArray;
+    [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"推荐列表"];
     [MuzzikItem SetUserInfoWithMuzziks:self.suggestArray title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
 }
 

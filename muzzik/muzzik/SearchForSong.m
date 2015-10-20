@@ -191,7 +191,7 @@
     cell.index = indexPath.row;
     cell.songVC = self;
     Globle *glob = [Globle shareGloble];
-    if ([[musicPlayer shareClass].localMuzzik.music.key isEqualToString:localMuzzik.music.key] && !glob.isPause) {
+    if ([[MuzzikPlayer shareClass].playingMuzzik.music.key isEqualToString:localMuzzik.music.key] && !glob.isPause) {
         [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
     }else{
         [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
@@ -319,6 +319,7 @@
 
 -(void)playnextMuzzikUpdate{
         [myTableView reloadData];
+    
 }
 -(void)playMuzzikWithIndex:(NSInteger)index{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
@@ -328,10 +329,9 @@
     center.singleMusic = NO;
     center.MuzzikType = Type_Muzzik_Music;
     center.page = page;
-    musicPlayer *player = [musicPlayer shareClass];
+    MuzzikPlayer *player = [MuzzikPlayer shareClass];
     player.listType = TempList;
     player.MusicArray = [self.searchArray mutableCopy];
-    player.index = index;
     [player playSongWithSongModel:self.searchArray[index] Title:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
     [MuzzikItem SetUserInfoWithMuzziks:self.searchArray title:Constant_userInfo_temp description:[NSString stringWithFormat:@"搜索 %@ 的歌曲",_searchText]];
     
