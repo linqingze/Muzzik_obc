@@ -82,4 +82,33 @@
     }
     return muzziks;
 }
+-(NSString *)description{
+    return [NSString stringWithFormat:@"music Key :%@%@",BaseURL_audio,self.music.key];
+}
+-(BOOL)isEqual:(id)object{
+    if (object == nil)
+    {
+        return NO;
+    }
+    
+    if ([object class] != [muzzik class])
+    {
+        return NO;
+    }else{
+        muzzik *myMuzzik = (muzzik *)object;
+        if ([self.muzzik_id length] >0) {
+            if ([self.muzzik_id isEqualToString:myMuzzik.muzzik_id]) {
+                return YES;
+            }else{
+                return NO;
+            }
+        }else{
+            if ([self.music.music_id isEqualToString:myMuzzik.music.music_id]) {
+                return YES;
+            }else{
+                return NO;
+            }
+        }
+    }
+}
 @end

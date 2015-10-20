@@ -19,6 +19,7 @@
 #import "TopRankVC.h"
 #import "UIButton_UserMuzzik.h"
 #import "RDVTabBarController.h"
+
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate>{
     
@@ -731,9 +732,11 @@
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
     [musicPlayer shareClass].listType = suggestList;
-    [musicPlayer shareClass].MusicArray = [NSMutableArray arrayWithArray:suggestArray];
-    [[musicPlayer shareClass] playSongWithSongModel:suggestMuzzik Title:@"推荐列表"];
+    audioPlayerViewController *player = [audioPlayerViewController shareClass];
+    player.MusicArray = [NSMutableArray arrayWithArray:suggestArray];
+    [player playSongWithSongModel:suggestMuzzik Title:@"推荐歌曲"];
     [MuzzikItem SetUserInfoWithMuzziks:suggestArray title:Constant_userInfo_temp description:@"推荐列表"];
+    [self.navigationController pushViewController:player animated:YES];
     
 }
 -(void) tapForMoreUser{
@@ -750,7 +753,7 @@
 }
 -(void)playnextMuzzikUpdate{
     Globle *glob = [Globle shareGloble];
-    BOOL isPlaying = [[musicPlayer shareClass].localMuzzik.muzzik_id isEqualToString:suggestMuzzik.muzzik_id]&&!glob.isPause;
+    BOOL isPlaying = [[audioPlayerViewController shareClass].playingMuzzik.muzzik_id isEqualToString:suggestMuzzik.muzzik_id]&&!glob.isPause;
     if ([suggestMuzzik.color longLongValue]==1) {
         if (isPlaying) {
             [playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];

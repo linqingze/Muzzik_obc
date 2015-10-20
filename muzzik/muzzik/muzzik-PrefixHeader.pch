@@ -28,6 +28,7 @@
 #import "MuzzikObject.h"
 #import "WeiboSDK.h"
 #import "MuzzikRequestCenter.h"
+#import "audioPlayerViewController.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

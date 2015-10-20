@@ -7,17 +7,12 @@
 //
 #import "musicPlayer.h"
 #import "UIImageView+WebCache.h"
-#import "appConfiguration.h"
-#import "FMLrcView.h"
-#import "FSPlaylistItem.h"
 #import <MediaPlayer/MediaPlayer.h>
-#import "AudioPlayer.h"
 #import "ASIHTTPRequest.h"
 #import "Reachability.h"
 #import <AVFoundation/AVFoundation.h>
 static NSMutableArray *playList;
 @interface musicPlayer()<RFRadioViewDelegate>{
-
 }
 
 @end
@@ -80,7 +75,6 @@ static NSMutableArray *playList;
             [self.radioView setAlpha:1];
         }];
     }
-    NSString *ss=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,playMuzzik.music.key]];;
     globle = [Globle shareGloble];
     if ([MuzzikItem isLocalMusicContainKey:playMuzzik.music.key]) {
         NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:MUSIC_FileName] stringByAppendingPathComponent:playMuzzik.music.key];
@@ -121,30 +115,6 @@ static NSMutableArray *playList;
     Globle *glob = [Globle shareGloble];
     if (glob.isApplicationEnterBackground) {
         if (NSClassFromString(@"MPNowPlayingInfoCenter")) {
-           // NSMutableDictionary *retDic = [[NSMutableDictionary alloc] init];
-            
-            
-            
-//            AVURLAsset *mp3Asset = [AVURLAsset URLAssetWithURL:self.radioView.musicUrl options:nil];
-//            
-//            //    NSLog(@"%@",mp3Asset);
-//            
-//            for (NSString *format in [mp3Asset availableMetadataFormats]) {
-//                NSLog(@"format type = %@",format);
-//                for (AVMetadataItem *metadataItem in [mp3Asset metadataForFormat:format]) {
-//                    
-//                    if(metadataItem.commonKey)
-//                        [retDic setObject:metadataItem.value forKey:metadataItem.commonKey];
-//                    
-//                }
-//            }
-//            NSLog(@"%@",retDic);
-            
-           
-            
-            
-            
-            
             
             NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
             if ([_localMuzzik.music.key length]>0) {

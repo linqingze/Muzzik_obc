@@ -20,7 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    //self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -170,7 +170,18 @@
 }
 - (void)rightBtnAction:(UIButton *)sender
 {
-    NSLog(@"rrrrrrr");
+    if(rightNumber == 0 && [Globle shareGloble].isPlaying){
+       NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+        if ([array containsObject:[audioPlayerViewController shareClass]]) {
+            [array removeObject:[audioPlayerViewController shareClass]];
+            [array addObject:[audioPlayerViewController shareClass]];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:[audioPlayerViewController shareClass] animated:YES];
+        }
+        
+        
+    }
 }
 
 
