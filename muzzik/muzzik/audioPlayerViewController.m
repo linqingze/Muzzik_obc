@@ -327,17 +327,15 @@
     if (_player.playingMuzzik.MuzzikUser) {
         [attentionButton setHidden:NO];
         nickLabel.text = _player.playingMuzzik.MuzzikUser.name;
-        [headerImage setUserInteractionEnabled:YES];
+        
         headerImage.user = _player.playingMuzzik.MuzzikUser;
         [headerTransImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_player.playingMuzzik.MuzzikUser.avatar,Image_Size_Small]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-            headerImage.userInteractionEnabled = NO;
             attentionButton.userInteractionEnabled = NO;
             [UIView animateWithDuration:2 animations:^{
                 [headerImage setAlpha:0];
             } completion:^(BOOL finished) {
                 [headerImage setImage:image forState:UIControlStateNormal];
                 [headerImage setAlpha:1];
-                [headerImage setUserInteractionEnabled:YES];
                 [attentionButton setUserInteractionEnabled:YES];
             }];
         }];

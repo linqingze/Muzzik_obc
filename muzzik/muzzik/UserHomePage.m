@@ -15,6 +15,7 @@
 #import "showUsersVC.h"
 #import "RDVTabBarController.h"
 #import "UserSongVC.h"
+#import "searchViewController.h"
 @interface UserHomePage ()<UITableViewDelegate>{
     UIView *mainView;
     UITableView *mainTableView;
@@ -193,6 +194,15 @@
     [super viewWillAppear:animated];
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [self loadDataMessage];
+}
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+}
+-(void)tapAction:(UITapGestureRecognizer *)tap{
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+    searchViewController *search = [[searchViewController alloc ] init];
+    [self.navigationController pushViewController:search animated:YES];
 }
 -(void)loadDataMessage{
     userInfo *user = [userInfo shareClass];

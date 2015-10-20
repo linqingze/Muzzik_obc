@@ -19,7 +19,7 @@
 #import "TopRankVC.h"
 #import "UIButton_UserMuzzik.h"
 #import "RDVTabBarController.h"
-
+#import "searchViewController.h"
 #define width_For_Cell 60.0
 @interface TopicVC ()<UIScrollViewDelegate,TapLabelDelegate>{
     
@@ -174,7 +174,11 @@
     
 
 }
-
+-(void)tapAction:(UITapGestureRecognizer *)tap{
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+    searchViewController *search = [[searchViewController alloc ] init];
+    [self.navigationController pushViewController:search animated:YES];
+}
 
 
 
@@ -908,6 +912,10 @@
             }];
             [requestForm startAsynchronous];
         }
+    }
+    else{
+        [userInfo checkLoginWithVC:self];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
     
 }

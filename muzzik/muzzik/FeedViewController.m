@@ -102,7 +102,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSendMuzzik:) name:String_SendNewMuzzikDataSource_update object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    _musicplayer = [MuzzikPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     feedTableView = [[UITableView alloc] initWithFrame:self.view.bounds];
@@ -586,14 +585,15 @@
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     userInfo *user = [userInfo shareClass];
     if ([user.token length] >0) {
-        [self initNagationBar:@"" leftBtn:8 rightBtn:0];
-        [self.navigationController.view addSubview:switchView];
+        [self initNagationBar:switchView leftBtn:8 rightBtn:0];
     }else{
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, self.view.bounds.size.height)];
         [switchView removeFromSuperview];
         [self initNagationBar:@"Muzzik" leftBtn:8 rightBtn:0];
     }
-    
-
+    [shareViewFull setAlpha:0];
+    [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+    [shareViewFull removeFromSuperview];
 //    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"followtitleImage"]];
 //    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
 
@@ -604,6 +604,7 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [switchView removeFromSuperview];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 
@@ -832,7 +833,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -922,7 +923,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1010,7 +1011,7 @@
             else{
                 MuzzikNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1065,7 +1066,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1174,7 +1175,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1282,7 +1283,7 @@
             else {
                 MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1369,7 +1370,7 @@
         cell.musicName.text = tempMuzzik.music.name;
         cell.songModel = tempMuzzik;
         cell.delegate = self;
-        if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+        if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
             [cell.playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];
         }else{
              [cell.playButton setImage:[UIImage imageNamed:Image_playgreyImage] forState:UIControlStateNormal];
@@ -1482,6 +1483,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         //NSLog(@"json:%@,dic:%@",tempJsonData,dic);
         
     }else{
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
         LoginViewController *loginVC = [[LoginViewController alloc] init];
         [self.navigationController pushViewController:loginVC animated:YES];
         
@@ -1506,6 +1508,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [alert show];
         }
     }else{
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
         [userInfo checkLoginWithVC:self];
     }
    
@@ -1851,10 +1854,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             center.singleMusic = NO;
             center.MuzzikType = Type_Muzzik_Muzzik;
             center.lastId = trendLastId;
-            _musicplayer.MusicArray = [self.trendMuzziks mutableCopy];
+            [MuzzikPlayer shareClass].MusicArray = [self.trendMuzziks mutableCopy];
             [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:[NSString stringWithFormat:@"广场列表"]];
-            [_musicplayer playSongWithSongModel:songModel Title:@"广场列表"];
-            _musicplayer.listType = SquareList;
+            [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"广场列表"];
+            [MuzzikPlayer shareClass].listType = SquareList;
         }else{
             center.subUrlString = @"api/muzzik/feeds";
             center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:feedLastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
@@ -1863,10 +1866,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             center.MuzzikType = Type_Muzzik_Muzzik;
             center.lastId = feedLastId;
             
-            _musicplayer.MusicArray = [self.feedMuzziks mutableCopy];
+            [MuzzikPlayer shareClass].MusicArray = [self.feedMuzziks mutableCopy];
             [MuzzikItem SetUserInfoWithMuzziks:self.feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
-            [_musicplayer playSongWithSongModel:songModel Title:@"关注列表"];
-            _musicplayer.listType = SquareList;
+            [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"关注列表"];
+            [MuzzikPlayer shareClass].listType = SquareList;
         }
     }else{
         center.subUrlString = @"api/muzzik/feeds";
@@ -1875,10 +1878,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         center.singleMusic = NO;
         center.MuzzikType = Type_Muzzik_Muzzik;
         center.lastId = trendLastId;
-        _musicplayer.MusicArray = [self.trendMuzziks mutableCopy];
+        [MuzzikPlayer shareClass].MusicArray = [self.trendMuzziks mutableCopy];
         [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:[NSString stringWithFormat:@"广场列表"]];
-        [_musicplayer playSongWithSongModel:songModel Title:@"广场列表"];
-        _musicplayer.listType = SquareList;
+        [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"广场列表"];
+        [MuzzikPlayer shareClass].listType = SquareList;
     }
     if (self.isViewLoaded &&self.view.window) {
         [self updateAnimation];
@@ -2080,6 +2083,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 -(void)closeShareView{
+    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [UIView animateWithDuration:0.5 animations:^{
         [shareViewFull setAlpha:0];
         [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
@@ -2089,6 +2093,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }];
 }
 -(void) addShareView{
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     [self.navigationController.view addSubview:shareViewFull];
     [UIView animateWithDuration:0.3 animations:^{
         [shareViewFull setAlpha:1];

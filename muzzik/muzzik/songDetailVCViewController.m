@@ -70,7 +70,6 @@
     [commentButton addTarget:self action:@selector(newMuzzikBySong) forControlEvents:UIControlEventTouchUpInside];
     [initiatorView addSubview:commentButton];
     [initiatorView setBackgroundColor:[UIColor whiteColor]];
-     _musicplayer = [MuzzikPlayer shareClass];
     
     
     nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(18, 11, SCREEN_WIDTH-100, 20)];
@@ -338,7 +337,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -427,7 +426,7 @@
             else {
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -518,7 +517,7 @@
         else{if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+            if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
@@ -598,7 +597,7 @@
         else {
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
             cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-            if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+            if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;

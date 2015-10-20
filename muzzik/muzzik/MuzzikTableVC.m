@@ -72,7 +72,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-    _musicplayer = [MuzzikPlayer shareClass];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     [MytableView  setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -338,7 +337,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -418,7 +417,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -496,7 +495,7 @@
             else{
                 MuzzikNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -540,7 +539,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -629,7 +628,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -717,7 +716,7 @@
             else {
                 MuzzikCard *cell = [tableView dequeueReusableCellWithIdentifier:@"MuzzikCard" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1064,23 +1063,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     center.MuzzikType = Type_Muzzik_Muzzik;
     
     
-    _musicplayer.MusicArray = [self.muzziks mutableCopy];
+    [MuzzikPlayer shareClass].MusicArray = [self.muzziks mutableCopy];
     if ([self.requstType isEqualToString:@"moved"]) {
         center.isPage = YES;
         center.subUrlString = @"api/user/movedMuzzik";
         center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil];
         center.page = page;
         [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];
-        [_musicplayer playSongWithSongModel:songModel Title:@"喜欢列表"];
-        _musicplayer.listType = MovedList;
+        [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"喜欢列表"];
+        [MuzzikPlayer shareClass].listType = MovedList;
     }else{
         center.isPage = NO;
         center.subUrlString = [NSString stringWithFormat:@"api/user/%@/muzziks",self.uid];
         center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
         center.lastId = lastId;
         [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_own description:[NSString stringWithFormat:@"我的Muzzik"]];
-        [_musicplayer playSongWithSongModel:songModel Title:@"我的Muzzik列表"];
-        _musicplayer.listType = ownList;
+        [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"我的Muzzik列表"];
+        [MuzzikPlayer shareClass].listType = ownList;
     }
 }
 

@@ -78,7 +78,6 @@
     [self SettingShareView];
     [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:11];
     MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-    self.musicplayer = [MuzzikPlayer shareClass];
     [self.view addSubview:MyTableView];
      _headView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH+55)];
     [self settingHeadView];
@@ -463,7 +462,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -543,7 +542,7 @@
             else {
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -622,7 +621,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -711,7 +710,7 @@
             else {
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
-                if ([tempMuzzik.muzzik_id isEqualToString:self.musicplayer.playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
+                if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
@@ -1057,9 +1056,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     center.MuzzikType = Type_Muzzik_Muzzik;
     center.page = page;
     
-    _musicplayer.MusicArray = [self.muzziks mutableCopy];
-    _musicplayer.listType = TempList;
-    [_musicplayer playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
+    [MuzzikPlayer shareClass].MusicArray = [self.muzziks mutableCopy];
+    [MuzzikPlayer shareClass].listType = TempList;
+    [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
     [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_temp description:[NSString stringWithFormat:@"#%@#的Muzzik",songModel.MuzzikUser.name]];
 }
 

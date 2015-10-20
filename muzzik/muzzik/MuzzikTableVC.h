@@ -16,7 +16,6 @@
     
 }
 @property(nonatomic) NSMutableArray *muzziks;
-@property(nonatomic) MuzzikPlayer *musicplayer;
 @property(nonatomic) NSString *topicName;
 @property(nonatomic) NSURL *imageURL;
 @property(nonatomic,copy)NSString *uid;

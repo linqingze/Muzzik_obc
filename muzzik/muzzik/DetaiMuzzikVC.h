@@ -10,7 +10,6 @@
 
 @interface DetaiMuzzikVC : AMScrollingNavbarViewController
 @property (nonatomic,retain) NSString *muzzik_id;
-@property(nonatomic,retain) MuzzikPlayer *musicplayer;
 @property(nonatomic,copy) NSString *showType;          //区分普通进入，评论和看评论
 
 @end
