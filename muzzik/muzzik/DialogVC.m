@@ -564,8 +564,10 @@
             newmuzzik.MuzzikUser.isFollow = NO;
             newmuzzik.MuzzikUser.isFans = NO;
             newmuzzik.music = self.localmuzzik.music;
+            if (newmuzzik) {
+                [commentArray insertObject:newmuzzik atIndex:0];
+            }
             
-            [commentArray insertObject:newmuzzik atIndex:0];
             [muzzikTableView reloadData];
             if (mobject.music) {
                 [self deleSong];

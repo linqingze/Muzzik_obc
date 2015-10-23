@@ -197,7 +197,7 @@
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+//    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];

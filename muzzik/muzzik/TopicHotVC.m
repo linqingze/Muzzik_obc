@@ -113,7 +113,6 @@
         searchField.layer.cornerRadius = 5;
         searchField.clipsToBounds = YES;
     }
-    searchBar.returnKeyType = UIReturnKeySearch;
     searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
     [searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];

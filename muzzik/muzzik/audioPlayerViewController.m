@@ -128,11 +128,12 @@
     titleView.textAlignment = NSTextAlignmentCenter;
     titleView.adjustsFontSizeToFitWidth = YES;
     titleView.font = [UIFont boldSystemFontOfSize:13];
-    [self.blurView addSubview:titleView];
+    
     UIImageView *grayImage = [[UIImageView alloc] initWithFrame:self.view.bounds];
     [grayImage setImage:[UIImage imageNamed:@"playerbgcover"]];
     grayImage.contentMode = UIViewContentModeScaleAspectFill;
     [self.blurView addSubview:grayImage];
+    [self.blurView addSubview:titleView];
     //设置左右item
     UIButton *leftBtn = [[UIButton alloc] initWithFrame:CGRectMake(0, 20, 44, 44)];
     [leftBtn addTarget:self action:@selector(backAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -147,7 +148,7 @@
     [self.view addSubview:self.blurView];
     
     self.view.clipsToBounds = YES;
-    self.playView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    self.playView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-189)];
     
     [self settingPlayerView];
     [self.blurView addSubview:self.playView];
@@ -158,6 +159,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
+    titleView.text = _player.viewTitle;
     AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [appdelegate.tabviewController setTabBarHidden:YES animated:YES];
     isViewLoaded = YES;
@@ -213,20 +215,20 @@
     
     //[pagecontrol setBackgroundColor:[UIColor whiteColor]];
     pagecontrol.numberOfPages = 2;
-    Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 133, SCREEN_WIDTH, SCREEN_HEIGHT-302)];
+    Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 138, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
     Scroll.delegate = self;
     [Scroll setPagingEnabled:YES];
     if (!user.hideLyric) {
-        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, SCREEN_HEIGHT-302)];
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, SCREEN_HEIGHT-342)];
     }else{
-        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-302)];
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-342)];
     }
     
     [self.playView addSubview:Scroll];
     if (!user.hideLyric) {
-        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT-302)];
+        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
     }else{
-        messageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-302)];
+        messageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
     }
     [messageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeDetail)]];
     message =[[UILabel alloc ] initWithFrame:CGRectMake(15, 10, SCREEN_WIDTH-30, SCREEN_HEIGHT-322)];
@@ -235,7 +237,7 @@
     [messageView addSubview:message];
     [Scroll addSubview:messageView];
     [Scroll setShowsHorizontalScrollIndicator:NO];
-    lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-302)];
+    lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
     [lyricTableView setBackgroundColor:[UIColor clearColor]];
     [lyricTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     lyricTipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 35, SCREEN_WIDTH-100, 20)];
@@ -245,47 +247,48 @@
     [lyricTipsLabel setAlpha:0];
     lyricTableView.delegate = self;
     lyricTableView.dataSource = self;
+    
     if (!user.hideLyric) {
         [Scroll addSubview:lyricTableView];
         [Scroll addSubview:lyricTipsLabel];
     }
     
-    progress = [[LineSlider alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-180, SCREEN_WIDTH-70, 20)];//213
+    progress = [[LineSlider alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-116, SCREEN_WIDTH-70, 20)];//213
     progress.continuous = NO;
     [progress setMinimumValue:0.0];
     progress.minimumTrackTintColor = Color_Active_Button_1;
     progress.maximumTrackTintColor = [UIColor colorWithWhite:1 alpha:0.4];
     [progress setThumbImage:[UIImage imageNamed:Image_PlayerforwardImage] forState:UIControlStateNormal];
     [progress addTarget:self action:@selector(progressChange:) forControlEvents:UIControlEventValueChanged];
-    [self.playView addSubview: progress];
+    [self.blurView addSubview: progress];
     
-    _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57 , SCREEN_HEIGHT-187, 50, 15)];
+    _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57 , SCREEN_HEIGHT-123, 50, 15)];
     // [_currentPlaybackTime setBackgroundColor:[UIColor whiteColor]];
     _currentPlaybackTime.font = [UIFont systemFontOfSize:7];
     _currentPlaybackTime.text = @"00:00/00:00";
     [_currentPlaybackTime setTextColor:[UIColor whiteColor]];
-    [self.playView addSubview:_currentPlaybackTime];
+    [self.blurView addSubview:_currentPlaybackTime];
     
-    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-51, SCREEN_HEIGHT-161, 36, 36)];
+    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-51, SCREEN_HEIGHT-97, 36, 36)];
     [playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playView addSubview:playButton];
-    movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-161, 36, 36)];
+    [self.blurView addSubview:playButton];
+    movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-97, 36, 36)];
     [movedButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playView addSubview:movedButton];
+    [self.blurView addSubview:movedButton];
     
-    songName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-162, SCREEN_WIDTH -140, 18)];
+    songName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-98, SCREEN_WIDTH -140, 18)];
     [songName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     
     
-    artistName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-138, SCREEN_WIDTH -140, 16)];
+    artistName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-74, SCREEN_WIDTH -140, 16)];
     artistName.adjustsFontSizeToFitWidth = YES;
     [artistName setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(13, SCREEN_HEIGHT-109, SCREEN_WIDTH-26, 1)];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(13, SCREEN_HEIGHT-45, SCREEN_WIDTH-26, 1)];
     [lineView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2]];
-    [self.playView addSubview:lineView];
+    [self.blurView addSubview:lineView];
     
-    [self.playView addSubview:songName];
-    [self.playView addSubview:artistName];
+    [self.blurView addSubview:songName];
+    [self.blurView addSubview:artistName];
     
     //        UISlider *slider = [[UISlider alloc ] initWithFrame:CGRectMake(10, 20, 300, 20)];
     //        [slider addTarget:self action:@selector(updateValue:) forControlEvents:UIControlEventValueChanged];
@@ -295,23 +298,23 @@
 //    [closeButton addTarget:self action:@selector(closePlayView) forControlEvents:UIControlEventTouchUpInside];
 //    [self.playView addSubview:closeButton];
     
-    commentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-109, (int)(SCREEN_WIDTH/4), 45)];
+    commentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-45, (int)(SCREEN_WIDTH/3), 45)];
     [commentButton setImage:[UIImage imageNamed:@"playerrepostImage"] forState:UIControlStateNormal];
     [commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playView addSubview:commentButton];
+    [self.blurView addSubview:commentButton];
     
-    playModelButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/3), SCREEN_HEIGHT-109,(int)(SCREEN_WIDTH/3), 45)];
+    playModelButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/3), SCREEN_HEIGHT-45,(int)(SCREEN_WIDTH/3), 45)];
     [playModelButton setImage:[UIImage imageNamed:@"playerloopImage"] forState:UIControlStateNormal];
     [playModelButton addTarget:self action:@selector(modelAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playView addSubview:playModelButton];
+    [self.blurView addSubview:playModelButton];
     
-    nextButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*2/3), SCREEN_HEIGHT-109, (int)(SCREEN_WIDTH/3), 45)];
+    nextButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*2/3), SCREEN_HEIGHT-45, (int)(SCREEN_WIDTH/3), 45)];
     [nextButton setImage:[UIImage imageNamed:@"playernextImage"] forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
-    [self.playView addSubview:nextButton];
+    [self.blurView addSubview:nextButton];
 }
 -(void)resetPlayView{
-
+    if ([_player.playingMuzzik.image length] >0) {
         [backTransImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_player.playingMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             
             UIImage *tempImage =[image blurredImageWithRadius:20 iterations:3 tintColor:[UIColor blackColor]];
@@ -323,6 +326,17 @@
                 [backGroundImage setAlpha:1];
             }];
         }];
+    }else{
+        [backGroundImage setImage:[UIImage imageNamed:@"playerbgImageImage"]];
+        [backTransImage setImage:backGroundImage.image];
+        [UIView animateWithDuration:2 animations:^{
+            [backGroundImage setAlpha:0];
+        } completion:^(BOOL finished) {
+            [backGroundImage setImage:backTransImage.image];
+            [backGroundImage setAlpha:1];
+        }];
+    }
+    
     
     if (_player.playingMuzzik.MuzzikUser) {
         [attentionButton setHidden:NO];
@@ -623,9 +637,9 @@
         attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_Next_Regular size:16], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:[UIColor whiteColor]};
         NSAttributedString * attr= [[NSAttributedString alloc] initWithString:_player.playingMuzzik.message attributes:attributes];
         message.attributedText = attr;
-        [message setFrame:CGRectMake(message.frame.origin.x, message.frame.origin.y, SCREEN_WIDTH-30, SCREEN_HEIGHT-322)];
-        [message sizeToFit];
-        message.textAlignment = NSTextAlignmentCenter;
+//        [message setFrame:CGRectMake(message.frame.origin.x, message.frame.origin.y, SCREEN_WIDTH-30, SCREEN_HEIGHT-322)];
+//        [message sizeToFit];
+//        message.textAlignment = NSTextAlignmentCenter;
     }
 
 
@@ -1228,7 +1242,7 @@
     }else{
         cell.textLabel.text =[playListArray[indexPath.row] objectForKey:UserInfo_description];;
         [cell.textLabel setFont:[UIFont fontWithName:Font_Next_medium size:16]];
-        [cell.textLabel setTextColor:Color_Theme_5];
+        [cell.textLabel setTextColor:[UIColor whiteColor]];
         return cell;
     }
     
@@ -1257,6 +1271,7 @@
         player.MusicArray = muzziks;
         player.listType = [dic objectForKey:@"type"];
         [player playSongWithSongModel:muzziks[0] Title:[dic objectForKey:UserInfo_description]];
+        titleView.text = _player.viewTitle;
         if ([self respondsToSelector:@selector(playListAction:)]) {
             [self performSelector:@selector(playListAction:) withObject:nil afterDelay:0.5];
         }

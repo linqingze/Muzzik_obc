@@ -70,11 +70,6 @@
     
     [self loadDataMessage];
 }
--(void)tapAction:(UITapGestureRecognizer *)tap{
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
-    searchViewController *search = [[searchViewController alloc ] init];
-    [self.navigationController pushViewController:search animated:YES];
-}
 -(void)startLoading{
     footTapView.userInteractionEnabled = NO;
     [footLabel setText:@"正在加载..."];
@@ -323,14 +318,14 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [notifyTabelView reloadData];
-    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+
     // MytableView add
     
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+
 
 }
 

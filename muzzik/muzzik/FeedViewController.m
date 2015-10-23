@@ -156,7 +156,7 @@
     userView = [[UIView alloc] initWithFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
     [userView setBackgroundColor:Color_line_2];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeMoreUser)]];
-    switchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2 -60, 24, 120, 40)];
+    switchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2 -60, 0, 120, 44)];
     feedButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, switchView.frame.size.width/2, switchView.frame.size.height-2)];
     [feedButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [feedButton setTitle:@"关注" forState:UIControlStateNormal];
@@ -187,7 +187,10 @@
         trendTableView.contentInset = insets;
         trendTableView.scrollIndicatorInsets = insets;
     }
-    [self addCoverVCToWindow];
+    if (![self getNewActivity]) {
+        [self addCoverVCToWindow];
+    }
+    
     NSDate *  senddate=[NSDate date];
     
     NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
@@ -216,8 +219,74 @@
             }
         }
     }
-
     
+    
+}
+-(BOOL)getNewActivity{
+    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+    if ([activityArray count] >0) {
+        for (NSDictionary *tempDic in activityArray) {
+            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
+            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MM-dd HH:mm"];
+            NSString *now   = [formatter stringFromDate:[NSDate date]];
+            if (now >= from && now <=to) {
+                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
+                NSData *textImage = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImage"]];
+                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
+                if (image && textImage && textImageEX) {
+                    [self initActivityViewWithImageData:image textImage:textImage textImageEX:textImageEX];
+                    return YES;
+                }
+                else{
+                    [self requestNewActivityDataLocal:YES];
+                    return NO;
+                }
+            }
+        }
+        [self requestNewActivityDataLocal:NO];
+        return NO;
+    }
+    [self requestNewActivityDataLocal:NO];
+    return NO;
+}
+-(NSString *)transformDateToString:(NSString *) time{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *localDate = [dateFormatter dateFromString:time];
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
+    //设置转换后的目标日期时区
+    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
+    //得到源日期与世界标准时间的偏移量
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
+    //目标日期与本地时区的偏移量
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
+    //得到时间偏移量的差值
+    NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
+    //转为现在时间
+    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+    
+    //    NSString* timeStr = @"2011-01-26 17:40:50";
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+    NSLocale *locale=[NSLocale systemLocale];
+    [formatter setLocale:locale];
+    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+    //    [formatter setTimeZone:timeZone];
+    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
+    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
+    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
+    timestring = timearray[1];
+    timestring = [timestring substringToIndex:5];
+    NSDate *now = [NSDate date];
+    [formatter setDateFormat:@"MM-dd HH:mm"];
+    return [formatter stringFromDate:now];
+}
+-(void)initActivityViewWithImageData:(NSData *)image textImage:(NSData *)textImage textImageEX:(NSData *)textImageEX{
+    NSLog(@"start");
 }
 -(void)updateTime{
     if (timeCount>0) {
@@ -233,7 +302,31 @@
         
     }
 }
-
+-(void)requestNewActivityDataLocal:(BOOL) islocal{
+//    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
+//    [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+//    __weak ASIHTTPRequest *weakrequest = requestForm;
+//    [requestForm setCompletionBlock :^{
+//        if ([weakrequest responseStatusCode] == 200) {
+//            NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+//            NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+//            if ([[Webdic objectForKey:@"splashes"] count] >0) {
+//                if (<#condition#>) {
+//                    <#statements#>
+//                }
+//            }
+//            
+//            
+//        }
+//        else{
+//            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+//        }
+//    }];
+//    [requestForm setFailedBlock:^{
+//        NSLog(@"%@",[weakrequest error]);
+//    }];
+//    [requestForm startAsynchronous];
+}
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
     [lineBar setFrame:CGRectMake(mainScroll.contentOffset.x*(lineBar.frame.size.width/SCREEN_WIDTH), lineBar.frame.origin.y, lineBar.frame.size.width, lineBar.frame.size.height)];
 }
@@ -288,22 +381,9 @@
         [coverImageView setAlpha:0];
     } completion:^(BOOL finished) {
         [coverImageView removeFromSuperview];
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
-        [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = request;
-        [request setCompletionBlock :^{
-            NSData *data = [weakrequest responseData];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-                [self getMessage];
-            }
-        }];
-        [request startAsynchronous];
     }];
 }
--(void)getMessage{
-    
-}
+
 - (void)feedRefreshHeader
 {
 
@@ -360,7 +440,11 @@
                                 }
                                 
                             }
-                            [self.feedMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                            muzzik *insertMuzzik = [[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0];
+                            if (insertMuzzik) {
+                                [self.feedMuzziks insertObject:insertMuzzik atIndex:1];
+                            }
+                            
                             break;
                         }
                         
@@ -496,7 +580,11 @@
                                 }
                                 
                             }
-                            [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                            muzzik *insertMuzzik = [[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0];
+                            if (insertMuzzik) {
+                                [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                            }
+                            
                             break;
                         }
                         
@@ -604,7 +692,7 @@
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [switchView removeFromSuperview];
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+    //[self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 
 
@@ -1675,6 +1763,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                         
                         
                     }
+                    [self requestForVip];
                     [MuzzikItem SetUserInfoWithMuzziks:self.feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
                     
                     feedLastId = [dic objectForKey:@"tail"];
@@ -1703,7 +1792,59 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }];
     [request startAsynchronous];
 }
-
+-(void) requestForVip{
+    NSString *vipUserId = [MuzzikItem getStringForKey:@"Muzzik_Vip_User_Daily"];
+    if (vipUserId == nil) {
+        ASIHTTPRequest *requestVip = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"http://117.121.26.174:8000/api/activity/top"]]];
+        
+        [requestVip addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+        __weak ASIHTTPRequest *weakrequestVip = requestVip;
+        [requestVip setCompletionBlock :^{
+            NSData *data = [weakrequestVip responseData];
+            NSDictionary *VipDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (VipDic && [[VipDic allKeys] containsObject:@"_id"] && [[VipDic objectForKey:@"_id"] length] > 0) {
+                NSString *VipMuzzikId = [MuzzikItem getStringForKey:@"Muzzik_Daily_Vip_MuzzikId"];
+                if ([VipMuzzikId length] == 0) {
+                    [self requestMuzzikWithId:[VipDic objectForKey:@"_id"]];
+                }else{
+                    if (![VipMuzzikId isEqualToString:[VipDic objectForKey:@"_id"]]) {
+                         [self requestMuzzikWithId:[VipDic objectForKey:@"_id"]];
+                    }
+                }
+                
+                
+               
+            }
+        }];
+        [requestVip setFailedBlock:^{
+            NSLog(@"%@",[weakrequestVip error]);
+        }];
+        [requestVip startAsynchronous];
+    }
+}
+-(void)requestMuzzikWithId:(NSString *)muzzikId{
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/%@",BaseURL,muzzikId]]];
+    
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequestVip = request;
+    [request setCompletionBlock :^{
+        NSData *data = [weakrequestVip responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic) {
+            muzzik *tempMuzzik = [[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObject:dic]] lastObject];
+            if (self.feedMuzziks && tempMuzzik) {
+                [self.feedMuzziks insertObject:tempMuzzik atIndex:0];
+                [MuzzikItem addObjectToLocal:muzzikId ForKey:@"Muzzik_Daily_Vip_MuzzikId"];
+                [feedTableView reloadData];
+            }
+        }
+        
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"%@",[weakrequestVip error]);
+    }];
+    [request startAsynchronous];
+}
 -(void)trendReloadMuzzikSource{
     if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
         NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];

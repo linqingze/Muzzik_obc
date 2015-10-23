@@ -55,7 +55,6 @@
         searchField.clipsToBounds = YES;
         searchField.textAlignment = NSTextAlignmentLeft;
     }
-    _searchBar.returnKeyType = UIReturnKeySearch;
     _searchView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-150, 20, 0, 40)];
     [_searchView setFrame:CGRectMake(0, 20, SCREEN_WIDTH, 40)];
     cancelButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-52, 6, 40, 28)];

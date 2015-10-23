@@ -56,6 +56,7 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+    [self checkNewNotification];
     [notifyTabelView reloadData];
 }
 -(void)dealloc{

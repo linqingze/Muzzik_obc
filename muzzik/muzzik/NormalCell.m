@@ -7,7 +7,6 @@
 //
 
 #import "NormalCell.h"
-
 #import "appConfiguration.h"
 @implementation NormalCell
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -149,10 +148,12 @@
     //[self.homeVc downMusicWithModel:self.songModel];
 }
 -(void)playMusicAction:(id) sender{
+
     NSLog(@"play");
     [self.delegate playSongWithSongModel:self.songModel];
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
+    self.colorstring = colorString;
     UIColor *color;
     if ([colorString isEqualToString:@"2"]) {
         color = [UIColor colorWithHexString:@"fea42c"];
@@ -164,6 +165,7 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"yellowstopImage"] forState:UIControlStateNormal];
+
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
         }
@@ -184,8 +186,10 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
+    
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
+           
         }
         if (self.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetblueretweetImage] forState:UIControlStateNormal];
@@ -203,8 +207,10 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
+        
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];
+           
         }
         if (self.isReposted) {
             [self.repostButton setImage:[UIImage imageNamed:Image_hottweetredretweetImage] forState:UIControlStateNormal];

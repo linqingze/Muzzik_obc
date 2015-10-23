@@ -12,6 +12,7 @@
     Globle *globle;
     NSURL *musicUrl;
     
+    
 }
 @property (nonatomic,assign) NSInteger index;
 @end
@@ -74,7 +75,7 @@
 #pragma mark public Action
 -(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title{
     
-
+    self.viewTitle = title;
     if (globle.isPlaying && [_playingMuzzik isEqual:playMuzzik]) {
         if (globle.isPause) {
             [self play];

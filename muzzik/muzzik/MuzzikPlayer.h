@@ -8,13 +8,14 @@
 
 #import <MediaPlayer/MediaPlayer.h>
 
-@interface MuzzikPlayer : MPMoviePlayerController
+@interface MuzzikPlayer : NSObject
 +(MuzzikPlayer *) shareClass;
 -(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title;
 @property (nonatomic,strong) NSMutableArray * MusicArray;
 @property (nonatomic,retain) muzzik *playingMuzzik;
 @property (nonatomic,assign) BOOL isPlayBack;
 @property (nonatomic,assign) NSString *listType;
+@property (nonatomic,copy) NSString *viewTitle;
 -(void) playnow;
 -(void) playNext;
 -(void) playPre;

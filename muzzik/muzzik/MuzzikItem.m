@@ -1025,7 +1025,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     //设置阴影路径
     [mobject.notifyBUtton setTitle:text forState:UIControlStateNormal];
     [mobject.notifyBUtton sizeToFit];
-    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-64, mobject.notifyBUtton.frame.size.width+34, 34)];
+    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-100, mobject.notifyBUtton.frame.size.width+34, 34)];
     AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
     [mobject.notifyBUtton setAlpha:0];
     [myDelegate.window.rootViewController.view addSubview:mobject.notifyBUtton];

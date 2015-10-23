@@ -136,8 +136,6 @@
             
             detailvc.muzzik_id = [payloadMsg substringWithRange:NSMakeRange(range.length, payloadMsg.length-range.length)];
             [self.feedVC pushViewController:detailvc animated:YES];
-        }else{
-            [self.tabviewController setSelectedViewController:self.notifyVC];
         }
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
@@ -308,83 +306,85 @@
             //        }else{
             //            AudioServicesPlaySystemSound(1301);
             //        }
+            
+            
+            
+        }
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] length] > 0 && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
+            DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+            NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
+            detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
+            [nac pushViewController:detailvc animated:NO];
+        }else if (nac != _notifyVC) {
             RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
             UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
             UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
             [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-            
-        }
-        // [4-EXT]:处理APN
-        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-        if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
-            DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
-            NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
-            detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
-            [nac pushViewController:detailvc animated:YES];
-        }else{
-            if (!glob.isApplicationEnterBackground && isLaunched) {
-                if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
-                    NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-                    [notifyVC checkNewNotification];
-                    //            [[UIApplication sharedApplication] cancelAllLocalNotifications];
-                    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-                }else{
-                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                        RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-                        UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-                        UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-                        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                        
-                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                        NSLog(@"%@       didReceiveRemoteNotification",record);
-                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                        NSArray *array = [Message componentsSeparatedByString:@" "];
-                        if ([array count]>1 ) {
-                            NSString *alter = [array objectAtIndex:1];
-                            if ([alter isEqualToString:@"评论了你"]) {
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }else if([alter isEqualToString:@"提到了你"]){
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }
-                            
-                            //
-                            //            if ([alter isEqualToString:@"评论了你"]) {
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"提到了你"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"喜欢了你的"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"转发了你的"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else {
-                            //                //处理关注，微博好友等
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }
+            if ([nac.viewControllers count]>1) {
+                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                    RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                    UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+                    UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+                    [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                    
+                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                    NSLog(@"%@       didReceiveRemoteNotification",record);
+                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                    NSArray *array = [Message componentsSeparatedByString:@" "];
+                    if ([array count]>1 ) {
+                        NSString *alter = [array objectAtIndex:1];
+                        if ([alter isEqualToString:@"评论了你"]) {
+                            [MuzzikItem showNewNotifyByText:Message];
+                        }else if([alter isEqualToString:@"提到了你"]){
+                            [MuzzikItem showNewNotifyByText:Message];
                         }
                     }
-                    
-                    
-                    
                 }
-                
-            }else{
-                //[[UIApplication sharedApplication] cancelAllLocalNotifications];
-                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-                if ([[nac.viewControllers lastObject] isKindOfClass:[NotificationCenterViewController class]]) {
-                    NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-                    [notifyVC checkNewNotification];
-                    
-                }else{
-                    NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-                    [nac pushViewController:notifyVC animated:YES];
-                }
-                
             }
-            
+        }else{
+            if ([nac.viewControllers count] == 1) {
+                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                [notifyVC checkNewNotification];
+                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+            }else{
+                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                    
+                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                    NSLog(@"%@       didReceiveRemoteNotification",record);
+                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                    NSArray *array = [Message componentsSeparatedByString:@" "];
+                    if ([array count]>1 ) {
+                        NSString *alter = [array objectAtIndex:1];
+                        if ([alter isEqualToString:@"评论了你"]) {
+                            [MuzzikItem showNewNotifyByText:Message];
+                        }else if([alter isEqualToString:@"提到了你"]){
+                            [MuzzikItem showNewNotifyByText:Message];
+                        }
+                        
+                        //
+                        //            if ([alter isEqualToString:@"评论了你"]) {
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"提到了你"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"喜欢了你的"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"转发了你的"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }else {
+                        //                //处理关注，微博好友等
+                        //                [MuzzikItem showNewNotifyByText:Message];
+                        //            }
+                    }
+                }
+            }
         }
+        // [4-EXT]:处理APN
+        
 
     }
            isLaunched = YES;
@@ -453,21 +453,21 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
-    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-            [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
-        }
-    }];
-    [request startAsynchronous];
+//    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
+//    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+//    __weak ASIHTTPRequest *weakrequest = request;
+//    [request setCompletionBlock :^{
+//        NSData *data = [weakrequest responseData];
+//        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+//        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
+//            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+//            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+//            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+//            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+//            [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
+//        }
+//    }];
+//    [request startAsynchronous];
     
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     [Globle shareGloble].isApplicationEnterBackground = NO;
@@ -752,7 +752,7 @@
                     
                 }];
                 [request startAsynchronous];
-                UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+                UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
                 for (UIViewController *vc in nac.viewControllers) {
                     if ([vc isKindOfClass:[settingSystemVC class]]) {
                         settingSystemVC *settingvc = (settingSystemVC*)vc;

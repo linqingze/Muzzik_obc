@@ -72,11 +72,7 @@
 - (void)imagePickerDidSelectImage:(UIImage *)image {
     [_imageCropper setImage:image];
     CGFloat minLength = image.size.width <image.size.height ? image.size.width : image.size.height;
-    if (minLength >200) {
-        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-100*_imageCropper.scalingFactor, image.size.height/2 - 100*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor, 200*_imageCropper.scalingFactor)];
-    }else{
-        [_imageCropper setCropRegionRect:CGRectMake(image.size.width/2-minLength/2, image.size.height/2 - minLength/2, minLength*_imageCropper.scalingFactor, minLength)];
-    }
+    [_imageCropper setCropRegionRect:CGRectMake(0,0, minLength, minLength)];
     [self.navigationController.view addSubview:_imageCropper];
 }
 -(void)userCropImage:(UIImage *)image{
