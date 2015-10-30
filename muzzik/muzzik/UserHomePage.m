@@ -16,10 +16,12 @@
 #import "RDVTabBarController.h"
 #import "UserSongVC.h"
 #import "searchViewController.h"
+#import "settingSystemVC.h"
 @interface UserHomePage ()<UITableViewDelegate>{
     UIView *mainView;
     UITableView *mainTableView;
     UIButton *profileButton;
+    UIButton *settingButton;
     UILabel *nameLabel;
     UIImageView *genderImage;
     UILabel *descriptionLabel;
@@ -58,10 +60,12 @@
     _headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH)];
     _headimage.contentMode = UIViewContentModeScaleAspectFill;
     [_headimage setAlpha:0];
-    profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-104, 16, 85, 23)];
+    profileButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-164, 16, 85, 23)];
     [profileButton setImage:[UIImage imageNamed:Image_editInformationImage] forState:UIControlStateNormal];
     [profileButton addTarget:self action:@selector(editProfile) forControlEvents:UIControlEventTouchUpInside];
-    
+    settingButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-64, 16, 45, 23)];
+    [settingButton setImage:[UIImage imageNamed:@"settingImage"] forState:UIControlStateNormal];
+    [settingButton addTarget:self action:@selector(settingAction) forControlEvents:UIControlEventTouchUpInside];
     
     nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
     [nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
@@ -75,7 +79,7 @@
     [mainView addSubview:nameLabel];
     [mainView addSubview:genderImage];
     [mainView addSubview:profileButton];
-    
+    [mainView addSubview:settingButton];
     
     constellationImage = [[UIImageView alloc] init];
     constellationLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, SCREEN_WIDTH/2-50, 20)];
@@ -417,8 +421,10 @@
         coverImage.frame = cover;
         
         CGRect d = profileButton.frame;
+        CGRect settingrect = settingButton.frame;
+        settingrect.origin.y = yOffset+16;
         d.origin.y = yOffset+16;
-        
+        settingButton.frame = settingrect;
         profileButton.frame = d;
     }
 }
@@ -438,7 +444,11 @@
         [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }
 }
-
+-(void)settingAction{
+    settingSystemVC *settingvc = [[settingSystemVC alloc] init];
+    [self.navigationController pushViewController:settingvc animated:YES];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+}
 -(void)showMuzziks{
     UserMuzzikVC *uMuzzik = [[UserMuzzikVC alloc] init];
     [self.navigationController pushViewController:uMuzzik animated:YES];

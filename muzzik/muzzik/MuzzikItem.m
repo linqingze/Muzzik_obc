@@ -396,7 +396,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 {
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
     [userDefault removeObjectForKey:string];
-    
+    [userDefault synchronize];
 }
 + (NSArray *)muzzikDraftsFromLocal{
     NSUserDefaults *userDefault = [NSUserDefaults standardUserDefaults];
@@ -959,7 +959,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     [mobject.lyricTipsLabel setAlpha:0];
     if (view == nil) {
         AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-        view = myDelegate.window.rootViewController.view;
+        UINavigationController *nac = (UINavigationController *)myDelegate.tabviewController.selectedViewController;
+        view = nac.view;
     }
     [view addSubview:mobject.lyricTipsLabel];
     [UIView animateWithDuration:0.4 animations:^{

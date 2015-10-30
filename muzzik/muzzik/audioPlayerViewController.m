@@ -19,6 +19,7 @@
 #import "MuzzikPlayer.h"
 #import "MessageStepViewController.h"
 #import "StyledPageControl.h"
+#import "UIButton+autoCycle.h"
 @interface audioPlayerViewController ()<UIScrollViewDelegate,UITableViewDataSource,UITableViewDelegate>{
     NSTimer *_progressUpdateTimer;
     UILabel *titleView;
@@ -83,8 +84,7 @@
     _player  = [MuzzikPlayer shareClass];
     globle = [Globle shareGloble];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidChangeNotification:) name:MPMoviePlayerPlaybackStateDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidfinishedNotification:) name:MPMoviePlayerPlaybackDidFinishNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playDidChangeNotification:) name:String_SetSongPlayNextNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(durationAvailable:) name:MPMovieDurationAvailableNotification object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetPlayView) name:@"Muzzik_Player_PlayNewSong" object:nil];
@@ -96,10 +96,7 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    AVAudioSession *session = [AVAudioSession sharedInstance];
-    [session setActive:YES error:nil];
-    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
-    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+    
     _progressUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:1.0
                                                             target:self
                                                           selector:@selector(updatePlaybackProgress)
@@ -127,7 +124,7 @@
     [titleView setTextColor:[UIColor whiteColor]];
     titleView.textAlignment = NSTextAlignmentCenter;
     titleView.adjustsFontSizeToFitWidth = YES;
-    titleView.font = [UIFont boldSystemFontOfSize:13];
+    titleView.font = [UIFont boldSystemFontOfSize:16];
     
     UIImageView *grayImage = [[UIImageView alloc] initWithFrame:self.view.bounds];
     [grayImage setImage:[UIImage imageNamed:@"playerbgcover"]];
@@ -148,18 +145,20 @@
     [self.view addSubview:self.blurView];
     
     self.view.clipsToBounds = YES;
-    self.playView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-189)];
+    self.playView = [[UIView alloc] initWithFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-199)];
     
     [self settingPlayerView];
     [self.blurView addSubview:self.playView];
     [self initPlayList];
+    userInfo *user = [userInfo shareClass];
+    user.fixTitle = YES;
     // Do any additional setup after loading the view.
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     
     [super viewWillAppear:animated];
-    titleView.text = _player.viewTitle;
+    titleView.text = [NSString stringWithFormat:@"正在播放 %@",_player.viewTitle];
     AppDelegate *appdelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
     [appdelegate.tabviewController setTabBarHidden:YES animated:YES];
     isViewLoaded = YES;
@@ -173,7 +172,7 @@
 }
 #pragma mark -initView
 -(void) initPlayList{
-    plistTableView = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 114, SCREEN_WIDTH, 250)];
+    plistTableView = [[UITableView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, SCREEN_HEIGHT/2-130, SCREEN_WIDTH, 220)];
     plistTableView.delegate = self;
     plistTableView.dataSource = self;
     [self.blurView addSubview:plistTableView];
@@ -182,22 +181,22 @@
 }
 -(void)settingPlayerView{
     
-    headerImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 20, 75, 75)];
+    headerImage = [[UIButton_UserMuzzik alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 10, 75, 75)];
     headerImage.layer.cornerRadius = 38;
     headerImage.clipsToBounds = YES;
     [headerImage addTarget:self action:@selector(gotoUserDetail:) forControlEvents:UIControlEventTouchUpInside];
     
-    headerTransImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 20, 75, 75)];
+    headerTransImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-37, 10, 75, 75)];
     headerTransImage.layer.cornerRadius = 38;
     headerTransImage.clipsToBounds = YES;
     
     [self.playView addSubview:headerTransImage];
     [self.playView addSubview:headerImage];
-    attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+12, 70, 25, 25)];
+    attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2+12, 60, 25, 25)];
     [attentionButton setImage:[UIImage imageNamed:Image_PlayerfollowImage] forState:UIControlStateNormal];
     [attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
     [self.playView addSubview:attentionButton];
-    nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 95, SCREEN_WIDTH, 30)];
+    nickLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 90, SCREEN_WIDTH, 30)];
     [nickLabel setTextColor:[UIColor whiteColor]];
     [nickLabel setFont:[UIFont fontWithName:Font_Next_Bold size:14]];
     nickLabel.textAlignment = NSTextAlignmentCenter;
@@ -215,33 +214,34 @@
     
     //[pagecontrol setBackgroundColor:[UIColor whiteColor]];
     pagecontrol.numberOfPages = 2;
-    Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 138, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
+    Scroll = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 138, SCREEN_WIDTH, SCREEN_HEIGHT-352)];
     Scroll.delegate = self;
     [Scroll setPagingEnabled:YES];
     if (!user.hideLyric) {
-        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, SCREEN_HEIGHT-342)];
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, SCREEN_HEIGHT-352)];
     }else{
-        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-342)];
+        [Scroll setContentSize:CGSizeMake(SCREEN_WIDTH, SCREEN_HEIGHT-352)];
     }
     
     [self.playView addSubview:Scroll];
     if (!user.hideLyric) {
-        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
+        messageView = [[UIView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT-352)];
     }else{
-        messageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
+        messageView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-352)];
     }
     [messageView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeDetail)]];
-    message =[[UILabel alloc ] initWithFrame:CGRectMake(15, 10, SCREEN_WIDTH-30, SCREEN_HEIGHT-322)];
+    message =[[UILabel alloc ] initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH-30, SCREEN_HEIGHT-352)];
     message.numberOfLines = 0;
     
     [messageView addSubview:message];
     [Scroll addSubview:messageView];
     [Scroll setShowsHorizontalScrollIndicator:NO];
-    lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-342)];
+    lyricTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-352)];
     [lyricTableView setBackgroundColor:[UIColor clearColor]];
     [lyricTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
-    lyricTipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(50, 35, SCREEN_WIDTH-100, 20)];
-    [lyricTipsLabel setFont:[UIFont systemFontOfSize:12]];
+    lyricTipsLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 0, SCREEN_WIDTH-30, SCREEN_HEIGHT-352)];
+    lyricTipsLabel.numberOfLines = 0;
+    [lyricTipsLabel setFont:[UIFont systemFontOfSize:16]];
     [lyricTipsLabel setTextColor:[UIColor whiteColor]];
     lyricTipsLabel.textAlignment = NSTextAlignmentCenter;
     [lyricTipsLabel setAlpha:0];
@@ -253,38 +253,39 @@
         [Scroll addSubview:lyricTipsLabel];
     }
     
-    progress = [[LineSlider alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-116, SCREEN_WIDTH-70, 20)];//213
+    progress = [[LineSlider alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-131, SCREEN_WIDTH-70, 20)];//213
     progress.continuous = NO;
     [progress setMinimumValue:0.0];
     progress.minimumTrackTintColor = Color_Active_Button_1;
     progress.maximumTrackTintColor = [UIColor colorWithWhite:1 alpha:0.4];
     [progress setThumbImage:[UIImage imageNamed:Image_PlayerforwardImage] forState:UIControlStateNormal];
+    
     [progress addTarget:self action:@selector(progressChange:) forControlEvents:UIControlEventValueChanged];
     [self.blurView addSubview: progress];
     
-    _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57 , SCREEN_HEIGHT-123, 50, 15)];
+    _currentPlaybackTime = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57 , SCREEN_HEIGHT-138, 50, 15)];
     // [_currentPlaybackTime setBackgroundColor:[UIColor whiteColor]];
     _currentPlaybackTime.font = [UIFont systemFontOfSize:7];
     _currentPlaybackTime.text = @"00:00/00:00";
     [_currentPlaybackTime setTextColor:[UIColor whiteColor]];
     [self.blurView addSubview:_currentPlaybackTime];
     
-    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-51, SCREEN_HEIGHT-97, 36, 36)];
+    playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-51, SCREEN_HEIGHT-107, 36, 36)];
     [playButton addTarget:self action:@selector(playAction) forControlEvents:UIControlEventTouchUpInside];
     [self.blurView addSubview:playButton];
-    movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-97, 36, 36)];
+    movedButton =[[UIButton alloc] initWithFrame:CGRectMake(15, SCREEN_HEIGHT-107, 36, 36)];
     [movedButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
     [self.blurView addSubview:movedButton];
     
-    songName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-98, SCREEN_WIDTH -140, 18)];
+    songName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-110, SCREEN_WIDTH -140, 18)];
     [songName setFont:[UIFont fontWithName:Font_Next_Bold size:15]];
     
     
-    artistName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-74, SCREEN_WIDTH -140, 16)];
+    artistName = [[UILabel alloc] initWithFrame:CGRectMake(77, SCREEN_HEIGHT-83, SCREEN_WIDTH -140, 16)];
     artistName.adjustsFontSizeToFitWidth = YES;
     [artistName setFont:[UIFont fontWithName:Font_Next_Bold size:12]];
-    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(13, SCREEN_HEIGHT-45, SCREEN_WIDTH-26, 1)];
-    [lineView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.2]];
+    UIView *lineView = [[UIView alloc] initWithFrame:CGRectMake(13, SCREEN_HEIGHT-50, SCREEN_WIDTH-26, 1)];
+    [lineView setBackgroundColor:[UIColor colorWithWhite:1 alpha:0.1]];
     [self.blurView addSubview:lineView];
     
     [self.blurView addSubview:songName];
@@ -298,17 +299,17 @@
 //    [closeButton addTarget:self action:@selector(closePlayView) forControlEvents:UIControlEventTouchUpInside];
 //    [self.playView addSubview:closeButton];
     
-    commentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-45, (int)(SCREEN_WIDTH/3), 45)];
+    commentButton = [[UIButton alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT-50, (int)(SCREEN_WIDTH/3), 50)];
     [commentButton setImage:[UIImage imageNamed:@"playerrepostImage"] forState:UIControlStateNormal];
     [commentButton addTarget:self action:@selector(commentAction) forControlEvents:UIControlEventTouchUpInside];
     [self.blurView addSubview:commentButton];
     
-    playModelButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/3), SCREEN_HEIGHT-45,(int)(SCREEN_WIDTH/3), 45)];
+    playModelButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/3), SCREEN_HEIGHT-50,(int)(SCREEN_WIDTH/3), 50)];
     [playModelButton setImage:[UIImage imageNamed:@"playerloopImage"] forState:UIControlStateNormal];
     [playModelButton addTarget:self action:@selector(modelAction) forControlEvents:UIControlEventTouchUpInside];
     [self.blurView addSubview:playModelButton];
     
-    nextButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*2/3), SCREEN_HEIGHT-45, (int)(SCREEN_WIDTH/3), 45)];
+    nextButton = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH*2/3), SCREEN_HEIGHT-50, (int)(SCREEN_WIDTH/3), 50)];
     [nextButton setImage:[UIImage imageNamed:@"playernextImage"] forState:UIControlStateNormal];
     [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
     [self.blurView addSubview:nextButton];
@@ -629,14 +630,19 @@
     }
     //
     if ([_player.playingMuzzik.message length]>0) {
-        NSDictionary *attributes;
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
-        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
-        paragraphStyle.alignment = NSTextAlignmentCenter;
-        paragraphStyle.lineSpacing = 7;
-        attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_Next_Regular size:16], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:[UIColor whiteColor]};
-        NSAttributedString * attr= [[NSAttributedString alloc] initWithString:_player.playingMuzzik.message attributes:attributes];
-        message.attributedText = attr;
+//        NSDictionary *attributes;
+//        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc]init];
+//        paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
+//        paragraphStyle.alignment = NSTextAlignmentCenter;
+//        
+//        paragraphStyle.lineSpacing = 7;
+//        attributes = @{NSFontAttributeName:[UIFont fontWithName:Font_Next_Regular size:16], NSParagraphStyleAttributeName:paragraphStyle,NSForegroundColorAttributeName:[UIColor whiteColor]};
+//        NSAttributedString * attr= [[NSAttributedString alloc] initWithString:_player.playingMuzzik.message attributes:attributes];
+//        message.attributedText = attr;
+        message.text = _player.playingMuzzik.message;
+        message.textAlignment = NSTextAlignmentCenter;
+        [message setTextColor:[UIColor whiteColor]];
+        [message setFont:[UIFont fontWithName:Font_Next_Regular size:16]];
 //        [message setFrame:CGRectMake(message.frame.origin.x, message.frame.origin.y, SCREEN_WIDTH-30, SCREEN_HEIGHT-322)];
 //        [message sizeToFit];
 //        message.textAlignment = NSTextAlignmentCenter;
@@ -830,7 +836,7 @@
     }
 }
 -(void)progressChange:(UISlider *) progressSlider{
-    _player.currentPlaybackTime = progressSlider.value;
+    [_player.player seekToTime:progressSlider.value];
 }
 -(void)backAction:(UIButton *)sender{
     [self.navigationController popViewControllerAnimated:YES];
@@ -840,8 +846,8 @@
     if (_IsShowPlayList) {
         _IsShowPlayList = NO;
         [UIView animateWithDuration:0.30 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [plistTableView setFrame:CGRectMake(SCREEN_WIDTH, 114, SCREEN_WIDTH, 250)];
-            [self.playView setFrame:CGRectMake(0, 64, SCREEN_WIDTH, 338)];
+            [plistTableView setFrame:CGRectMake(SCREEN_WIDTH, SCREEN_HEIGHT/2-130, SCREEN_WIDTH, 220)];
+            [self.playView setFrame:CGRectMake(0, 64, SCREEN_WIDTH, SCREEN_HEIGHT-199)];
         }completion:nil];
     }else{
         _IsShowPlayList = YES;
@@ -851,32 +857,31 @@
         if (![_player.listType isEqualToString:SquareList]) {
             [playListArray addObject:[user.playList objectForKey:Constant_userInfo_square]];
         }
-        
-        if (![_player.listType isEqualToString:suggestList]) {
-            if (!user.checkSuggest) {
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
-                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:NO];
+        if (![_player.listType isEqualToString:feedList]) {
+            if (user.checkFollow) {
+                if ([[[user.playList objectForKey:Constant_userInfo_follow] objectForKey:@"muzziks"] count]>0) {
+                    [playListArray addObject:[user.playList objectForKey:Constant_userInfo_follow]];
+                }
+            }else{
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
+                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
                 __weak ASIHTTPRequest *weakrequest = request;
                 [request setCompletionBlock :^{
-                    //    NSLog(@"%@",weakrequest.originalURL);
-                    NSLog(@"%@",[weakrequest responseString]);
+                    // NSLog(@"%@",[weakrequest responseString]);
                     NSData *data = [weakrequest responseData];
                     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                    if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
-                        [MuzzikItem SetUserInfoWithMuzziks:[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
-                        [playListArray addObject:[user.playList objectForKey:Constant_userInfo_suggest]];
+                    if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
+                        muzzik *muzzikToy = [muzzik new];
+                        [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
+                        [playListArray addObject:[user.playList objectForKey:Constant_userInfo_follow]];
                         [self checkReloadPlayListTable];
+                        
                     }
                 }];
                 [request setFailedBlock:^{
                     NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
                 }];
                 [request startAsynchronous];
-            }else{
-                if ([[[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:@"muzziks"] count]>0) {
-                    [playListArray addObject:[user.playList objectForKey:Constant_userInfo_suggest]];
-                }
-                
             }
             
         }
@@ -912,34 +917,7 @@
             }
             
             
-            if (![_player.listType isEqualToString:feedList]) {
-                if (user.checkFollow) {
-                    if ([[[user.playList objectForKey:Constant_userInfo_follow] objectForKey:@"muzziks"] count]>0) {
-                        [playListArray addObject:[user.playList objectForKey:Constant_userInfo_follow]];
-                    }
-                }else{
-                    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/feeds",BaseURL]]];
-                    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:30] forKey:Parameter_Limit] Method:GetMethod auth:YES];
-                    __weak ASIHTTPRequest *weakrequest = request;
-                    [request setCompletionBlock :^{
-                        // NSLog(@"%@",[weakrequest responseString]);
-                        NSData *data = [weakrequest responseData];
-                        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                        if (dic && [[dic objectForKey:@"muzziks"] count]>0 ) {
-                            muzzik *muzzikToy = [muzzik new];
-                            [MuzzikItem SetUserInfoWithMuzziks:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
-                            [playListArray addObject:[user.playList objectForKey:Constant_userInfo_follow]];
-                            [self checkReloadPlayListTable];
-                            
-                        }
-                    }];
-                    [request setFailedBlock:^{
-                        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-                    }];
-                    [request startAsynchronous];
-                }
-                
-            }
+            
             if (![_player.listType isEqualToString:MovedList]) {
                 if (user.checkMove) {
                     if ([[[user.playList objectForKey:Constant_userInfo_move] objectForKey:@"muzziks"] count]>0) {
@@ -969,14 +947,43 @@
                 
             }
         }
+        if (![_player.listType isEqualToString:suggestList]) {
+            if (!user.checkSuggest) {
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/suggest",BaseURL]]];
+                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"10",Parameter_Limit,[NSNumber numberWithBool:YES],@"image", nil] Method:GetMethod auth:NO];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    //    NSLog(@"%@",weakrequest.originalURL);
+                    NSLog(@"%@",[weakrequest responseString]);
+                    NSData *data = [weakrequest responseData];
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    if (dic&&[[dic objectForKey:@"muzziks"]count]>0) {
+                        [MuzzikItem SetUserInfoWithMuzziks:[[muzzik new] makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]] title:Constant_userInfo_suggest description:[NSString stringWithFormat:@"推荐列表"]];
+                        [playListArray addObject:[user.playList objectForKey:Constant_userInfo_suggest]];
+                        [self checkReloadPlayListTable];
+                    }
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+                }];
+                [request startAsynchronous];
+            }else{
+                if ([[[user.playList objectForKey:Constant_userInfo_suggest] objectForKey:@"muzziks"] count]>0) {
+                    [playListArray addObject:[user.playList objectForKey:Constant_userInfo_suggest]];
+                }
+                
+            }
+            
+        }
+        
         if (![_player.listType isEqualToString:TempList] && user.checkTemp ) {
             [playListArray addObject:[user.playList objectForKey:Constant_userInfo_temp]];
         }
         [self checkReloadPlayListTable];
         
         [UIView animateWithDuration:0.30 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-            [plistTableView setFrame:CGRectMake(0, 114, SCREEN_WIDTH, 250)];
-            [self.playView setFrame:CGRectMake(-SCREEN_WIDTH, 64, SCREEN_WIDTH, 338)];
+            [plistTableView setFrame:CGRectMake(0, SCREEN_HEIGHT/2-130, SCREEN_WIDTH, 220)];
+            [self.playView setFrame:CGRectMake(-SCREEN_WIDTH, 64, SCREEN_WIDTH, SCREEN_HEIGHT-199)];
         }completion:nil];
     }
 }
@@ -996,11 +1003,11 @@
 }
 
 - (void)playDidChangeNotification:(NSNotification *)notification {
-    MPMoviePlayerController *moviePlayer = notification.object;
-    MPMoviePlaybackState playState = moviePlayer.playbackState;
     
-    if (playState == MPMoviePlaybackStateStopped) {
+    if (_player.player.state == STKAudioPlayerStateStopped) {
+        globle.isPlaying = NO;
         NSLog(@"停止");
+        [playButton stopAnimation];
         if ([_player.playingMuzzik.color intValue] == 2) {
             [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcircleplayImage] forState:UIControlStateNormal];
         }else if ([_player.playingMuzzik.color intValue] == 3) {
@@ -1008,9 +1015,9 @@
         }else{
             [playButton setImage:[UIImage imageNamed:Image_PlayerredcircleplayImage] forState:UIControlStateNormal];
         }
-    } else if(playState == MPMoviePlaybackStatePlaying) {
+    } else if(_player.player.state == STKAudioPlayerStatePlaying) {
         NSLog(@"播放");
-
+        [playButton stopAnimation];
         if ([_player.playingMuzzik.color intValue] == 2) {
             [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcirclestopImage] forState:UIControlStateNormal];
         }else if ([_player.playingMuzzik.color intValue] == 3) {
@@ -1018,8 +1025,9 @@
         }else{
             [playButton setImage:[UIImage imageNamed:Image_PlayerredcirclestopImage] forState:UIControlStateNormal];
         }
-    } else if(playState == MPMoviePlaybackStatePaused) {
+    } else if(_player.player.state == STKAudioPlayerStatePaused) {
         NSLog(@"暂停");
+        [playButton stopAnimation];
         if ([_player.playingMuzzik.color intValue] == 2) {
             [playButton setImage:[UIImage imageNamed:Image_PlayeryellowcircleplayImage] forState:UIControlStateNormal];
         }else if ([_player.playingMuzzik.color intValue] == 3) {
@@ -1028,23 +1036,23 @@
             [playButton setImage:[UIImage imageNamed:Image_PlayerredcircleplayImage] forState:UIControlStateNormal];
         }
     }
+    else if (_player.player.state == STKAudioPlayerStateBuffering){
+        [playButton startAnimation];
+    }
 }
--(void)playDidfinishedNotification:(NSNotification *)notification{
-    ableToSeek = NO;
-    progress.userInteractionEnabled = NO;
-}
+
 #pragma mark private_method
 
 -(void) updatePlaybackProgress
 {
     progress.minimumValue = 0;
-    progress.maximumValue = _player.duration;
-    if (_player.currentPlaybackTime<3.0) {
+    progress.maximumValue = _player.player.duration;
+    if (_player.player.progress<3.0) {
         [nextButton setEnabled:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
     }
-    [progress setValue:_player.currentPlaybackTime animated:YES];
-    _currentPlaybackTime.text =[self TimeformatFromSeconds:_player.currentPlaybackTime total:_player.duration];
+    [progress setValue:_player.player.progress animated:YES];
+    _currentPlaybackTime.text =[self TimeformatFromSeconds:_player.player.progress total:_player.player.duration];
     
 }
 -(NSString*)TimeformatFromSeconds:(int)seconds total:(int)total
@@ -1091,7 +1099,7 @@
             }
         }
     }
-    if (_player.duration > 0 ) {
+    if (_player.player.duration > 0 ) {
         return  itemStr1;
     }else{
         return @"00:00/00:00";
@@ -1271,7 +1279,7 @@
         player.MusicArray = muzziks;
         player.listType = [dic objectForKey:@"type"];
         [player playSongWithSongModel:muzziks[0] Title:[dic objectForKey:UserInfo_description]];
-        titleView.text = _player.viewTitle;
+        titleView.text = [NSString stringWithFormat:@"正在播放 %@",_player.viewTitle];
         if ([self respondsToSelector:@selector(playListAction:)]) {
             [self performSelector:@selector(playListAction:) withObject:nil afterDelay:0.5];
         }

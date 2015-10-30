@@ -694,7 +694,9 @@
 }
 
 -(void)playnextMuzzikUpdate{
-    
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
     Globle *glob = [Globle shareGloble];
     if ([MuzzikPlayer shareClass].playingMuzzik ==self.detailMuzzik&&!glob.isPause) {
         [playButton setImage:[UIImage imageNamed:Image_stoporangeImage] forState:UIControlStateNormal];

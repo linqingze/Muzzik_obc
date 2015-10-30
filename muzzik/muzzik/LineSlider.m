@@ -20,4 +20,10 @@
 - (CGRect)trackRectForBounds:(CGRect)bounds {
     return CGRectMake(0, 0, SCREEN_WIDTH-75, 1);
 }
+//- (CGRect)minimumValueImageRectForBounds:(CGRect)bounds{
+//    return CGRectMake(0, 0, SCREEN_WIDTH-75, 20);
+//}
+//- (CGRect)maximumValueImageRectForBounds:(CGRect)bounds{
+//    return CGRectMake(0, 0, SCREEN_WIDTH-75, 20);
+//}
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "settingSystemVC.h"
+#import "DraftBoxVC.h"
 #import "SettingCell.h"
 #import "TeachViewController.h"
 #import "FeedBackVC.h"
@@ -69,16 +70,19 @@
         return Scell;
         
     }else if (indexPath.row == 1) {
-        cell.textLabel.text = @"邀请好友一起来Muzzik";
+        cell.textLabel.text = @"草稿箱";
     }
     else if (indexPath.row == 2) {
+        cell.textLabel.text = @"邀请好友一起来Muzzik";
+    }
+    else if (indexPath.row == 3) {
         cell.textLabel.text = @"赏Muzzik 好评";
         
-    }else if (indexPath.row == 3) {
-        cell.textLabel.text = @"意见反馈";
     }else if (indexPath.row == 4) {
-        cell.textLabel.text = @"关于Muzzik";
+        cell.textLabel.text = @"意见反馈";
     }else if (indexPath.row == 5) {
+        cell.textLabel.text = @"关于Muzzik";
+    }else if (indexPath.row == 6) {
         SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
         [Scell.shakeSwitch setHidden:YES];
          [Scell.dataNum setHidden:NO];
@@ -88,7 +92,7 @@
         Scell.dataNum.text = [NSString stringWithFormat:@"%.2f M",totalSize];
         return Scell;
     }
-    else if(indexPath.row == 6){
+    else if(indexPath.row == 7){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             cell.textLabel.text = @"退出账号";
@@ -104,21 +108,31 @@
     if (indexPath.row == 0) {
 
     }else if (indexPath.row == 1) {
+        userInfo *user = [userInfo shareClass];
+        if ([user.token length] >0) {
+            DraftBoxVC *draftvc = [[DraftBoxVC alloc] init];
+            [self.navigationController pushViewController:draftvc animated:YES];
+        }else{
+            [userInfo checkLoginWithVC:self];
+        }
+        
+    }
+    else if (indexPath.row == 2) {
         [self addShareView];
-    }else if (indexPath.row == 2) {
+    }else if (indexPath.row == 3) {
         NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@?mt=8",APP_ID ];
         
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]]; 
 
         
-    }else if (indexPath.row == 3) {
+    }else if (indexPath.row == 4) {
         FeedBackVC *feedback = [[FeedBackVC alloc] init];
         [self.navigationController pushViewController:feedback animated:YES];
-    }else if (indexPath.row == 4) {
+    }else if (indexPath.row == 5) {
         TeachViewController *teach = [[TeachViewController alloc] initWithNibName:@"TeachViewController" bundle:nil];
         teach.showType = @"about";
         [self.navigationController pushViewController:teach animated:YES];
-    }else if (indexPath.row == 5){
+    }else if (indexPath.row == 6){
         
         cleanAlert = [[UIAlertView alloc] initWithTitle:@"确认清除图片缓存" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
         // optional - add more buttons:
@@ -127,7 +141,7 @@
 
         
     }
-    else if (indexPath.row == 6){
+    else if (indexPath.row == 7){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"确认退出登录" message:@"" delegate:self cancelButtonTitle:@"放弃" otherButtonTitles:nil];
@@ -145,7 +159,7 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 7;
+    return 8;
 }
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
@@ -464,7 +478,15 @@
 
 }
 
-
+-(void)dealloc{
+    userInfo *user = [userInfo shareClass];
+    
+    if ([user.token length] == 0 ) {
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        [app.tabviewController setSelectedViewController:app.feedVC];
+        [app.tabviewController setSelectedIndex:0];
+    }
+}
 /*
 #pragma mark - Navigation
 

@@ -72,7 +72,7 @@
     
     [_searchView setBackgroundColor:Color_NavigationBar];
     [_searchView addSubview:_searchBar];
-    [self.navigationController.view addSubview:_searchView];
+    //[self.navigationController.view addSubview:_searchView];
     svcsong = [[SearchForSong alloc] init];
     svcsong.keeper = self;
     svcsong.title =@"歌曲";
@@ -91,12 +91,11 @@
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.searchView setHidden:NO];
+    [self.navigationController.view addSubview:_searchView];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     [self.searchView removeFromSuperview];
-    [self.searchView setHidden:YES];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

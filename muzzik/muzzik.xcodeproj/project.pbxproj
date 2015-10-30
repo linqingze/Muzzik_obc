@@ -132,6 +132,7 @@
 		F21BFD471BDA97F900FE857E /* STKHTTPDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD3B1BDA97F900FE857E /* STKHTTPDataSource.m */; settings = {ASSET_TAGS = (); }; };
 		F21BFD481BDA97F900FE857E /* STKLocalFileDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD3D1BDA97F900FE857E /* STKLocalFileDataSource.m */; settings = {ASSET_TAGS = (); }; };
 		F21BFD491BDA97F900FE857E /* STKQueueEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD3F1BDA97F900FE857E /* STKQueueEntry.m */; settings = {ASSET_TAGS = (); }; };
+		F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */; settings = {ASSET_TAGS = (); }; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
@@ -495,6 +496,8 @@
 		F21BFD3E1BDA97F900FE857E /* STKQueueEntry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STKQueueEntry.h; sourceTree = "<group>"; };
 		F21BFD3F1BDA97F900FE857E /* STKQueueEntry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = STKQueueEntry.m; sourceTree = "<group>"; };
 		F21BFD401BDA97F900FE857E /* StreamingKit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "StreamingKit-Prefix.pch"; sourceTree = "<group>"; };
+		F21BFD4A1BDAA32000FE857E /* UIButton+autoCycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+autoCycle.h"; sourceTree = "<group>"; };
+		F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+autoCycle.m"; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
@@ -1538,6 +1541,8 @@
 		F2F68F611B25C888005F19E6 /* Addition Class */ = {
 			isa = PBXGroup;
 			children = (
+				F21BFD4A1BDAA32000FE857E /* UIButton+autoCycle.h */,
+				F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */,
 				F25179351BD53EBF00E76911 /* UIImage+BoxBlur.h */,
 				F25179361BD53EBF00E76911 /* UIImage+BoxBlur.m */,
 				F22AB3A41B068A6000C61677 /* TapImageView.h */,
@@ -1850,6 +1855,7 @@
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
+				F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */,
 				F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */,
 				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,

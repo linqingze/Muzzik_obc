@@ -8,6 +8,7 @@
 
 #import "NormalCell.h"
 #import "appConfiguration.h"
+#import "UIButton+autoCycle.h"
 @implementation NormalCell
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
@@ -165,6 +166,11 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"yellowstopImage"] forState:UIControlStateNormal];
+            if ([MuzzikPlayer shareClass].player.state == STKAudioPlayerStateBuffering) {
+                [self.playButton startAnimation];
+            }else{
+                [self.playButton stopAnimation];
+            }
 
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"yellowplayImage"] forState:UIControlStateNormal];
@@ -186,6 +192,11 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"bluestopImage"] forState:UIControlStateNormal];
+            if ([MuzzikPlayer shareClass].player.state == STKAudioPlayerStateBuffering) {
+                [self.playButton startAnimation];
+            }else{
+                [self.playButton stopAnimation];
+            }
     
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"blueplayImage"] forState:UIControlStateNormal];
@@ -207,6 +218,11 @@
         }
         if (self.isPlaying) {
             [self.playButton setImage:[UIImage imageNamed:@"redstopImage"] forState:UIControlStateNormal];
+            if ([MuzzikPlayer shareClass].player.state == STKAudioPlayerStateBuffering) {
+                [self.playButton startAnimation];
+            }else{
+                [self.playButton stopAnimation];
+            }
         
         }else{
             [self.playButton setImage:[UIImage imageNamed:@"redplayImage"] forState:UIControlStateNormal];

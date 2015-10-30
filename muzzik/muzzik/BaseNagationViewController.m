@@ -46,19 +46,23 @@
         self.navigationItem.titleView = imageView;
         self.headerView = self.navigationItem.titleView;
     }else if ([title isKindOfClass:[UIView class]]){
-        self.navigationItem.titleView = title;
-        self.headerView = self.navigationItem.titleView;
+        if (self.headerView != title) {
+            self.navigationItem.titleView = title;
+            self.headerView = self.navigationItem.titleView;
+        }
+        
 
     }
     else{
         if ([title isKindOfClass:[UISegmentedControl class]]) {
             UISegmentedControl *segment = (UISegmentedControl *)title;
             self.navigationItem.titleView = segment;
+            self.headerView = segment;
         }
     }
     UIButton *leftBtn = [UIButton buttonWithType:(UIButtonTypeCustom)];
     leftBtn.frame = CGRectMake(0, 0, 44, 44);
-    [leftBtn setImageEdgeInsets:UIEdgeInsetsMake(2,-20,2,10)];
+    [leftBtn setImageEdgeInsets:UIEdgeInsetsMake(0,-20,0,10)];
 
     if ([[self btnImage:leftImage] isKindOfClass:[UIImage class]]) {
         UIImage *image = (UIImage *)[self btnImage:leftImage];

@@ -151,7 +151,6 @@
     
 }
 -(void)refreshHeader{
-     [self loadUser];
      [self loadMuzzik];
      [self loadTopics];
 
@@ -408,6 +407,7 @@
            
             CGFloat localX = 15;
             CGFloat localY = 47;
+            [userImageArray removeAllObjects];
             for (int i = 0; i<2; i++) {
                 for (int j=0; j<3; j++) {
                     MuzzikUser * tempUser = tempArray[i*3+j];
@@ -695,7 +695,6 @@
     }
 }
 -(void)moveAction{
-    
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         suggestMuzzik.ismoved = !suggestMuzzik.ismoved;

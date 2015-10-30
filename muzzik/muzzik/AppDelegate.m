@@ -26,6 +26,7 @@
 #import "LoginViewController.h"
 @interface AppDelegate (){
     BOOL isLaunched;
+    UIViewController *itemVC;
 }
 
 @end
@@ -79,7 +80,10 @@
     
     [self registerRemoteNotification];
     [self checkChannel];
-
+    AVAudioSession *session = [AVAudioSession sharedInstance];
+    [session setActive:YES error:nil];
+    [session setCategory:AVAudioSessionCategoryPlayback error:nil];
+    [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     
     
     
@@ -110,9 +114,9 @@
     self.notifyVC = [[UINavigationController alloc] initWithRootViewController:notifyVC];
     UserHomePage *userhomeVC = [[UserHomePage alloc] init];
     self.userhomeVC = [[UINavigationController alloc] initWithRootViewController:userhomeVC];
-    
+    itemVC = [[UIViewController alloc] init];
     RDVTabBarController *tabBarController = [[RDVTabBarController alloc] init];
-    [tabBarController setViewControllers:@[self.feedVC, self.topicVC,[[UIViewController alloc] init],
+    [tabBarController setViewControllers:@[self.feedVC, self.topicVC,itemVC,
                                            self.notifyVC,self.userhomeVC]];
     tabBarController.delegate = self;
     self.tabviewController = tabBarController;
@@ -123,8 +127,7 @@
     
     [self customizeTabBarForController:tabBarController];
     [self.window setRootViewController:self.tabviewController];
-    
-    
+    [[SDImageCache sharedImageCache] cleanDisk];
     
     NSDictionary* message = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
     if (message) {
@@ -611,6 +614,7 @@
         userInfo *user = [userInfo shareClass];
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
         ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
         [requestsquare addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
@@ -640,6 +644,9 @@
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
+            if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
+                [nac popViewControllerAnimated:YES];
+            }
             ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
             [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
             __weak ASIHTTPRequest *weakrequest = request;
@@ -650,7 +657,7 @@
                  
              }];
             [request startAsynchronous];
-            UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+            
             for (UIViewController *vc in nac.viewControllers) {
                 if ([vc isKindOfClass:[settingSystemVC class]]) {
                     settingSystemVC *settingvc = (settingSystemVC*)vc;
@@ -658,7 +665,8 @@
                     break;
                 }
             }
-//            [nac popViewControllerAnimated:YES];
+            
+            
             
             
         }];
@@ -1177,6 +1185,9 @@
 }
 - (BOOL)tabBarController:(RDVTabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController{
     userInfo *user = [userInfo shareClass];
+    if (viewController == itemVC) {
+        return NO;
+    }
     if ([user.token length] == 0) {
         if (viewController == self.notifyVC) {
             UINavigationController *nac = (UINavigationController *) self.tabviewController.selectedViewController;

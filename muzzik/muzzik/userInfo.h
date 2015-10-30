@@ -18,6 +18,7 @@
 @end
 
 @interface userInfo : NSObject
+@property (nonatomic,assign) BOOL fixTitle;
 @property (nonatomic,assign) BOOL launched;
 @property (nonatomic,retain) muzzik *poMuzzik;
 @property (nonatomic,copy) NSString *token;

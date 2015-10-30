@@ -252,10 +252,29 @@
                         local = local- tempLabel.frame.size.width-28;
                     }
                 }
-                _muzzikCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"muzzikTotal"]];
-                _followCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"followsCount"]];;
-                _fansCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"fansCount"]];
-                _songCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"musicsTotal"]];
+                if ([[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"muzzikTotal"]] length] == 0) {
+                    _muzzikCount.text = @"0";
+                }else{
+                    _muzzikCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"muzzikTotal"]];
+                }
+                
+                if ([[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"followsCount"]] length] == 0) {
+                    _followCount.text = @"0";
+                }else{
+                    _followCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"followsCount"]];
+                }
+                
+                if ([[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"fansCount"]] length] == 0) {
+                    _fansCount.text = @"0";
+                }else{
+                    _fansCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"fansCount"]];
+                }
+                
+                if ([[NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"musicsTotal"]] length] == 0) {
+                    _songCount.text = @"0";
+                }else{
+                   _songCount.text = [NSString stringWithFormat:@"%@",[_profileDic objectForKey:@"musicsTotal"]];
+                }
             }
             
             
@@ -396,7 +415,7 @@
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
     
     
-    if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"]) {
+    if ([tempMuzzik.type isEqualToString:@"normal"] ||[tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"muzzikCard"]) {
         
         TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-110, 500)];
         [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
@@ -415,26 +434,6 @@
             }else{
                 return 260+(int)textHeight;
             }
-        }
-    }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
-        TTTAttributedLabel *label = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake(75, 0, SCREEN_WIDTH-96, 500)];
-        [label setText:tempMuzzik.message];
-        [label setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
-        CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
-        if (textHeight>limitHeight) {
-            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return SCREEN_WIDTH+limitHeight+80;
-            }else{
-                return limitHeight+190;
-            }
-        }
-        else{
-            if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return (int)(SCREEN_WIDTH+textHeight+80);
-            }else{
-                return textHeight+190;
-            }
-            
         }
     }else{
         return 0;
@@ -456,10 +455,10 @@
 {
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
-    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] )
+    if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"] )
     {
         if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
-            if ([tempMuzzik.type isEqualToString:@"repost"] ){
+            if ([tempMuzzik.type isEqualToString:@"repost"] ||[tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
@@ -618,7 +617,7 @@
                 return  cell;
             }
         }else{
-            if ([tempMuzzik.type isEqualToString:@"repost"] ){
+            if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"muzzikCard"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {

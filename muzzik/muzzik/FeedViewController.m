@@ -32,6 +32,10 @@
 #import "MessageStepViewController.h"
 #import "RDVTabBarController.h"
 #import "searchViewController.h"
+#import "NotifyButton.h"
+
+
+#define size_to_change  3
 @interface FeedViewController ()<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
     NSMutableArray *suggestDayArray;
     UIView *userView;
@@ -40,18 +44,20 @@
     UIImage *shareImage;
     UITableView *feedTableView;
     UITableView *trendTableView;
-    
+    UIView *addView;
     NSString *trendLastId;
-    
+    BOOL diffDate;
     NSString *feedLastId;
     
+    UIImageView *activityImage;
+    UIImageView *wordImage;
     
+    UIImageView *startLogo;
     NSMutableDictionary *feedRefreshDic;
     NSMutableDictionary *feedReFreshPoImageDic;
     
     NSMutableDictionary *trendRefreshDic;
     NSMutableDictionary *trendReFreshPoImageDic;
-    
     //shareView
     muzzik *shareMuzzik;
     UIView *shareViewFull;
@@ -71,6 +77,7 @@
     NSTimer *timer;
     NSInteger timeCount;
     UIImageView *coverImageView;
+    NotifyButton *notifyBtn;
     
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
@@ -169,7 +176,6 @@
     [trendButton addTarget:self action:@selector(switchTableView:) forControlEvents:UIControlEventTouchDown];
     [switchView addSubview:trendButton];
     [switchView addSubview:feedButton];
-    [self.navigationController.view addSubview:switchView];
     lineBar = [[UIView alloc] initWithFrame:CGRectMake(0, switchView.frame.size.height-2, switchView.frame.size.width/2, 2)];
     [lineBar setBackgroundColor:Color_Active_Button_1];
     [switchView addSubview:lineBar];
@@ -187,17 +193,21 @@
         trendTableView.contentInset = insets;
         trendTableView.scrollIndicatorInsets = insets;
     }
-    if (![self getNewActivity]) {
-        [self addCoverVCToWindow];
-    }
-    
     NSDate *  senddate=[NSDate date];
     
     NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
     
     [dateformatter setDateFormat:@"YYYYMMdd"];
     
-    NSString *  locationString=[dateformatter stringFromDate:senddate];
+    NSString *locationString=[dateformatter stringFromDate:senddate];
+    NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
+    diffDate =![lastShowDateString isEqualToString:locationString];
+    if (![self getNewActivityWithDate:locationString]) {
+        [self addCoverVCToWindowFullImage:nil slogan:nil];
+    }
+    
+    
+    
     
     NSLog(@"locationString:%@",locationString);
     NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
@@ -222,34 +232,81 @@
     
     
 }
--(BOOL)getNewActivity{
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length] >0) {
+        [self initNagationBar:switchView leftBtn:8 rightBtn:0];
+        [trendTableView setFrame:CGRectMake(SCREEN_WIDTH, trendTableView.frame.origin.y, trendTableView.frame.size.width, trendTableView.frame.size.height)];
+        [mainScroll addSubview:feedTableView];
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH*2, self.view.bounds.size.height)];
+        [self.navigationController.navigationBar addSubview:self.navigationItem.titleView];
+    }else{
+        [trendTableView setFrame:CGRectMake(0, trendTableView.frame.origin.y, trendTableView.frame.size.width, trendTableView.frame.size.height)];
+        [feedTableView removeFromSuperview];
+        
+        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, self.view.bounds.size.height)];
+        [switchView removeFromSuperview];
+        [self initNagationBar:@"Muzzik" leftBtn:8 rightBtn:0];
+    }
+    if (user.isSwitchUser) {
+        user.isSwitchUser = NO;
+        [self trendReloadMuzzikSource];
+        [self feedReloadMuzzikSource];
+    }
+    [shareViewFull setAlpha:0];
+    [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+    [shareViewFull removeFromSuperview];
+    //    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"followtitleImage"]];
+    //    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
+    
+    // MytableView add
+    //[MytableView reloadData];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    [switchView removeFromSuperview];
+    //[self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+}
+
+-(BOOL)getNewActivityWithDate:(NSString *)dataString{
+//    NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
     NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
     if ([activityArray count] >0) {
         for (NSDictionary *tempDic in activityArray) {
             NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
             NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MM-dd HH:mm"];
+            [formatter setDateFormat:@"MM-dd"];
             NSString *now   = [formatter stringFromDate:[NSDate date]];
-            if (now >= from && now <=to) {
+            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
+            if ([now compare:from]>=0  && [now compare:to]<=0) {
                 NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
-                NSData *textImage = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImage"]];
                 NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
-                if (image && textImage && textImageEX) {
-                    [self initActivityViewWithImageData:image textImage:textImage textImageEX:textImageEX];
+                if (image  && textImageEX) {
+//                    [MuzzikItem addObjectToLocal:dataString ForKey:@"Muzzik_lastShowDateString"];
+                    [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
                     return YES;
-                }
-                else{
-                    [self requestNewActivityDataLocal:YES];
-                    return NO;
+                }else{
+                    [activityImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [MuzzikItem addObjectToLocal:UIImagePNGRepresentation(image) ForKey:[tempDic objectForKey:@"image"]];
+                    }];
+                    [wordImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                        [MuzzikItem addObjectToLocal:UIImagePNGRepresentation(image) ForKey:[tempDic objectForKey:@"textImageEX"]];
+                    }];
                 }
             }
         }
-        [self requestNewActivityDataLocal:NO];
-        return NO;
+        [self requestNewActivityDataLocal];
+    }else{
+        [self requestNewActivityDataLocal];
     }
-    [self requestNewActivityDataLocal:NO];
+    
     return NO;
+    
 }
 -(NSString *)transformDateToString:(NSString *) time{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -263,7 +320,7 @@
     //目标日期与本地时区的偏移量
     NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
     //得到时间偏移量的差值
-    NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
+    NSTimeInterval Tinterval = sourceGMTOffset- destinationGMTOffset;
     //转为现在时间
     NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
     
@@ -271,22 +328,21 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-    NSLocale *locale=[NSLocale systemLocale];
-    [formatter setLocale:locale];
-    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
-    //    [formatter setTimeZone:timeZone];
-    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
-    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
-    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
-    timestring = timearray[1];
-    timestring = [timestring substringToIndex:5];
-    NSDate *now = [NSDate date];
     [formatter setDateFormat:@"MM-dd HH:mm"];
-    return [formatter stringFromDate:now];
-}
--(void)initActivityViewWithImageData:(NSData *)image textImage:(NSData *)textImage textImageEX:(NSData *)textImageEX{
-    NSLog(@"start");
+    return [formatter stringFromDate:destinationDateNow];
+//    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+//    NSLocale *locale=[NSLocale systemLocale];
+//    [formatter setLocale:locale];
+//    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+//    //    [formatter setTimeZone:timeZone];
+//    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
+//    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
+//    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
+//    timestring = timearray[1];
+//    timestring = [timestring substringToIndex:5];
+//    NSDate *now = [NSDate date];
+//    [formatter setDateFormat:@"MM-dd HH:mm"];
+//    return [formatter stringFromDate:now];
 }
 -(void)updateTime{
     if (timeCount>0) {
@@ -302,30 +358,58 @@
         
     }
 }
--(void)requestNewActivityDataLocal:(BOOL) islocal{
-//    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
-//    [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
-//    __weak ASIHTTPRequest *weakrequest = requestForm;
-//    [requestForm setCompletionBlock :^{
-//        if ([weakrequest responseStatusCode] == 200) {
-//            NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-//            NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
-//            if ([[Webdic objectForKey:@"splashes"] count] >0) {
-//                if (<#condition#>) {
-//                    <#statements#>
-//                }
-//            }
-//            
-//            
-//        }
-//        else{
-//            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-//        }
-//    }];
-//    [requestForm setFailedBlock:^{
-//        NSLog(@"%@",[weakrequest error]);
-//    }];
-//    [requestForm startAsynchronous];
+-(void)requestNewActivityDataLocal{
+  
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
+    [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        if ([weakrequest responseStatusCode] == 200) {
+            NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+             NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+            if ([[Webdic objectForKey:@"splashes"] count] >0) {
+               
+                for (NSDictionary *tempDic in activityArray) {
+                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"image"]];
+                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"textImageEX"]];
+                }
+                [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
+                for (NSDictionary *tempDic in [Webdic objectForKey:@"splashes"]) {
+                    ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]]];
+                    __weak ASIHTTPRequest *weakrequestImage = requestImage;
+                    [requestImage setCompletionBlock:^{
+                        NSData *imageData = [weakrequestImage responseData];
+                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"image"]];
+                    }];
+                    [requestImage setFailedBlock:^{
+                         NSLog(@"%@",[weakrequestImage error]);
+                    }];
+                    [requestImage startAsynchronous];
+                    ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
+                    __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
+                    [requesttextImageEX setCompletionBlock:^{
+                        NSData *imageData = [weakrequesttextImageEX responseData];
+                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"textImageEX"]];
+                    }];
+                    [requesttextImageEX setFailedBlock:^{
+                        NSLog(@"%@",[weakrequesttextImageEX error]);
+                    }];
+                    [requesttextImageEX startAsynchronous];
+                }
+               
+                
+            }
+            
+            
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestForm startAsynchronous];
 }
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
     [lineBar setFrame:CGRectMake(mainScroll.contentOffset.x*(lineBar.frame.size.width/SCREEN_WIDTH), lineBar.frame.origin.y, lineBar.frame.size.width, lineBar.frame.size.height)];
@@ -347,43 +431,175 @@
     [self.navigationController pushViewController:search animated:YES];
 }
 
-- (void)addCoverVCToWindow {
+- (void)addCoverVCToWindowFullImage:(UIImage *)fullImage slogan:(UIImage*)sloganImage{
     userInfo *user = [userInfo shareClass];
     user.launched = YES;
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    
+    addView = [[UIView alloc] initWithFrame:self.navigationController.view.bounds];
     coverImageView = [[UIImageView alloc] initWithFrame:self.navigationController.view.bounds];
-    [coverImageView setImage:[UIImage imageNamed:@"startImage"]];
-    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
-    UIImageView *startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
-    
-    UIImageView *startSlogan = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikSlogan"]];
-    
-    [startSlogan setFrame:CGRectMake(SCREEN_WIDTH-18-startSlogan.frame.size.width, SCREEN_HEIGHT-startSlogan.frame.size.height-18, startSlogan.frame.size.width, startSlogan.frame.size.height)];
-    [startLogo setAlpha:0];
-    NSLog(@"width:%f",[ UIScreen mainScreen ].bounds.size.width);
-    if([ UIScreen mainScreen ].bounds.size.width>320){
-        [startLogo setFrame:CGRectMake(20, 64, startLogo.frame.size.width, startLogo.frame.size.height)];
+    if (fullImage) {
+        [coverImageView setImage:fullImage];
     }else{
-        [startLogo setFrame:CGRectMake(13, 64, SCREEN_WIDTH-36, startLogo.frame.size.height)];
+        [coverImageView setImage:[UIImage imageNamed:@"startImage"]];
+    }
+    
+    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
+    UIImageView *startSlogan;
+    if (sloganImage) {
+        startSlogan =[[UIImageView alloc] initWithImage:sloganImage];
+    }else{
+        startSlogan =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
+    }
+    CGFloat sizeScale = startSlogan.image.size.width/(SCREEN_WIDTH*0.9);
+    if (sizeScale >= 1) {
+        [startSlogan setFrame:CGRectMake(SCREEN_WIDTH*3/80, 64, startSlogan.image.size.width/sizeScale, startSlogan.image.size.height/sizeScale)];
+    }else{
+        [startSlogan setFrame:CGRectMake(SCREEN_WIDTH*3/80, 64, startSlogan.image.size.width, startSlogan.image.size.height)];
     }
     
     
+    [startSlogan setAlpha:0];
+    startSlogan.contentMode = UIViewContentModeScaleAspectFit;
     [UIView animateWithDuration:2 animations:^{
-        [startLogo setAlpha:1];
+        [startSlogan setAlpha:1];
     }];
+    if (fullImage) {
+        startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"landingpageshareImage"]];
+        
+    }else{
+        startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikSlogan"]];
+        
+    }
+    [startLogo setFrame:CGRectMake(SCREEN_WIDTH-18-startLogo.frame.size.width, SCREEN_HEIGHT-startLogo.frame.size.height-18, startLogo.frame.size.width, startLogo.frame.size.height)];
+    UIButton *tapButton = [[UIButton alloc] initWithFrame:startLogo.frame];
+    [tapButton addTarget:self action:@selector(activityShareAction:) forControlEvents:UIControlEventTouchUpInside];
     
-    startLogo.contentMode = UIViewContentModeScaleAspectFit;
+    
+    NSLog(@"width:%f",[ UIScreen mainScreen ].bounds.size.width);
     [coverImageView addSubview:startLogo];
     [coverImageView addSubview:startSlogan];
-    [app.window addSubview:coverImageView];
-    [UIView animateWithDuration:0.3 delay:5 options:UIViewAnimationOptionTransitionNone animations:^{
-        [coverImageView setAlpha:0];
-    } completion:^(BOOL finished) {
-        [coverImageView removeFromSuperview];
-    }];
-}
+    [addView addSubview:coverImageView];
+    [addView addSubview:tapButton];
+    [app.window addSubview:addView];
+    
+    if (fullImage) {
+        [UIView animateWithDuration:1 animations:^{
+            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:1 animations:^{
+                [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
+            } completion:^(BOOL finished) {
+                [UIView animateWithDuration:1 animations:^{
+                    [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
+                } completion:^(BOOL finished) {
+                    [UIView animateWithDuration:1 animations:^{
+                        [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
+                    } completion:^(BOOL finished) {
+                        [UIView animateWithDuration:1 animations:^{
+                            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
+                        } completion:^(BOOL finished) {
+                            [UIView animateWithDuration:1 animations:^{
+                                [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
+                            } completion:^(BOOL finished) {
+                                [UIView animateWithDuration:1 animations:^{
+                                    [startLogo setAlpha:0];
+                                } completion:^(BOOL finished) {
+                                    [UIView animateWithDuration:0.3 animations:^{
+                                        [startLogo setHidden:YES];
+                                        [startSlogan setHidden:YES];
+                                        [coverImageView setAlpha:0];
+                                        [coverImageView setFrame:CGRectMake(-coverImageView.frame.size.width, -coverImageView.frame.size.height, coverImageView.frame.size.width*3, coverImageView.frame.size.height*3)];
+                                    } completion:^(BOOL finished) {
+                                        [coverImageView removeFromSuperview];
+                                        [addView removeFromSuperview];
+                                        [self checkTeachPo];
+                                    }];
+                                }];
+                            }];
+                        }];
+                    }];
+                }];
+            }];
+        }];
+    }else{
+        
+        [UIView animateWithDuration:5 animations:^{
+            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-1, startLogo.frame.origin.y, startLogo.frame.size.width, startLogo.frame.size.height)];
+        } completion:^(BOOL finished) {
+            [UIView animateWithDuration:0.5 animations:^{
+                [startLogo setHidden:YES];
+                [startSlogan setHidden:YES];
+                [coverImageView setAlpha:0];
+                [coverImageView setFrame:CGRectMake(-coverImageView.frame.size.width, -coverImageView.frame.size.height, coverImageView.frame.size.width*3, coverImageView.frame.size.height*3)];
+            } completion:^(BOOL finished) {
+                [coverImageView removeFromSuperview];
+                [addView removeFromSuperview];
+                [self checkTeachPo];
+            }];
+            
+        }];
 
+    }
+    
+}
+-(void)checkTeachPo{
+    if (diffDate) {
+        NSString *dateCountString = [MuzzikItem getStringForKey:@"Muzzik_times_userPoDate"];
+        if (!dateCountString||[dateCountString integerValue] == 0) {
+            notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2-65, SCREEN_HEIGHT-158, 130, 34)];
+            [notifyBtn setImage:[UIImage imageNamed:@"guide"] forState:UIControlStateNormal];
+            [self.view addSubview:notifyBtn];
+            [UIView beginAnimations:@"upAndDown" context:NULL];
+            [UIView setAnimationDuration:1];
+            
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationRepeatAutoreverses:YES];
+            [UIView setAnimationRepeatCount:3];
+            [notifyBtn setFrame:CGRectMake(SCREEN_WIDTH/2-65, SCREEN_HEIGHT-170, 130, 34)];
+            [UIView commitAnimations];
+            
+            [MuzzikItem addObjectToLocal:@"6" ForKey:@"Muzzik_times_userPoDate"];
+        }else{
+            [MuzzikItem addObjectToLocal:[NSString stringWithFormat:@"%d",[dateCountString integerValue]-1] ForKey:@"Muzzik_times_userPoDate"];
+        }
+    }
+    
+}
+-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    [notifyBtn setHidden:YES];
+    [notifyBtn removeFromSuperview];
+}
+-(void)activityShareAction:(UIButton *)sender{
+    
+    userInfo *user = [userInfo shareClass];
+    [startLogo setImage:[UIImage imageNamed:@"landingpageQRcode"]];
+    [startLogo setFrame:CGRectMake(SCREEN_WIDTH-116, SCREEN_HEIGHT-116, 98, 98)];
+    UIImage *myImage = [MuzzikItem convertViewToImage:addView];
+    if (user.WeChatInstalled) {
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        [app sendImageContent:myImage];
+    }else{
+        WBMessageObject *message = [WBMessageObject message];
+        
+        message.text =[NSString stringWithFormat:@"一起来用Muzzik吧"];
+        
+        WBImageObject *image = [WBImageObject object];
+        image.imageData = UIImageJPEGRepresentation(myImage, 1.0);
+        message.imageObject = image;
+        AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+        
+        WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+        authRequest.redirectURI = URL_WeiBo_redirectURI;
+        authRequest.scope = @"all";
+        
+        WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:authRequest access_token:myDelegate.wbtoken];
+        
+        //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+        [WeiboSDK sendRequest:request];
+    }
+    [addView removeFromSuperview];
+}
 - (void)feedRefreshHeader
 {
 
@@ -668,32 +884,6 @@
 }
 
 
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
-    userInfo *user = [userInfo shareClass];
-    if ([user.token length] >0) {
-        [self initNagationBar:switchView leftBtn:8 rightBtn:0];
-    }else{
-        [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, self.view.bounds.size.height)];
-        [switchView removeFromSuperview];
-        [self initNagationBar:@"Muzzik" leftBtn:8 rightBtn:0];
-    }
-    [shareViewFull setAlpha:0];
-    [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
-    [shareViewFull removeFromSuperview];
-//    UIImageView *headImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"followtitleImage"]];
-//    [headImage setFrame:CGRectMake((self.parentRoot.titleShowView.frame.size.width-headImage.frame.size.width)/2, 5, headImage.frame.size.width, headImage.frame.size.height)];
-
-    // MytableView add
-    //[MytableView reloadData];
-}
-
--(void)viewWillDisappear:(BOOL)animated{
-    [super viewWillDisappear:animated];
-    [switchView removeFromSuperview];
-    //[self.rdv_tabBarController setTabBarHidden:YES animated:YES];
-}
 
 
 
@@ -1833,9 +2023,17 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if (dic) {
             muzzik *tempMuzzik = [[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObject:dic]] lastObject];
             if (self.feedMuzziks && tempMuzzik) {
+                for (muzzik *arrayMuzzik in self.feedMuzziks) {
+                    if ([arrayMuzzik.muzzik_id isEqualToString:tempMuzzik.muzzik_id]) {
+                        [self.feedMuzziks removeObject:arrayMuzzik];
+                        break;
+                    }
+                }
+                
                 [self.feedMuzziks insertObject:tempMuzzik atIndex:0];
                 [MuzzikItem addObjectToLocal:muzzikId ForKey:@"Muzzik_Daily_Vip_MuzzikId"];
                 [feedTableView reloadData];
+                
             }
         }
         
@@ -2010,7 +2208,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [MuzzikPlayer shareClass].MusicArray = [self.feedMuzziks mutableCopy];
             [MuzzikItem SetUserInfoWithMuzziks:self.feedMuzziks title:Constant_userInfo_follow description:[NSString stringWithFormat:@"关注列表"]];
             [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"关注列表"];
-            [MuzzikPlayer shareClass].listType = SquareList;
+            [MuzzikPlayer shareClass].listType = feedList;
         }
     }else{
         center.subUrlString = @"api/muzzik/feeds";

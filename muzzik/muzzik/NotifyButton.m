@@ -22,6 +22,7 @@
 }
 -(void)showNotify{
     [self setHidden:YES];
+    [self removeFromSuperview];
 //    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
 //    UINavigationController *nac = (UINavigationController *)app.window.rootViewController;
 //    

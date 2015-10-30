@@ -7,7 +7,7 @@
 //
 
 #import <MediaPlayer/MediaPlayer.h>
-
+#import "STKAudioPlayer.h"
 @interface MuzzikPlayer : NSObject
 +(MuzzikPlayer *) shareClass;
 -(void)playSongWithSongModel:(muzzik *)playMuzzik Title:(NSString *)title;
@@ -16,6 +16,7 @@
 @property (nonatomic,assign) BOOL isPlayBack;
 @property (nonatomic,assign) NSString *listType;
 @property (nonatomic,copy) NSString *viewTitle;
+@property (nonatomic,retain)STKAudioPlayer *player;
 -(void) playnow;
 -(void) playNext;
 -(void) playPre;

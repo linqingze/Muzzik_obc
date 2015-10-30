@@ -109,7 +109,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.navigationController.view addSubview:AtButton];
+    
     MuzzikObject *mobject = [MuzzikObject shareClass];
     mobject.isMessageVCOpen = YES;
     if (mobject.music ) {
@@ -124,6 +124,10 @@
         charaterLabel.text = [NSString stringWithFormat:@"%lu",140 - textview.text.length];
         mobject.tempmessage = nil;
     }
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    [self.navigationController.view addSubview:AtButton];
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

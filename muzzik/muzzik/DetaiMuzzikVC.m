@@ -2377,7 +2377,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
         
     }];
-    [request startSynchronous];
+    [request startAsynchronous];
     
     
     
@@ -2398,6 +2398,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [comnentTextView becomeFirstResponder];
         [self.navigationController pushViewController:dialog animated:YES];
         
+    }else{
+        [super rightBtnAction:sender];
     }
 }
 @end

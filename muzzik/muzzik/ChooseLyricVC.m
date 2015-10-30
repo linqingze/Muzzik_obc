@@ -330,7 +330,7 @@
     NoLyricTips = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH + 20, 130, SCREEN_WIDTH-40, 20)];
     [NoLyricTips setTextColor:shareColor];
     NoLyricTips.textAlignment = NSTextAlignmentCenter;
-    [NoLyricTips setFont:[UIFont fontWithName:Font_default_share size:15]];
+    [NoLyricTips setFont:[UIFont fontWithName:Font_default_share size:19]];
     if ([mobject.GeiLyricType isEqualToString:@"loading"]) {
         [NoLyricTips setText:@"歌词加载Ing..."];
     }else if([mobject.GeiLyricType isEqualToString:@"error"]){
@@ -688,6 +688,7 @@
     
 }
 -(void)rightBtnAction:(UIButton *)sender{
+    [MuzzikItem addObjectToLocal:@"6" ForKey:@"Muzzik_times_userPoDate"];
     MuzzikObject *mobject = [MuzzikObject shareClass];
     if (allowToSubmit) {
         if (!isSending) {
@@ -1130,7 +1131,7 @@
                         }];
                         [interRequest setFailedBlock:^{
                             isSending = NO;
-                            [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
+                            [MuzzikItem showNotifyOnView:self.view text:@"图片上传请求失败，请确认网络状态再次重试"];
                             NSLog(@"%@",[form responseString]);
                         }];
                         [interRequest startAsynchronous];
@@ -1145,7 +1146,7 @@
                 }];
                 [requestForm setFailedBlock:^{
                     isSending = NO;
-                    [MuzzikItem showNotifyOnView:self.view text:@"请求失败，请确认网络状态再次重试"];
+                    [MuzzikItem showNotifyOnView:self.view text:@"确认上传请求失败，请确认网络状态再次重试"];
                     NSLog(@"%@",[weakrequest error ]);
                 }];
                 [requestForm startAsynchronous];
