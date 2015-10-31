@@ -305,6 +305,7 @@
     userInfo *user = [userInfo shareClass];
     if ([uid isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];

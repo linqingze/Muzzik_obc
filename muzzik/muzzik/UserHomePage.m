@@ -50,7 +50,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"个人主页" leftBtn:8 rightBtn:0];
+    if (self.isPush) {
+        [self initNagationBar:@"个人主页" leftBtn:Constant_backImage rightBtn:0];
+    }else{
+        [self initNagationBar:@"个人主页" leftBtn:8 rightBtn:0];
+    }
+    
     mainView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     mainTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [mainTableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
@@ -183,7 +188,7 @@
     [mainView addSubview: messageView];
     [mainView setFrame:CGRectMake(0,0,SCREEN_WIDTH, SCREEN_WIDTH+SCREEN_WIDTH/320.0*184.0)];
     [mainTableView setTableHeaderView:mainView];
-    if (self.rdv_tabBarController.tabBar.translucent) {
+    if (self.rdv_tabBarController.tabBar.translucent && !self.isPush) {
         UIEdgeInsets insets = UIEdgeInsetsMake(0,
                                                0,
                                                CGRectGetHeight(self.rdv_tabBarController.tabBar.frame),
@@ -196,7 +201,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+    if (!self.isPush) {
+        [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+    }
+    
     [self loadDataMessage];
 }
 -(void)viewWillDisappear:(BOOL)animated{
@@ -204,9 +212,14 @@
 //    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
-    searchViewController *search = [[searchViewController alloc ] init];
-    [self.navigationController pushViewController:search animated:YES];
+    if (self.isPush) {
+        [super tapAction:tap];
+    }else{
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+        searchViewController *search = [[searchViewController alloc ] init];
+        [self.navigationController pushViewController:search animated:YES];
+    }
+    
 }
 -(void)loadDataMessage{
     userInfo *user = [userInfo shareClass];

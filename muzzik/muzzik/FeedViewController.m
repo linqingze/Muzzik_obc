@@ -202,8 +202,21 @@
     NSString *locationString=[dateformatter stringFromDate:senddate];
     NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
     diffDate =![lastShowDateString isEqualToString:locationString];
-    if (![self getNewActivityWithDate:locationString]) {
-        [self addCoverVCToWindowFullImage:nil slogan:nil];
+    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+    if ([activityArray count] >0) {
+        for (NSDictionary *tempDic in activityArray) {
+            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
+            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MM-dd"];
+            NSString *now   = [formatter stringFromDate:[NSDate date]];
+            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
+            if ([now compare:from]>=0  && [now compare:to]<=0) {
+                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
+                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
+                [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
+            }
+        }
     }
     
     
@@ -288,7 +301,7 @@
                 NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
                 if (image  && textImageEX) {
 //                    [MuzzikItem addObjectToLocal:dataString ForKey:@"Muzzik_lastShowDateString"];
-                    [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
+                    
                     return YES;
                 }else{
                     [activityImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
@@ -330,19 +343,7 @@
     [formatter setTimeStyle:NSDateFormatterShortStyle];
     [formatter setDateFormat:@"MM-dd HH:mm"];
     return [formatter stringFromDate:destinationDateNow];
-//    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-//    NSLocale *locale=[NSLocale systemLocale];
-//    [formatter setLocale:locale];
-//    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
-//    //    [formatter setTimeZone:timeZone];
-//    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
-//    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
-//    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
-//    timestring = timearray[1];
-//    timestring = [timestring substringToIndex:5];
-//    NSDate *now = [NSDate date];
-//    [formatter setDateFormat:@"MM-dd HH:mm"];
-//    return [formatter stringFromDate:now];
+
 }
 -(void)updateTime{
     if (timeCount>0) {
@@ -384,7 +385,7 @@
                     [requestImage setFailedBlock:^{
                          NSLog(@"%@",[weakrequestImage error]);
                     }];
-                    [requestImage startAsynchronous];
+                    [requestImage startSynchronous];
                     ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
                     __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
                     [requesttextImageEX setCompletionBlock:^{
@@ -394,7 +395,13 @@
                     [requesttextImageEX setFailedBlock:^{
                         NSLog(@"%@",[weakrequesttextImageEX error]);
                     }];
-                    [requesttextImageEX startAsynchronous];
+                    [requesttextImageEX startSynchronous];
+                    NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
+                    NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
+                    if (image  && textImageEX) {
+                        [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
+                    }
+                    
                 }
                
                 
@@ -2730,14 +2737,14 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [UIView animateWithDuration:1 animations:^{
                 [userView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 75)];
                 [feedTableView setFrame:CGRectMake(0, 75, SCREEN_WIDTH, SCREEN_HEIGHT-139)];
-                [trendTableView setFrame:CGRectMake(0, 75, SCREEN_WIDTH, SCREEN_HEIGHT-139)];
+                [trendTableView setFrame:CGRectMake(SCREEN_WIDTH, 75, SCREEN_WIDTH, SCREEN_HEIGHT-139)];
             }];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(6.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 if (!isUserTaped) {
                     [UIView animateWithDuration:0.5 animations:^{
                         [userView setFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
                         [feedTableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
-                        [trendTableView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+                        [trendTableView setFrame:CGRectMake(SCREEN_WIDTH, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
                     } completion:^(BOOL finished) {
                         [userView removeFromSuperview];
                     }];

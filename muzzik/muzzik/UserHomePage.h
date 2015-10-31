@@ -11,4 +11,5 @@
 @interface UserHomePage : AMScrollingNavbarViewController
 @property (nonatomic,retain)UIImageView *headimage;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
+@property (nonatomic,assign) BOOL isPush;
 @end

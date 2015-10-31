@@ -79,7 +79,7 @@
         if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
             
             user.notificationNumTotal = [[dic objectForKey:@"result"] integerValue];
-            [self loadDataMessage];
+            [self loadDataMessageFull:NO];
         }
     }];
     [request setFailedBlock:^{
@@ -227,7 +227,7 @@
 /**
  *  读取新收到的通知消息，并处理分类;
  */
--(void)loadDataMessage{
+-(void)loadDataMessageFull:(BOOL) isNotifyFull{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0 && user.notificationNumTotal > 0) {
         NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithBool:YES],@"full", nil];
@@ -241,9 +241,15 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             if (dic) {
                 page ++;
-                [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
+                if (!isNotifyFull) {
+                    notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                }else{
+                    [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
+                }
+                
+                
                 if (user.notificationNumTotal>[notifyArray count]) {
-                    [self loadDataMessage];
+                    [self loadDataMessageFull:YES];
                 }
                 else{
                     for (NSInteger i = 0; i<user.notificationNumTotal; i++) {

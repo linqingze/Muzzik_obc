@@ -188,6 +188,7 @@
     userInfo *user = [userInfo shareClass];
     if ([user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.keeper.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
@@ -350,6 +351,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         userInfo *user = [userInfo shareClass];
         if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
             UserHomePage *home = [[UserHomePage alloc] init];
+            home.isPush = YES;
             [self.navigationController pushViewController:home animated:YES];
         }else{
             userDetailInfo *uInfo = [[userDetailInfo alloc] init];

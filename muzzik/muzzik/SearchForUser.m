@@ -153,6 +153,7 @@
     userInfo *user = [userInfo shareClass];
     if ([attentionuser.user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.keeper.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
@@ -327,6 +328,7 @@
     userInfo *user = [userInfo shareClass];
     if ([user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.keeper.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];

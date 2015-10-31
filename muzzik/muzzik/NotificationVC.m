@@ -510,6 +510,7 @@
         userInfo *user = [userInfo shareClass];
         if ([tempNotify.user.user_id isEqualToString:user.uid]) {
             UserHomePage *home = [[UserHomePage alloc] init];
+            home.isPush = YES;
             [self.navigationController pushViewController:home animated:YES];
         }else{
             userDetailInfo *detailuser = [[userDetailInfo alloc] init];
@@ -557,6 +558,7 @@
     userInfo *user = [userInfo shareClass];
     if ([user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];

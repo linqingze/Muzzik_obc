@@ -84,7 +84,27 @@
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-    
+    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+    if ([activityArray count] >0) {
+        for (NSDictionary *tempDic in activityArray) {
+            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
+            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            [formatter setDateFormat:@"MM-dd"];
+            NSString *now   = [formatter stringFromDate:[NSDate date]];
+            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
+            if ([now compare:from]>=0  && [now compare:to]<=0) {
+                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
+                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
+                if (!image  || !textImageEX) {
+                    [self reqqqq];
+                }
+            }
+        }
+    }else{
+        [self reqqqq];
+    }
+
     
     
     
@@ -145,6 +165,59 @@
     }
     return YES;
 }
+-(void)reqqqq{
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
+    [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequest = requestForm;
+    [requestForm setCompletionBlock :^{
+        if ([weakrequest responseStatusCode] == 200) {
+            NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+            if ([[Webdic objectForKey:@"splashes"] count] >0) {
+                
+                for (NSDictionary *tempDic in activityArray) {
+                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"image"]];
+                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"textImageEX"]];
+                }
+                [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
+                for (NSDictionary *tempDic in [Webdic objectForKey:@"splashes"]) {
+                    ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]]];
+                    __weak ASIHTTPRequest *weakrequestImage = requestImage;
+                    [requestImage setCompletionBlock:^{
+                        NSData *imageData = [weakrequestImage responseData];
+                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"image"]];
+                    }];
+                    [requestImage setFailedBlock:^{
+                        NSLog(@"%@",[weakrequestImage error]);
+                    }];
+                    [requestImage startSynchronous];
+                    ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
+                    __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
+                    [requesttextImageEX setCompletionBlock:^{
+                        NSData *imageData = [weakrequesttextImageEX responseData];
+                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"textImageEX"]];
+                    }];
+                    [requesttextImageEX setFailedBlock:^{
+                        NSLog(@"%@",[weakrequesttextImageEX error]);
+                    }];
+                    [requesttextImageEX startSynchronous];
+                    
+                }
+                
+                
+            }
+            
+            
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestForm setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestForm startSynchronous];
+}
 - (void)customizeTabBarForController:(RDVTabBarController *)tabBarController {
     UIImage *finishedImage = [MuzzikItem createImageWithColor:Color_Active_Button_1];
     UIImage *unfinishedImage = [MuzzikItem createImageWithColor:[UIColor clearColor]];
@@ -164,7 +237,30 @@
     }
     
 }
-
+-(NSString *)transformDateToString:(NSString *) time{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *localDate = [dateFormatter dateFromString:time];
+    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
+    //设置转换后的目标日期时区
+    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
+    //得到源日期与世界标准时间的偏移量
+    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
+    //目标日期与本地时区的偏移量
+    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
+    //得到时间偏移量的差值
+    NSTimeInterval Tinterval = sourceGMTOffset- destinationGMTOffset;
+    //转为现在时间
+    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+    
+    //    NSString* timeStr = @"2011-01-26 17:40:50";
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterMediumStyle];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateFormat:@"MM-dd HH:mm"];
+    return [formatter stringFromDate:destinationDateNow];
+    
+}
 
 #pragma -mark 个推后台推送，消息处理
 -(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{

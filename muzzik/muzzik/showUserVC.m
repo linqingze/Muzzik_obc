@@ -199,6 +199,7 @@
     if (attentionuser.user_id) {
         if ([attentionuser.user_id isEqualToString:user.uid]) {
             UserHomePage *home = [[UserHomePage alloc] init];
+            home.isPush = YES;
             [self.navigationController pushViewController:home animated:YES];
         }else{
             userDetailInfo *detailuser = [[userDetailInfo alloc] init];

@@ -849,6 +849,7 @@
     userInfo *user = [userInfo shareClass];
     if ([button.user.user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
         [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     }else{
