@@ -84,26 +84,7 @@
     [session setActive:YES error:nil];
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
-    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
-    if ([activityArray count] >0) {
-        for (NSDictionary *tempDic in activityArray) {
-            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
-            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MM-dd"];
-            NSString *now   = [formatter stringFromDate:[NSDate date]];
-            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
-            if ([now compare:from]>=0  && [now compare:to]<=0) {
-                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
-                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
-                if (!image  || !textImageEX) {
-                    [self reqqqq];
-                }
-            }
-        }
-    }else{
-        [self reqqqq];
-    }
+     [self reqqqq];
 
     
     
@@ -173,38 +154,80 @@
         if ([weakrequest responseStatusCode] == 200) {
             NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+            
             if ([[Webdic objectForKey:@"splashes"] count] >0) {
-                
+                BOOL difActivity = NO;
+                if ([[Webdic objectForKey:@"splashes"] count] == [activityArray count]) {
+                    
+                    for (NSInteger i = 0; i<[[Webdic objectForKey:@"splashes"] count]; i++) {
+                        if ([[activityArray[i] objectForKey:@"image"] isEqualToString:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i]objectForKey:@"image"]] && [[activityArray[i] objectForKey:@"textImageEX"] isEqualToString:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i]objectForKey:@"textImageEX"]] && [[activityArray[i] objectForKey:@"from"] isEqualToString:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i]objectForKey:@"from"]] && [[activityArray[i] objectForKey:@"to"] isEqualToString:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i]objectForKey:@"to"]]) {
+                            
+                        }else{
+                            difActivity = YES;
+                            [MuzzikItem addObjectToLocal:nil ForKey:[activityArray[i] objectForKey:@"image"]];
+                            [MuzzikItem addObjectToLocal:nil ForKey:[activityArray[i] objectForKey:@"textImageEX"]];
+                            ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[[[Webdic objectForKey:@"splashes"] objectAtIndex:i] objectForKey:@"image"]]]];
+                            __weak ASIHTTPRequest *weakrequestImage = requestImage;
+                            [requestImage setCompletionBlock:^{
+                                NSData *imageData = [weakrequestImage responseData];
+                                [MuzzikItem addObjectToLocal:imageData ForKey:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i] objectForKey:@"image"]];
+                            }];
+                            [requestImage setFailedBlock:^{
+                                NSLog(@"%@",[weakrequestImage error]);
+                            }];
+                            [requestImage startSynchronous];
+                            ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[[[Webdic objectForKey:@"splashes"] objectAtIndex:i] objectForKey:@"textImageEX"]]]];
+                            __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
+                            [requesttextImageEX setCompletionBlock:^{
+                                NSData *imageData = [weakrequesttextImageEX responseData];
+                                [MuzzikItem addObjectToLocal:imageData ForKey:[[[Webdic objectForKey:@"splashes"] objectAtIndex:i] objectForKey:@"textImageEX"]];
+                            }];
+                            [requesttextImageEX setFailedBlock:^{
+                                NSLog(@"%@",[weakrequesttextImageEX error]);
+                            }];
+                            [requesttextImageEX startSynchronous];
+                        }
+                    }
+                    if (difActivity) {
+                        [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
+                    }
+                }else{
+                    [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
+                    for (NSDictionary *tempDic in activityArray) {
+                        [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"image"]];
+                        [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"textImageEX"]];
+                    }
+                    [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
+                    for (NSDictionary *tempDic in [Webdic objectForKey:@"splashes"]) {
+                        ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]]];
+                        __weak ASIHTTPRequest *weakrequestImage = requestImage;
+                        [requestImage setCompletionBlock:^{
+                            NSData *imageData = [weakrequestImage responseData];
+                            [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"image"]];
+                        }];
+                        [requestImage setFailedBlock:^{
+                            NSLog(@"%@",[weakrequestImage error]);
+                        }];
+                        [requestImage startSynchronous];
+                        ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
+                        __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
+                        [requesttextImageEX setCompletionBlock:^{
+                            NSData *imageData = [weakrequesttextImageEX responseData];
+                            [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"textImageEX"]];
+                        }];
+                        [requesttextImageEX setFailedBlock:^{
+                            NSLog(@"%@",[weakrequesttextImageEX error]);
+                        }];
+                        [requesttextImageEX startSynchronous];
+                    }
+                }
+               
+            }else{
+                [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
                 for (NSDictionary *tempDic in activityArray) {
                     [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"image"]];
                     [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"textImageEX"]];
                 }
-                [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
-                for (NSDictionary *tempDic in [Webdic objectForKey:@"splashes"]) {
-                    ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]]];
-                    __weak ASIHTTPRequest *weakrequestImage = requestImage;
-                    [requestImage setCompletionBlock:^{
-                        NSData *imageData = [weakrequestImage responseData];
-                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"image"]];
-                    }];
-                    [requestImage setFailedBlock:^{
-                        NSLog(@"%@",[weakrequestImage error]);
-                    }];
-                    [requestImage startSynchronous];
-                    ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
-                    __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
-                    [requesttextImageEX setCompletionBlock:^{
-                        NSData *imageData = [weakrequesttextImageEX responseData];
-                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"textImageEX"]];
-                    }];
-                    [requesttextImageEX setFailedBlock:^{
-                        NSLog(@"%@",[weakrequesttextImageEX error]);
-                    }];
-                    [requesttextImageEX startSynchronous];
-                    
-                }
-                
-                
             }
             
             

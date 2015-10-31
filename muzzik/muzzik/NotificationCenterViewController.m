@@ -11,6 +11,7 @@
 #import "NotificationCategoryCell.h"
 #import "NotificationVC.h"
 #import "RDVTabBarController.h"
+#import "searchViewController.h"
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
@@ -96,7 +97,11 @@
     
     
 }
-
+-(void)tapAction:(UITapGestureRecognizer *)tap{
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+    searchViewController *search = [[searchViewController alloc ] init];
+    [self.navigationController pushViewController:search animated:YES];
+}
 #pragma mark tableView_DelegateMethod
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

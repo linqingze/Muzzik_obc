@@ -203,6 +203,7 @@
     NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
     diffDate =![lastShowDateString isEqualToString:locationString];
     NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
+    BOOL showed = NO;
     if ([activityArray count] >0) {
         for (NSDictionary *tempDic in activityArray) {
             NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
@@ -212,11 +213,17 @@
             NSString *now   = [formatter stringFromDate:[NSDate date]];
             NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
             if ([now compare:from]>=0  && [now compare:to]<=0) {
+                
                 NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
                 NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
+                showed = YES;
                 [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
+                
             }
         }
+    }
+    if (!showed) {
+        [self addCoverVCToWindowFullImage:nil slogan:nil];
     }
     
     
@@ -284,43 +291,6 @@
     [switchView removeFromSuperview];
     //[self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 }
-
--(BOOL)getNewActivityWithDate:(NSString *)dataString{
-//    NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
-    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
-    if ([activityArray count] >0) {
-        for (NSDictionary *tempDic in activityArray) {
-            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
-            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MM-dd"];
-            NSString *now   = [formatter stringFromDate:[NSDate date]];
-            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
-            if ([now compare:from]>=0  && [now compare:to]<=0) {
-                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
-                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
-                if (image  && textImageEX) {
-//                    [MuzzikItem addObjectToLocal:dataString ForKey:@"Muzzik_lastShowDateString"];
-                    
-                    return YES;
-                }else{
-                    [activityImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [MuzzikItem addObjectToLocal:UIImagePNGRepresentation(image) ForKey:[tempDic objectForKey:@"image"]];
-                    }];
-                    [wordImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [MuzzikItem addObjectToLocal:UIImagePNGRepresentation(image) ForKey:[tempDic objectForKey:@"textImageEX"]];
-                    }];
-                }
-            }
-        }
-        [self requestNewActivityDataLocal];
-    }else{
-        [self requestNewActivityDataLocal];
-    }
-    
-    return NO;
-    
-}
 -(NSString *)transformDateToString:(NSString *) time{
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
@@ -333,7 +303,7 @@
     //目标日期与本地时区的偏移量
     NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
     //得到时间偏移量的差值
-    NSTimeInterval Tinterval = sourceGMTOffset- destinationGMTOffset;
+    NSTimeInterval Tinterval =destinationGMTOffset- sourceGMTOffset;
     //转为现在时间
     NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
     
@@ -341,7 +311,7 @@
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"MM-dd HH:mm"];
+    [formatter setDateFormat:@"MM-dd"];
     return [formatter stringFromDate:destinationDateNow];
 
 }
@@ -358,65 +328,6 @@
         timer = nil;
         
     }
-}
--(void)requestNewActivityDataLocal{
-  
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
-    [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
-    __weak ASIHTTPRequest *weakrequest = requestForm;
-    [requestForm setCompletionBlock :^{
-        if ([weakrequest responseStatusCode] == 200) {
-            NSDictionary *Webdic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-             NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
-            if ([[Webdic objectForKey:@"splashes"] count] >0) {
-               
-                for (NSDictionary *tempDic in activityArray) {
-                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"image"]];
-                    [MuzzikItem addObjectToLocal:nil ForKey:[tempDic objectForKey:@"textImageEX"]];
-                }
-                [MuzzikItem addObjectToLocal:[Webdic objectForKey:@"splashes"] ForKey:@"Muzzik_activity_localData"];
-                for (NSDictionary *tempDic in [Webdic objectForKey:@"splashes"]) {
-                    ASIHTTPRequest *requestImage = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"image"]]]];
-                    __weak ASIHTTPRequest *weakrequestImage = requestImage;
-                    [requestImage setCompletionBlock:^{
-                        NSData *imageData = [weakrequestImage responseData];
-                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"image"]];
-                    }];
-                    [requestImage setFailedBlock:^{
-                         NSLog(@"%@",[weakrequestImage error]);
-                    }];
-                    [requestImage startSynchronous];
-                    ASIHTTPRequest *requesttextImageEX = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,[tempDic objectForKey:@"textImageEX"]]]];
-                    __weak ASIHTTPRequest *weakrequesttextImageEX = requesttextImageEX;
-                    [requesttextImageEX setCompletionBlock:^{
-                        NSData *imageData = [weakrequesttextImageEX responseData];
-                        [MuzzikItem addObjectToLocal:imageData ForKey:[tempDic objectForKey:@"textImageEX"]];
-                    }];
-                    [requesttextImageEX setFailedBlock:^{
-                        NSLog(@"%@",[weakrequesttextImageEX error]);
-                    }];
-                    [requesttextImageEX startSynchronous];
-                    NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
-                    NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
-                    if (image  && textImageEX) {
-                        [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
-                    }
-                    
-                }
-               
-                
-            }
-            
-            
-        }
-        else{
-            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
-        }
-    }];
-    [requestForm setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [requestForm startAsynchronous];
 }
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
     [lineBar setFrame:CGRectMake(mainScroll.contentOffset.x*(lineBar.frame.size.width/SCREEN_WIDTH), lineBar.frame.origin.y, lineBar.frame.size.width, lineBar.frame.size.height)];

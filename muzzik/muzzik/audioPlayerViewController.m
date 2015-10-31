@@ -140,7 +140,7 @@
     [rightBtn setImage:[UIImage imageNamed:@"playerlistImage"] forState:(UIControlStateNormal)];
     [self.blurView addSubview:leftBtn];
     [self.blurView addSubview:rightBtn];
-    
+    lyricArray = [NSMutableArray array];
     
     [self.view addSubview:self.blurView];
     
