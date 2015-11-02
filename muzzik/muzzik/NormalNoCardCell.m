@@ -56,7 +56,7 @@
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
-    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 165+(int)SCREEN_WIDTH*3/4)];
+    _musicPlayView = [[UIView alloc] initWithFrame:CGRectMake(0, 75, SCREEN_WIDTH, 175+(int)(SCREEN_WIDTH*3/4))];
     [self.contentView addSubview:_musicPlayView];
     _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, 0, SCREEN_WIDTH-32, 0.5)];
     [_progress setProgress:1];
@@ -76,7 +76,7 @@
     [_playButton addTarget:self action:@selector(playMusicAction:) forControlEvents:UIControlEventTouchUpInside];
     [_musicPlayView addSubview:_playButton];
     
-    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8, 70, (int)SCREEN_WIDTH*3/4, (int)SCREEN_WIDTH*3/4)];
+    _poImage = [[UIImageView alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/8)-5, 70, (int)(SCREEN_WIDTH*3/4)+10, (int)(SCREEN_WIDTH*3/4)+10)];
     _poImage.layer.cornerRadius = 3;
     _poImage.clipsToBounds = YES;
     [_poImage setImage:[UIImage imageNamed:Image_yellowretweetImage]];
@@ -86,7 +86,7 @@
     [_privateImage setHidden:YES];
     [self addSubview:_privateImage];
     
-    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH)/8.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
+    _moves = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH)/8.0), (int)SCREEN_WIDTH*3/4+80, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
     [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_moves.titleLabel setFont:[UIFont systemFontOfSize:10]];
@@ -94,7 +94,7 @@
     _moves.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_moves];
     
-    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*5)/16.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
+    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*5)/16.0), (int)SCREEN_WIDTH*3/4+80, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_reposts setTitle:@"转发数" forState:UIControlStateNormal];
     [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_reposts.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -104,7 +104,7 @@
     
 
     
-    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/2), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
+    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/2), (int)SCREEN_WIDTH*3/4+80, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_shares setTitle:@"分享数" forState:UIControlStateNormal];
     [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -112,7 +112,7 @@
     _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_shares];
     
-    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*11)/16.0), (int)SCREEN_WIDTH*3/4+70, (int)((SCREEN_WIDTH*3)/16.0), 40)];
+    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH*11)/16.0), (int)SCREEN_WIDTH*3/4+80, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_comments setTitle:@"评论数" forState:UIControlStateNormal];
     [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
     [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
@@ -122,7 +122,7 @@
     
     
     
-    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,(int)SCREEN_WIDTH*3/4+ 110, SCREEN_WIDTH*3/4, 1)];
+    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake((int)SCREEN_WIDTH/8,(int)SCREEN_WIDTH*3/4+ 120, SCREEN_WIDTH*3/4, 1)];
     [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
     [_musicPlayView addSubview:_downLine];
     

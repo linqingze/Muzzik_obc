@@ -301,14 +301,14 @@
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
             if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+10;
+                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+20;
             }else{
                 return 260+limitHeight;
             }
             
         }else{
             if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return (int)(260+textHeight+SCREEN_WIDTH*3/4);
+                return (int)(260+textHeight+SCREEN_WIDTH*3/4)+10;
             }else{
                 return 260+(int)textHeight;
             }
