@@ -51,6 +51,7 @@
 #endif
 }
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAudioSessionEvent:) name:AVAudioSessionInterruptionNotification object:nil];
     isLaunched = YES;
     userInfo *user = [userInfo shareClass];
     [WXApi registerApp:ID_WeiChat_APP];
@@ -575,21 +576,20 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-//    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
-//    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-//    __weak ASIHTTPRequest *weakrequest = request;
-//    [request setCompletionBlock :^{
-//        NSData *data = [weakrequest responseData];
-//        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-//        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-//            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-//            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-//            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-//            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-//            [MuzzikItem showNewNotifyByText:[NSString stringWithFormat:@"您有%d条新消息",[[dic objectForKey:@"result"] intValue]]];
-//        }
-//    }];
-//    [request startAsynchronous];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
+    [request addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = request;
+    [request setCompletionBlock :^{
+        NSData *data = [weakrequest responseData];
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+        if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
+            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+        }
+    }];
+    [request startAsynchronous];
     
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     [Globle shareGloble].isApplicationEnterBackground = NO;
@@ -745,6 +745,7 @@
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
+            user.isSwitchUser = YES;
             if ([[responseObject allKeys] containsObject:@"avatar"]) {
                 user.avatar = [responseObject objectForKey:@"avatar"];
             }
@@ -847,6 +848,7 @@
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             [MuzzikItem addMessageToLocal:responseObject];
+            user.isSwitchUser = YES;
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
             }
@@ -968,7 +970,19 @@
 //-(void) downLoadLyricByMusic:(music *)music{
 //    
 //}
-
+-(void)onAudioSessionEvent:(NSNotification *)notify{
+    NSLog(@"%@",notify.userInfo);
+    NSLog(@"all key%@",[notify.userInfo allKeys]);
+    if ([[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionOptionKey"] && [[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionTypeKey"]) {
+        if ([[notify.userInfo objectForKey:@"AVAudioSessionInterruptionOptionKey"] integerValue] == 1 && [[notify.userInfo objectForKey:@"AVAudioSessionInterruptionTypeKey"] integerValue] == 0) {
+            [[MuzzikPlayer shareClass].player resume];
+        }
+    }else if([[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionTypeKey"]){
+        if ([[notify.userInfo objectForKey:@"AVAudioSessionInterruptionTypeKey"] integerValue] == 1) {
+            [[MuzzikPlayer shareClass].player pause];
+        }
+    }
+}
 
 -(void) checkChannel{
     userInfo *user = [userInfo shareClass];
@@ -1146,16 +1160,22 @@
         }];
         [requestmove startAsynchronous];
     }
-    NSLog(@"%@",[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]);
-    // 2.构建网络URL对象, NSURL
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]];
-    // 3.创建网络请求
-    NSURLRequest *requestimage = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:10];
-    // 创建同步链接
-    NSURLResponse *response = nil;
-    NSError *error = nil;
-    NSData *data = [NSURLConnection sendSynchronousRequest:requestimage returningResponse:&response error:&error];
-    user.userHeadThumb = [UIImage imageWithData:data];
+    ASIHTTPRequest *requestHead = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL_image,user.avatar]]];
+    [requestHead addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
+    __weak ASIHTTPRequest *weakrequestHead = requestHead;
+    [requestHead setCompletionBlock :^{
+        if ([weakrequestHead responseStatusCode] == 200) {
+            user.userHeadThumb = [UIImage imageWithData:[weakrequestHead responseData]];
+        }
+        else{
+            //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+        }
+    }];
+    [requestHead setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [requestHead startAsynchronous];
+
     
     
 }

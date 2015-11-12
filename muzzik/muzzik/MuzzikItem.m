@@ -1183,58 +1183,89 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     
 }
 #pragma -mark 时间转换
-+ (NSString *)transtromTime:(NSString *)time
++ (NSString *)transtromTime:(id)time
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-    NSDate *localDate = [dateFormatter dateFromString:time];
-    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
-    //设置转换后的目标日期时区
-    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
-    //得到源日期与世界标准时间的偏移量
-    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
-    //目标日期与本地时区的偏移量
-    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
-    //得到时间偏移量的差值
-    NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
-    //转为现在时间
-    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
-    
-    //    NSString* timeStr = @"2011-01-26 17:40:50";
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-    NSLocale *locale=[NSLocale systemLocale];
-    [formatter setLocale:locale];
-    //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
-    //    [formatter setTimeZone:timeZone];
-    NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
-    NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
-    NSArray *timearray = [timestring componentsSeparatedByString:@" "];
-    timestring = timearray[1];
-    timestring = [timestring substringToIndex:5];
-    NSDate *now = [NSDate date];
-    [formatter setDateFormat:@"HH:mm"];
-    NSString *nowString = [formatter stringFromDate:now];
-    BOOL result = [nowString compare:timestring] == NSOrderedAscending;
-    if (interval<24*60*60 && !result) {
-        return timestring;
-    }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
-        return @"昨天";
-    }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-        return @"2天前";
-    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-        return @"3天前";
-    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-        return @"4天前";
-    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-        return @"5天前";
-    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-        return @"6天前";
-    }else {
-        return @"N天前";
+    if ([time isKindOfClass:[NSString class]]) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+        NSDate *localDate = [dateFormatter dateFromString:time];
+        NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
+        //设置转换后的目标日期时区
+        NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
+        //得到源日期与世界标准时间的偏移量
+        NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
+        //目标日期与本地时区的偏移量
+        NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
+        //得到时间偏移量的差值
+        NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
+        //转为现在时间
+        NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+        
+        //    NSString* timeStr = @"2011-01-26 17:40:50";
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateStyle:NSDateFormatterMediumStyle];
+        [formatter setTimeStyle:NSDateFormatterShortStyle];
+        [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
+        NSLocale *locale=[NSLocale systemLocale];
+        [formatter setLocale:locale];
+        //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
+        //    [formatter setTimeZone:timeZone];
+        NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
+        NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
+        NSArray *timearray = [timestring componentsSeparatedByString:@" "];
+        timestring = timearray[1];
+        timestring = [timestring substringToIndex:5];
+        NSDate *now = [NSDate date];
+        [formatter setDateFormat:@"HH:mm"];
+        NSString *nowString = [formatter stringFromDate:now];
+        BOOL result = [nowString compare:timestring] == NSOrderedAscending;
+        if (interval<24*60*60 && !result) {
+            return timestring;
+        }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+            return @"昨天";
+        }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+            return @"2天前";
+        }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
+            return @"3天前";
+        }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
+            return @"4天前";
+        }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
+            return @"5天前";
+        }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
+            return @"6天前";
+        }else {
+            return @"N天前";
+        }
+    }else{
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:[time doubleValue]];
+        NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"HH:mm"];
+        NSDate *now = [NSDate date];
+        NSString *nowString = [formatter stringFromDate:now];
+        NSString *timeString = [formatter stringFromDate:date];
+        BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+        if (interval<24*60*60 && !result) {
+            return timeString;
+        }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+            return @"昨天";
+        }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+            return @"2天前";
+        }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
+            return @"3天前";
+        }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
+            return @"4天前";
+        }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
+            return @"5天前";
+        }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
+            return @"6天前";
+        }else {
+            return @"N天前";
+        }
+        
+        return @"";
     }
+    
 }
 +(NSString *)transtromTimeWithNum:(double)num{
     NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num];

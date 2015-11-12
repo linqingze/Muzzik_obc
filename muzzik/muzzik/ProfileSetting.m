@@ -95,10 +95,12 @@
     [mainView addSubview:belowView];
     if ([[_profileDic allKeys] containsObject:@"description"] && [[self.profileDic objectForKey:@"description"] length]>0) {
         decripText.text = [self.profileDic objectForKey:@"description"];
-        int textHeight = [MuzzikItem heightForLabel:decripText WithText:decripText.text];
+        [decripText sizeToFit];
+        decripText.textAlignment = NSTextAlignmentCenter;
+        [decripText setFrame:CGRectMake(decripText.frame.origin.x, decripText.frame.origin.y, SCREEN_WIDTH-60, decripText.frame.size.height+2)];
         
-        [belowView setFrame:CGRectMake(13, 152+textHeight+25, SCREEN_WIDTH-26, belowView.frame.size.height)];
-        [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+textHeight+belowView.frame.size.height+25)];
+        [belowView setFrame:CGRectMake(13, 152+decripText.frame.size.height, SCREEN_WIDTH-26, belowView.frame.size.height)];
+        [mainView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 152+decripText.frame.size.height+belowView.frame.size.height)];
         [mainTableView setTableHeaderView:mainView];
         [mainTableView reloadData];
     }

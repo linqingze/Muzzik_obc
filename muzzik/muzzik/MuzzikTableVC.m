@@ -1054,9 +1054,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];
-    if (self.isViewLoaded &&self.view.window) {
-        [self updateAnimation];
-    }
+//    if (self.isViewLoaded &&self.view.window) {
+//        [self updateAnimation];
+//    }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];

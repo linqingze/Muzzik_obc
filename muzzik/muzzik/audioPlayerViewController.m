@@ -340,7 +340,12 @@
     
     
     if (_player.playingMuzzik.MuzzikUser) {
-        [attentionButton setHidden:NO];
+        if ([_player.listType isEqualToString:feedList]) {
+            [attentionButton setHidden:YES];
+        }else{
+            [attentionButton setHidden:NO];
+        }
+        
         nickLabel.text = _player.playingMuzzik.MuzzikUser.name;
         
         headerImage.user = _player.playingMuzzik.MuzzikUser;
@@ -605,7 +610,7 @@
     
     
     
-    if ([[userInfo shareClass].uid length]>0 &&[_player.playingMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) {
+    if (([[userInfo shareClass].uid length]>0 &&[_player.playingMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) ||[_player.listType isEqualToString:feedList]) {
         [attentionButton setHidden:YES];
     }else if(_player.playingMuzzik.MuzzikUser.user_id){
         ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_player.playingMuzzik.MuzzikUser.user_id]]];

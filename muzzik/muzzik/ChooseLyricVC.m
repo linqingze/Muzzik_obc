@@ -824,6 +824,7 @@
             storyLabel.attributedText = attr;
             storyLabel.numberOfLines = 0;
             [storyLabel sizeToFit];
+            
             UILabel *tempNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 60, 100)];
             tempNameLabel.font = [UIFont fontWithName:Font_default_share size:11];
             tempNameLabel.text = [userInfo shareClass].name;

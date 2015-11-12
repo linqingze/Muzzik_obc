@@ -22,6 +22,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self initNagationBar:@"我的Muzzik" leftBtn:Constant_backImage rightBtn:0];
     sliderView = [[SUNSlideSwitchView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     sliderView.tabItemNormalColor = Color_Text_4;
@@ -42,7 +43,11 @@
     [sliderView buildUI];
     // Do any additional setup after loading the view.
 }
-
+-(void)playnextMuzzikUpdate{
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
+}
 #pragma mark - datasource delegate
 - (NSUInteger)numberOfTab:(SUNSlideSwitchView *)view
 {

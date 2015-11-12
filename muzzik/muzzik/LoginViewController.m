@@ -195,7 +195,6 @@
     [lineView5 setAlpha:0.3];
     [self.view addSubview:lineView5];
     userInfo *user = [userInfo shareClass];
-    user.isSwitchUser = YES;
     localPosition = localPosition + [spaceArray[i++] floatValue]+12;
     if (user.QQInstalled &&user.WeChatInstalled) {
         
@@ -307,7 +306,7 @@
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             [MuzzikItem addMessageToLocal:responseObject];
-            
+            user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
@@ -374,6 +373,7 @@
 }
 #pragma -mark QQlogin
 -(void) QQlogin{
+
     [_tencentOAuth authorize:_permissions inSafari:NO];
 }
 - (void)getUserInfoResponse:(APIResponse*) response;{
@@ -391,7 +391,7 @@
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
             [MuzzikItem addMessageToLocal:responseObject];
-            
+            user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];

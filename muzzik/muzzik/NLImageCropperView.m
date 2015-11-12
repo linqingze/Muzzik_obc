@@ -37,6 +37,7 @@
     _cropRect = cropRect;
     _translatedCropRect =CGRectMake(cropRect.origin.x/_scalingFactor, cropRect.origin.y/_scalingFactor, cropRect.size.width/_scalingFactor, cropRect.size.height/_scalingFactor);
     [_cropView setCropRegionRect:_translatedCropRect];
+    
 }
 
 - (id)initWithFrame:(CGRect)frame

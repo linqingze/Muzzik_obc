@@ -193,6 +193,7 @@
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 if ([weakrequest responseStatusCode] == 200) {
                     userInfo *user = [userInfo shareClass];
+                    
                     user.token = @"";
                     user.uid = @"";
                     user.avatar = @"";

@@ -78,6 +78,7 @@
     NSInteger timeCount;
     UIImageView *coverImageView;
     NotifyButton *notifyBtn;
+    UIAlertView *starAlert;
     
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
@@ -269,7 +270,7 @@
         
         [mainScroll setContentSize:CGSizeMake(SCREEN_WIDTH, self.view.bounds.size.height)];
         [switchView removeFromSuperview];
-        [self initNagationBar:@"Muzzik" leftBtn:8 rightBtn:0];
+        [self initNagationBar:[UIImage imageNamed:@"MuzzikImage"] leftBtn:8 rightBtn:0];
     }
     if (user.isSwitchUser) {
         user.isSwitchUser = NO;
@@ -320,10 +321,10 @@
         NSLog(@"%d",timeCount);
         timeCount-- ;
     }else{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"跪求五星好评" message:@"" delegate:self cancelButtonTitle:@"残忍拒绝" otherButtonTitles:nil];
+         starAlert= [[UIAlertView alloc] initWithTitle:@"跪求五星好评" message:@"" delegate:self cancelButtonTitle:@"残忍拒绝" otherButtonTitles:nil];
         // optional - add more buttons:
-        [alert addButtonWithTitle:@"走你!"];
-        [alert show];
+        [starAlert addButtonWithTitle:@"走你!"];
+        [starAlert show];
         [timer invalidate];
         timer = nil;
         
@@ -662,7 +663,14 @@
 - (void)trendRefreshHeader
 {
     // [self updateSomeThing];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    ASIHTTPRequest *request;
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    }else{
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/introduce"]];
+    }
+    
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
@@ -757,7 +765,13 @@
 - (void)trendRefreshFooter
 {
     // [self updateSomeThing];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    ASIHTTPRequest *request;
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+    }else{
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/introduce"]];
+    }
     [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:trendLastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
@@ -1086,7 +1100,15 @@
                 [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
+                
                 
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
                 cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -1174,7 +1196,14 @@
                 [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
                 
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
                 cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -1215,7 +1244,14 @@
                 cell.delegate = self;
                 cell.cardTitle.text = tempMuzzik.title;
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (tableView == trendTableView) {
                         if (![[trendRefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
@@ -1338,7 +1374,14 @@
                 [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( 95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
                 
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
                 cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -1446,7 +1489,14 @@
                 [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(95+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
                 
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
                 cell.muzzik_id = tempMuzzik.muzzik_id;
@@ -1487,7 +1537,14 @@
                 cell.delegate = self;
                 cell.cardTitle.text = tempMuzzik.title;
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+                if ([user.token length]>0) {
+                    cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                    [cell.timeImage setHidden:NO];
+                    [cell.timeStamp setHidden:NO];
+                }else{
+                    [cell.timeImage setHidden:YES];
+                    [cell.timeStamp setHidden:YES];
+                }
                 
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (tableView == trendTableView) {
@@ -1714,7 +1771,16 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 1) {
+    if (alertView == starAlert) {
+        if (buttonIndex == 1) {
+            NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
+            [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"times"],@"times",[dic objectForKey:@"date"],@"date",@"yes",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
+            NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@?mt=8",APP_ID ];
+            
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
+        }                                     
+    }
+    else if (buttonIndex == 1) {
         // do stuff
         if (!self.repostMuzzik.isReposted) {
             
@@ -1964,116 +2030,235 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [request startAsynchronous];
 }
 -(void)trendReloadMuzzikSource{
-    if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
-        NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in self.trendMuzziks) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
-                    }
-                    
-                }
-                if (!isContained) {
-                    [self.trendMuzziks addObject:tempmuzzik];
-                }
-                isContained = NO;
-            }
-        }
-    }
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        //    NSLog(@"%@",weakrequest.originalURL);
-        [self.trendMuzziks removeAllObjects];
-        NSData *data = [weakrequest responseData];
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        if (dic) {
-            
-            muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-            for (muzzik *tempmuzzik in array) {
-                BOOL isContained = NO;
-                for (muzzik *arrayMuzzik in self.trendMuzziks) {
-                    if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
-                        isContained = YES;
-                        break;
-                    }
-                    
-                }
-                if (!isContained) {
-                    [self.trendMuzziks addObject:tempmuzzik];
-                }
-                isContained = NO;
-            }
-            ASIHTTPRequest *requestCard = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/card",BaseURL]]];
-            [requestCard addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequestCard = requestCard;
-            [requestCard setCompletionBlock :^{
-                NSMutableArray *suggestCardArray = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
-                if (!suggestCardArray) {
-                    suggestCardArray = [NSMutableArray array];
-                }
-                NSData *data = [weakrequestCard responseData];
-                NSDictionary *cardDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                NSArray *requestArray ;
-                if (cardDic && [[cardDic allKeys] containsObject:@"muzziks"]) {
-                    requestArray = [cardDic objectForKey:@"muzziks"];
-                    for (NSDictionary *tempDic in requestArray) {
-                        
-                        if (![suggestCardArray containsObject:[tempDic objectForKey:@"_id"]]) {
-                            for (muzzik *checkMuzzik in self.trendMuzziks) {
-                                if ([[tempDic objectForKey:@"_id"] isEqualToString:checkMuzzik.muzzik_id]) {
-                                    if (self.trendMuzziks.count >1) {
-                                        
-                                        [self.trendMuzziks removeObject:checkMuzzik];
-                                    }
-                                    break;
-                                }
-                                
-                            }
-                            [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        if ([MuzzikItem getDataFromLocalKey: Constant_Data_Square] ) {
+            NSData *data = [MuzzikItem getDataFromLocalKey: Constant_Data_Square];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                trendLastId = [dic objectForKey:@"tail"];
+                [self.trendMuzziks removeAllObjects];
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.trendMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
                             break;
                         }
                         
-                        
                     }
-                    [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:nil];
-                    
-                    trendLastId = [dic objectForKey:@"tail"];;
-                    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                        [trendTableView reloadData];
-                        [trendTableView headerEndRefreshing];
-                    });
-                    
+                    if (!isContained) {
+                        [self.trendMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
                 }
-                
-            }];
-            [requestCard setFailedBlock:^{
-                
-                [trendTableView headerEndRefreshing];
-            }];
-            [requestCard startAsynchronous];
-            
-            
-        }
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
-        if (![[weakrequest responseString] length]>0) {
-            [self networkErrorShow];
+            }
         }
         
-    }];
-    [request startAsynchronous];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            [self.trendMuzziks removeAllObjects];
+            NSData *data = [weakrequest responseData];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.trendMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.trendMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                ASIHTTPRequest *requestCard = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/card",BaseURL]]];
+                [requestCard addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequestCard = requestCard;
+                [requestCard setCompletionBlock :^{
+                    NSMutableArray *suggestCardArray = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
+                    if (!suggestCardArray) {
+                        suggestCardArray = [NSMutableArray array];
+                    }
+                    NSData *data = [weakrequestCard responseData];
+                    NSDictionary *cardDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    NSArray *requestArray ;
+                    if (cardDic && [[cardDic allKeys] containsObject:@"muzziks"]) {
+                        requestArray = [cardDic objectForKey:@"muzziks"];
+                        for (NSDictionary *tempDic in requestArray) {
+                            
+                            if (![suggestCardArray containsObject:[tempDic objectForKey:@"_id"]]) {
+                                for (muzzik *checkMuzzik in self.trendMuzziks) {
+                                    if ([[tempDic objectForKey:@"_id"] isEqualToString:checkMuzzik.muzzik_id]) {
+                                        if (self.trendMuzziks.count >1) {
+                                            
+                                            [self.trendMuzziks removeObject:checkMuzzik];
+                                        }
+                                        break;
+                                    }
+                                    
+                                }
+                                [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                                break;
+                            }
+                            
+                            
+                        }
+                        [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:nil];
+                        
+                        trendLastId = [dic objectForKey:@"tail"];;
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [trendTableView reloadData];
+                            [trendTableView headerEndRefreshing];
+                        });
+                        
+                    }
+                    
+                }];
+                [requestCard setFailedBlock:^{
+                    
+                    [trendTableView headerEndRefreshing];
+                }];
+                [requestCard startAsynchronous];
+                
+                
+            }
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+            if (![[weakrequest responseString] length]>0) {
+                [self networkErrorShow];
+            }
+            
+        }];
+        [request startAsynchronous];
+    }else{
+        if ([MuzzikItem getDataFromLocalKey: @"Constant_Data_Square_NotLogin"] ) {
+            NSData *data = [MuzzikItem getDataFromLocalKey: @"Constant_Data_Square_NotLogin"];
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                trendLastId = [dic objectForKey:@"tail"];
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.trendMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.trendMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+            }
+        }
+        
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/introduce"]];
+        [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = request;
+        [request setCompletionBlock :^{
+            //    NSLog(@"%@",weakrequest.originalURL);
+            [self.trendMuzziks removeAllObjects];
+            NSData *data = [weakrequest responseData];
+            if (data) {
+                [MuzzikItem addObjectToLocal:data ForKey:@"Constant_Data_Square_NotLogin"];
+            }
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+            if (dic) {
+                
+                muzzik *muzzikToy = [muzzik new];
+                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                for (muzzik *tempmuzzik in array) {
+                    BOOL isContained = NO;
+                    for (muzzik *arrayMuzzik in self.trendMuzziks) {
+                        if ([arrayMuzzik.muzzik_id isEqualToString:tempmuzzik.muzzik_id]) {
+                            isContained = YES;
+                            break;
+                        }
+                        
+                    }
+                    if (!isContained) {
+                        [self.trendMuzziks addObject:tempmuzzik];
+                    }
+                    isContained = NO;
+                }
+                ASIHTTPRequest *requestCard = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/card",BaseURL]]];
+                [requestCard addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequestCard = requestCard;
+                [requestCard setCompletionBlock :^{
+                    NSMutableArray *suggestCardArray = [[MuzzikItem getArrayFromLocalForKey:@"Muzzik_suggest_Day_ClickArray"] mutableCopy];
+                    if (!suggestCardArray) {
+                        suggestCardArray = [NSMutableArray array];
+                    }
+                    NSData *data = [weakrequestCard responseData];
+                    NSDictionary *cardDic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    NSArray *requestArray ;
+                    if (cardDic && [[cardDic allKeys] containsObject:@"muzziks"]) {
+                        requestArray = [cardDic objectForKey:@"muzziks"];
+                        for (NSDictionary *tempDic in requestArray) {
+                            
+                            if (![suggestCardArray containsObject:[tempDic objectForKey:@"_id"]]) {
+                                for (muzzik *checkMuzzik in self.trendMuzziks) {
+                                    if ([[tempDic objectForKey:@"_id"] isEqualToString:checkMuzzik.muzzik_id]) {
+                                        if (self.trendMuzziks.count >1) {
+                                            
+                                            [self.trendMuzziks removeObject:checkMuzzik];
+                                        }
+                                        break;
+                                    }
+                                    
+                                }
+                                [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                                break;
+                            }
+                            
+                            
+                        }
+                        [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:nil];
+                        
+                        trendLastId = [dic objectForKey:@"tail"];
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                            [trendTableView reloadData];
+                            [trendTableView headerEndRefreshing];
+                        });
+                        
+                    }
+                    
+                }];
+                [requestCard setFailedBlock:^{
+                    
+                    [trendTableView headerEndRefreshing];
+                }];
+                [requestCard startAsynchronous];
+                
+                
+            }
+        }];
+        [request setFailedBlock:^{
+            NSLog(@"%@,%@",[weakrequest error],[weakrequest responseString]);
+            if (![[weakrequest responseString] length]>0) {
+                [self networkErrorShow];
+            }
+            
+        }];
+        [request startAsynchronous];
+    }
+    
     
 }
 -(void)reloadDataSource{

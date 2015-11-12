@@ -136,6 +136,7 @@
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
+		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
 		F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */; };
 		F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */; };
 		F24B8F5C1BCD1CB900FC2597 /* RDVTabBarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F591BCD1CB900FC2597 /* RDVTabBarItem.m */; };
@@ -504,6 +505,8 @@
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
 		F22AB3A51B068A6000C61677 /* TapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapImageView.m; sourceTree = "<group>"; };
+		F232510F1BF1BB85005F7234 /* ShareResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareResultViewController.h; sourceTree = "<group>"; };
+		F23251101BF1BB85005F7234 /* ShareResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareResultViewController.m; sourceTree = "<group>"; };
 		F24B8F541BCD1CB900FC2597 /* RDVTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBar.h; sourceTree = "<group>"; };
 		F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBar.m; sourceTree = "<group>"; };
 		F24B8F561BCD1CB900FC2597 /* RDVTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBarController.h; sourceTree = "<group>"; };
@@ -1447,6 +1450,8 @@
 			children = (
 				F2F7EE181AED69B600265596 /* MessageStepViewController.h */,
 				F2F7EE191AED69B600265596 /* MessageStepViewController.m */,
+				F232510F1BF1BB85005F7234 /* ShareResultViewController.h */,
+				F23251101BF1BB85005F7234 /* ShareResultViewController.m */,
 				F2F7EE1C1AEE094300265596 /* emojiCollectionCell.h */,
 				F2F7EE1D1AEE094300265596 /* emojiCollectionCell.m */,
 				F2F7EE411AEE241A00265596 /* FriendVC.h */,
@@ -1877,6 +1882,7 @@
 				F21BFD411BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m in Sources */,
 				F2F7EE3D1AEE23E400265596 /* NSString+PinYin4Cocoa.m in Sources */,
 				F25C504A1B034AFC00F03A61 /* UsetTopicVC.m in Sources */,
+				F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */,
 				F21BFD461BDA97F900FE857E /* STKDataSourceWrapper.m in Sources */,
 				E112469B1AAAC02A0014D461 /* BaseNagationViewController.m in Sources */,
 				F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */,

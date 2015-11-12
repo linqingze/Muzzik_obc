@@ -29,10 +29,6 @@
 @interface NLCropViewLayer : UIView
 {
     CGRect _cropRect;
-    UIImageView* leftTopCorner;
-    UIImageView* leftBottomCorner;
-    UIImageView* rightTopCorner;
-    UIImageView* rightBottomCorner;
 }
 - (void)setCropRegionRect:(CGRect)cropRect;
 @end
