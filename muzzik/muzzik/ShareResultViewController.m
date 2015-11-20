@@ -335,7 +335,8 @@
             [MuzzikItem showNotifyOnView:self.view text:@"图片上传地址请求失败，请确认网络状态再次重试"];
         }];
         [requestForm startAsynchronous];
-    }else{
+    }
+    else{
         ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
         NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
         if (mobject.isPrivate) {

@@ -326,8 +326,14 @@
     [UIView commitAnimations];
     return YES;
 }
-
-
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string{
+    if (range.location+range.length>=13 && ![string isEqualToString:@""]) {
+        return NO;
+    }else{
+        return YES;
+    }
+    
+}
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     if (textField == birthText) {
         isChanged = YES;
@@ -531,7 +537,7 @@
                     }
                 }
                 else if([weakrequest responseStatusCode] == 400){
-                    [MuzzikItem showOnView:self.view Text:@"用户名超过15个字" pointY:NameText.frame.origin.y];
+                    [MuzzikItem showOnView:self.view Text:@"用户名超过13个字,或包含非法字符" pointY:NameText.frame.origin.y];
                     [[[AFViewShaker alloc] initWithView:NameText] shake];
                     [NameText becomeFirstResponder];
                 }

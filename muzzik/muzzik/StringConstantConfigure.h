@@ -23,8 +23,7 @@
 #define Image_textblackImage            @"textblackImage"
 #define Image_addedpicImage             @"addedpicImage"
 #define Image_SwitchingImage            @"SwitchingImage"
-#define Image_Textcover                 @"Textcover"
-#define Image_Cover                     @"Cover"
+
 #define Image_SuggestUserImage          @"SuggestUserImage"
 #define Image_nopictweetImage           @"nopictweetImage"
 #define Image_followImageNormal         @"recommendfollow"

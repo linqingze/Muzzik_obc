@@ -10,7 +10,6 @@
 #import "MuzzikObject.h"
 #import <CoreText/CTFontManager.h>
 #import "NotifyButton.h"
-#import "ChooseLyricVC.h"
 @implementation MuzzikItem
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 +(MuzzikItem *) shareClass{
@@ -529,13 +528,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                                 mobject.GeiLyricType = @"yes";
                                 mobject.lyricArray = tempLyric;
                                 
-                                AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-                                UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-                                if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                                    ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                                    [choosevc reloadLyricTableView];
-                                    [choosevc hideTips];
-                                }
                             }else{
                                 mobject.GeiLyricType = @"error";
                             }
@@ -547,12 +539,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                         [lyricRequest1 setFailedBlock:^{
                             MuzzikObject *mobject = [MuzzikObject shareClass];
                             mobject.GeiLyricType = @"error";
-                            AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-                            UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-                            if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                                ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                                [choosevc Notips];
-                            }
+                            
                             
                             NSLog(@"%@",lrcRequest1.error);
                         }];
@@ -571,12 +558,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [requestForm1 setFailedBlock:^{
             MuzzikObject *mobject = [MuzzikObject shareClass];
             mobject.GeiLyricType = @"error";
-            AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-            UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-            if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                [choosevc Notips];
-            }
+            
             NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
             NSLog(@"  kkk%@",[weakrequest1 error]);
         }];

@@ -583,10 +583,18 @@
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic && [[dic allKeys] containsObject:@"result"] && [[dic objectForKey:@"result"] integerValue]>0) {
-            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+            if (self.tabviewController.selectedViewController == self.notifyVC) {
+                if ([self.notifyVC.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
+                    NotificationCenterViewController* notificationvc = (NotificationCenterViewController*)self.notifyVC.viewControllers.lastObject;
+                    [notificationvc checkNewNotification];
+                }
+            }else{
+                RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+                UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+                [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+            }
+            
         }
     }];
     [request startAsynchronous];

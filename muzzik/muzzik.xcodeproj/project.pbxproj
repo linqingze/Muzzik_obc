@@ -74,7 +74,6 @@
 		F200B7A61B28B727002A6F61 /* SDPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B79C1B28B727002A6F61 /* SDPieProgressView.m */; };
 		F200B7A71B28B727002A6F61 /* SDRotationLoopProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B79F1B28B727002A6F61 /* SDRotationLoopProgressView.m */; };
 		F200B7A81B28B727002A6F61 /* SDTransparentPieProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7A11B28B727002A6F61 /* SDTransparentPieProgressView.m */; };
-		F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */; };
 		F200B7AF1B2AC7F6002A6F61 /* FeedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7AE1B2AC7F6002A6F61 /* FeedViewController.m */; };
 		F200B7B51B2D42D5002A6F61 /* FeedBackVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F200B7B41B2D42D5002A6F61 /* FeedBackVC.m */; };
 		F205539C1B340C1A0093AE8A /* SelectionLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F205539B1B340C1A0093AE8A /* SelectionLabel.m */; };
@@ -90,11 +89,6 @@
 		F20878B71B9F2A7F00A9FA45 /* badgeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878B61B9F2A7F00A9FA45 /* badgeImageView.m */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
-		F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */; };
-		F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */; };
-		F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */; };
-		F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */; };
-		F208EF581B1F85B800DB5A68 /* FontTableCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF571B1F85B800DB5A68 /* FontTableCell.m */; };
 		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
 		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
 		F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */; };
@@ -104,7 +98,6 @@
 		F20C4EDA1B68CA4200331101 /* MuzzikSongCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4ED91B68CA4200331101 /* MuzzikSongCell.m */; };
 		F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */; };
 		F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */; };
-		F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */; };
 		F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EE51B6A48D100331101 /* IBActionSheet.m */; };
 		F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD681AF74A05008A71C0 /* SearchForSong.m */; };
 		F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */; };
@@ -160,7 +153,6 @@
 		F27EBBA01B7D065600A5A599 /* LocalMusicTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F27EBB9F1B7D065600A5A599 /* LocalMusicTableViewController.m */; };
 		F288A4CA1B0DC7EF00B89860 /* topicRankCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4C91B0DC7EF00B89860 /* topicRankCell.m */; };
 		F288A4CD1B0DC81900B89860 /* TopRankVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4CC1B0DC81900B89860 /* TopRankVC.m */; };
-		F288A4D11B0E50D700B89860 /* KxMenu.m in Sources */ = {isa = PBXBuildFile; fileRef = F288A4D01B0E50D700B89860 /* KxMenu.m */; };
 		F29290291ADFC74B0086E8D4 /* phoneForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29290281ADFC74B0086E8D4 /* phoneForResetVC.m */; };
 		F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F292902B1ADFCA9B0086E8D4 /* messageForResetVC.m */; };
 		F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F29A17011AEA98B600200EAE /* SearchLibraryMusicVC.m */; };
@@ -173,10 +165,7 @@
 		F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE41AE94FDE00FAAA01 /* SongTableViewController.m */; };
 		F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE71AE956A700FAAA01 /* MusicCell.m */; };
 		F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */; };
-		F2A7F9771AEF7345000FCC57 /* choosImageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9761AEF7345000FCC57 /* choosImageVC.m */; };
 		F2A7F97D1AEF75B3000FCC57 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2A7F97A1AEF75B3000FCC57 /* libWeChatSDK.a */; };
-		F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */; };
-		F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */; };
 		F2AD9F7F1B5F9D180039FBC4 /* SUNSlideSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AD9F7E1B5F9D180039FBC4 /* SUNSlideSwitchView.m */; };
 		F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC6971B09075800DA676E /* ReplyObject.m */; };
 		F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69A1B0908B500DA676E /* NotifyObject.m */; };
@@ -389,7 +378,6 @@
 		F200B79F1B28B727002A6F61 /* SDRotationLoopProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDRotationLoopProgressView.m; sourceTree = "<group>"; };
 		F200B7A01B28B727002A6F61 /* SDTransparentPieProgressView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SDTransparentPieProgressView.h; sourceTree = "<group>"; };
 		F200B7A11B28B727002A6F61 /* SDTransparentPieProgressView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SDTransparentPieProgressView.m; sourceTree = "<group>"; };
-		F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Copperplate_00.ttf; sourceTree = "<group>"; };
 		F200B7AD1B2AC7F6002A6F61 /* FeedViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedViewController.h; sourceTree = "<group>"; };
 		F200B7AE1B2AC7F6002A6F61 /* FeedViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedViewController.m; sourceTree = "<group>"; };
 		F200B7B31B2D42D5002A6F61 /* FeedBackVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedBackVC.h; sourceTree = "<group>"; };
@@ -419,12 +407,6 @@
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = VNI_HLThuphap.ttf; sourceTree = "<group>"; };
-		F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = kilsonburg.ttf; sourceTree = "<group>"; };
-		F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Bluehigh.ttf; sourceTree = "<group>"; };
-		F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = calico_cyrillic.ttf; sourceTree = "<group>"; };
-		F208EF561B1F85B800DB5A68 /* FontTableCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontTableCell.h; sourceTree = "<group>"; };
-		F208EF571B1F85B800DB5A68 /* FontTableCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontTableCell.m; sourceTree = "<group>"; };
 		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
 		F20B10311AF69D8D0067EBD3 /* searchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchViewController.m; sourceTree = "<group>"; };
 		F20B10341AF6B4A30067EBD3 /* UserHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserHomePage.h; sourceTree = "<group>"; };
@@ -443,7 +425,6 @@
 		F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikUserCell.m; sourceTree = "<group>"; };
 		F20C4EDE1B68CA6E00331101 /* MuzzikTopic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikTopic.h; sourceTree = "<group>"; };
 		F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTopic.m; sourceTree = "<group>"; };
-		F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = HYQuanTangShiF.ttf; sourceTree = "<group>"; };
 		F20C4EE41B6A48D100331101 /* IBActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IBActionSheet.h; sourceTree = "<group>"; };
 		F20C4EE51B6A48D100331101 /* IBActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IBActionSheet.m; sourceTree = "<group>"; };
 		F20FDD671AF74A05008A71C0 /* SearchForSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForSong.h; sourceTree = "<group>"; };
@@ -562,8 +543,6 @@
 		F288A4C91B0DC7EF00B89860 /* topicRankCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = topicRankCell.m; sourceTree = "<group>"; };
 		F288A4CB1B0DC81900B89860 /* TopRankVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopRankVC.h; sourceTree = "<group>"; };
 		F288A4CC1B0DC81900B89860 /* TopRankVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopRankVC.m; sourceTree = "<group>"; };
-		F288A4CF1B0E50D700B89860 /* KxMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KxMenu.h; sourceTree = "<group>"; };
-		F288A4D01B0E50D700B89860 /* KxMenu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KxMenu.m; sourceTree = "<group>"; };
 		F29290271ADFC74B0086E8D4 /* phoneForResetVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = phoneForResetVC.h; sourceTree = "<group>"; };
 		F29290281ADFC74B0086E8D4 /* phoneForResetVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = phoneForResetVC.m; sourceTree = "<group>"; };
 		F292902A1ADFCA9B0086E8D4 /* messageForResetVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = messageForResetVC.h; sourceTree = "<group>"; };
@@ -588,15 +567,9 @@
 		F2A62EE71AE956A700FAAA01 /* MusicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MusicCell.m; sourceTree = "<group>"; };
 		F2A62EE91AE9F6D900FAAA01 /* ChooseMusicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseMusicVC.h; sourceTree = "<group>"; };
 		F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseMusicVC.m; sourceTree = "<group>"; };
-		F2A7F9751AEF7345000FCC57 /* choosImageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = choosImageVC.h; sourceTree = "<group>"; };
-		F2A7F9761AEF7345000FCC57 /* choosImageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = choosImageVC.m; sourceTree = "<group>"; };
 		F2A7F97A1AEF75B3000FCC57 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		F2A7F97B1AEF75B3000FCC57 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		F2A7F97C1AEF75B3000FCC57 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
-		F2A7F9881AEF810E000FCC57 /* ChooseLyricVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChooseLyricVC.h; sourceTree = "<group>"; };
-		F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChooseLyricVC.m; sourceTree = "<group>"; };
-		F2A7F9911AEFFB0C000FCC57 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TableViewCell.h; sourceTree = "<group>"; };
-		F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewCell.m; sourceTree = "<group>"; };
 		F2AD9F7D1B5F9D180039FBC4 /* SUNSlideSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUNSlideSwitchView.h; sourceTree = "<group>"; };
 		F2AD9F7E1B5F9D180039FBC4 /* SUNSlideSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUNSlideSwitchView.m; sourceTree = "<group>"; };
 		F2AEC6961B09075800DA676E /* ReplyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyObject.h; sourceTree = "<group>"; };
@@ -807,12 +780,6 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				F20C4EE11B69E23800331101 /* HYQuanTangShiF.ttf */,
-				F208EF4E1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf */,
-				F200B7AB1B2ABF6E002A6F61 /* Copperplate_00.ttf */,
-				F208EF521B1F7D6100DB5A68 /* Bluehigh.ttf */,
-				F208EF531B1F7D6100DB5A68 /* calico_cyrillic.ttf */,
-				F208EF501B1F7D5500DB5A68 /* kilsonburg.ttf */,
 				E11245F61AAAAE4B0014D461 /* Info.plist */,
 				E11245F71AAAAE4B0014D461 /* main.m */,
 				F2FD3B051B30617F001B2332 /* popWords.plist */,
@@ -887,7 +854,6 @@
 				F205539F1B36B78C0093AE8A /* switch */,
 				F200B7921B28B712002A6F61 /* progressView */,
 				F2E558961B164D060080F9C9 /* MJRefresh */,
-				F288A4CE1B0E50BB00B89860 /* kxMenu */,
 				F2EDF71A1B0B23EB00400A85 /* pageControl */,
 				F2FBE9041AFBFBEB0070831D /* timePicker */,
 				F218144A1AF234B500AA06AA /* HPGrowingTextView */,
@@ -1384,15 +1350,6 @@
 			path = UMAnalytics_Sdk_3.5.9;
 			sourceTree = "<group>";
 		};
-		F288A4CE1B0E50BB00B89860 /* kxMenu */ = {
-			isa = PBXGroup;
-			children = (
-				F288A4CF1B0E50D700B89860 /* KxMenu.h */,
-				F288A4D01B0E50D700B89860 /* KxMenu.m */,
-			);
-			name = kxMenu;
-			sourceTree = "<group>";
-		};
 		F2A5E20D1AD9123000FD8B3E /* model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1468,28 +1425,6 @@
 			name = step1;
 			sourceTree = "<group>";
 		};
-		F2A7F9731AEF72B8000FCC57 /* step2 */ = {
-			isa = PBXGroup;
-			children = (
-				F2A7F9751AEF7345000FCC57 /* choosImageVC.h */,
-				F2A7F9761AEF7345000FCC57 /* choosImageVC.m */,
-			);
-			name = step2;
-			sourceTree = "<group>";
-		};
-		F2A7F9741AEF72C8000FCC57 /* Step3 */ = {
-			isa = PBXGroup;
-			children = (
-				F2A7F9881AEF810E000FCC57 /* ChooseLyricVC.h */,
-				F2A7F9891AEF810E000FCC57 /* ChooseLyricVC.m */,
-				F2A7F9911AEFFB0C000FCC57 /* TableViewCell.h */,
-				F2A7F9921AEFFB0C000FCC57 /* TableViewCell.m */,
-				F208EF561B1F85B800DB5A68 /* FontTableCell.h */,
-				F208EF571B1F85B800DB5A68 /* FontTableCell.m */,
-			);
-			name = Step3;
-			sourceTree = "<group>";
-		};
 		F2A7F9941AF00A0B000FCC57 /* FixableText */ = {
 			isa = PBXGroup;
 			children = (
@@ -1528,8 +1463,6 @@
 				F2F7EE111AED607300265596 /* shareNac */,
 				F2A7F9711AEF7264000FCC57 /* 选歌 */,
 				F2A7F9721AEF7295000FCC57 /* step1 */,
-				F2A7F9731AEF72B8000FCC57 /* step2 */,
-				F2A7F9741AEF72C8000FCC57 /* Step3 */,
 			);
 			name = "发po分享";
 			sourceTree = "<group>";
@@ -1707,19 +1640,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F208EF551B1F7D6100DB5A68 /* calico_cyrillic.ttf in Resources */,
-				F208EF541B1F7D6100DB5A68 /* Bluehigh.ttf in Resources */,
 				F24F0A781BB42A340073F6FA /* WeiboSDK.bundle in Resources */,
 				F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
-				F208EF4F1B1F7A7700DB5A68 /* VNI_HLThuphap.ttf in Resources */,
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
-				F208EF511B1F7D5500DB5A68 /* kilsonburg.ttf in Resources */,
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
-				F20C4EE21B69E23800331101 /* HYQuanTangShiF.ttf in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
-				F200B7AC1B2ABF6E002A6F61 /* Copperplate_00.ttf in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
 				F2F7EE271AEE213200265596 /* flotageBackgroud@2x.png in Resources */,
 			);
@@ -1780,7 +1707,6 @@
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
 				F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */,
 				F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */,
-				F208EF581B1F85B800DB5A68 /* FontTableCell.m in Sources */,
 				F20B68201AF340FE0058820D /* PlayListObject.m in Sources */,
 				F25C504D1B034B5E00F03A61 /* showUsersVC.m in Sources */,
 				F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */,
@@ -1801,7 +1727,6 @@
 				F2FBE8F41AFB3B870070831D /* ProfileSetting.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
-				F2A7F9931AEFFB0C000FCC57 /* TableViewCell.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
 				F21BFD441BDA97F900FE857E /* STKCoreFoundationDataSource.m in Sources */,
 				F2E380001B790663008FF496 /* MuzzikRequestCenter.m in Sources */,
@@ -1815,7 +1740,6 @@
 				F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */,
 				F216ACC61BD554110074ADF4 /* LineSlider.m in Sources */,
 				E11246441AAAB1F20014D461 /* ASIDataDecompressor.m in Sources */,
-				F2A7F9771AEF7345000FCC57 /* choosImageVC.m in Sources */,
 				F2F7EE3E1AEE23E400265596 /* PinyinFormatter.m in Sources */,
 				E112466E1AAAB20B0014D461 /* SDImageCache.m in Sources */,
 				F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */,
@@ -1862,7 +1786,6 @@
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
 				F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */,
 				F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */,
-				F2A7F98A1AEF810E000FCC57 /* ChooseLyricVC.m in Sources */,
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
 				F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
@@ -1915,7 +1838,6 @@
 				F25C50531B038AAB00F03A61 /* topicLabel.m in Sources */,
 				F2A2E9081B08C69B00D65514 /* suggestCollectionCell.m in Sources */,
 				F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */,
-				F288A4D11B0E50D700B89860 /* KxMenu.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
 				E11246741AAAB20B0014D461 /* SDWebImagePrefetcher.m in Sources */,
 				F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */,

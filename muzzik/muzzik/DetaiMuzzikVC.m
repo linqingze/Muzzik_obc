@@ -1609,15 +1609,22 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void) shareQQZone{
     TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
                                                          andDelegate:nil];
-    NSURL *previewURL = [NSURL URLWithString:@"http://muzzik-image.qiniudn.com/Fscv0d_e94ij-WgpvIoTiHmPJgu9"];
+    //分享跳转URL
     NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
-    
-    QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",self.localmuzzik.music.name,self.localmuzzik.music.artist] previewImageURL:previewURL];
-    SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
-    
-    
+    //分享图预览图URL地址
+    NSString *previewImageUrl = [NSString stringWithFormat:@"%@%@",BaseURL_image,self.localmuzzik.MuzzikUser.avatar];
+    //音乐播放的网络流媒体地址
+    NSString *flashURL = [NSString stringWithFormat:@"%@%@",BaseURL_audio,self.localmuzzik.music.key];
+    QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                          title:@"我在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",self.localmuzzik.music.name,self.localmuzzik.music.artist] previewImageURL:[NSURL URLWithString:previewImageUrl]];
+    //设置播放流媒体地址
+    audioObj.flashURL = [NSURL URLWithString:flashURL] ;
+    SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+    //将内容分享到qq
+    //QQApiSendResultCode sent = [QQApiInterface sendReq:req];
     //将被容分享到qzone
     QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+    
     [self handleSendResult:sent];
     
     NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
