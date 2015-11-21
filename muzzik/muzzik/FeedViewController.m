@@ -83,8 +83,8 @@
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
 
-@property(nonatomic,retain) NSMutableArray *feedMuzziks;
-@property(nonatomic,retain) NSMutableArray *trendMuzziks;
+@property(atomic,retain) NSMutableArray *feedMuzziks;
+@property(atomic,retain) NSMutableArray *trendMuzziks;
 
 @end
 
@@ -667,7 +667,7 @@
     ASIHTTPRequest *request;
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/trending"]];
     }else{
         request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/introduce"]];
     }
@@ -769,7 +769,7 @@
     ASIHTTPRequest *request;
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
-        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/trending"]];
     }else{
         request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/introduce"]];
     }
@@ -2059,7 +2059,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             }
         }
         
-        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_Trending]]];
+        ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/trending"]];
         [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit] Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakrequest = request;
         [request setCompletionBlock :^{
@@ -2294,7 +2294,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0) {
         if (mainScroll.contentOffset.x>200) {
-            center.subUrlString = @"api/muzzik/feeds";
+            center.subUrlString = @"http://117.121.26.174:8000/api/muzzik/trending";
             center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:trendLastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
             center.isPage = NO;
             center.singleMusic = NO;
@@ -2305,7 +2305,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [[MuzzikPlayer shareClass] playSongWithSongModel:songModel Title:@"广场列表"];
             [MuzzikPlayer shareClass].listType = SquareList;
         }else{
-            center.subUrlString = @"api/muzzik/feeds";
+            center.subUrlString = @"http://117.121.26.174/api/muzzik/feeds";
             center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:feedLastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
             center.isPage = NO;
             center.singleMusic = NO;
@@ -2318,7 +2318,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [MuzzikPlayer shareClass].listType = feedList;
         }
     }else{
-        center.subUrlString = @"api/muzzik/feeds";
+        center.subUrlString = @"http://117.121.26.174:8000/api/muzzik/introduce";
         center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:trendLastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
         center.isPage = NO;
         center.singleMusic = NO;

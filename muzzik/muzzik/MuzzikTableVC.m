@@ -93,7 +93,7 @@
     // [self updateSomeThing];
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
-        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
+        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/user/movedMuzzik"]];
     }
     else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
@@ -153,7 +153,7 @@
     // [self updateSomeThing];
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
-        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
+        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/user/movedMuzzik"]];
         [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
     }
     else{
@@ -991,7 +991,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
     ASIHTTPRequest *request;
     if ([self.requstType  isEqualToString:@"moved"]) {
-        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/movedMuzzik",BaseURL]]];
+        request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/user/movedMuzzik"]];
     }else{
         request= [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,self.uid]]];
   
@@ -1054,9 +1054,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];
-//    if (self.isViewLoaded &&self.view.window) {
-//        [self updateAnimation];
-//    }
+    if (self.isViewLoaded &&self.view.window) {
+        [self updateAnimation];
+    }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
@@ -1070,7 +1070,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [MuzzikPlayer shareClass].MusicArray = [self.muzziks mutableCopy];
     if ([self.requstType isEqualToString:@"moved"]) {
         center.isPage = YES;
-        center.subUrlString = @"api/user/movedMuzzik";
+        center.subUrlString = @"http://117.121.26.174:8000/api/user/movedMuzzik";
         center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:page],Parameter_page,Limit_Constant,Parameter_Limit, nil];
         center.page = page;
         [MuzzikItem SetUserInfoWithMuzziks:self.muzziks title:Constant_userInfo_move description:[NSString stringWithFormat:@"喜欢列表"]];

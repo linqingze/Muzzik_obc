@@ -91,11 +91,10 @@
 }
 
 -(void)loadDataMessage{
+
     
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObject:@"20" forKey:Parameter_Limit];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:GetMethod auth:YES];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/relateTopic"]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,self.topic_id,@"topicid", nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         //    NSLog(@"%@",weakrequest.originalURL);
@@ -131,11 +130,10 @@
 }
 
 
-- (void)refreshHeader
-{
+- (void)refreshHeader{
     // [self updateSomeThing];
-   ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:Limit_Constant forKey:Parameter_Limit] Method:GetMethod auth:YES];
+   ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/relateTopic"]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,self.topic_id,@"topicid", nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         // NSLog(@"%@",[weakrequest responseString]);
@@ -165,8 +163,8 @@
 - (void)refreshFooter
 {
     // [self updateSomeThing];
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/muzzik/topic/%@",BaseURL,self.topic_id]]];
-    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil] Method:GetMethod auth:YES];
+    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :@"http://117.121.26.174:8000/api/muzzik/relateTopic"]];
+    [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit,self.topic_id,@"topicid", nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = request;
     [request setCompletionBlock :^{
         // NSLog(@"%@",[weakrequest responseString]);
@@ -847,8 +845,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = [NSString stringWithFormat:@"api/muzzik/topic/%@",self.topic_id];
-    center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
+
+    center.subUrlString = @"http://117.121.26.174:8000/api/muzzik/relateTopic";
+    center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit,self.topic_id,@"topicid", nil];
     center.isPage = NO;
     center.singleMusic = NO;
     center.MuzzikType = Type_Muzzik_Muzzik;

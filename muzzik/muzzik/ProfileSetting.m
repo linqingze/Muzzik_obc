@@ -489,7 +489,6 @@
                                             }
                                             user.name = NameText.text;
                                             user.avatar = [keydic objectForKey:@"key"];
-                                            
                                             [self.navigationController popViewControllerAnimated:YES];
                                             [self saveUserLocal];
                                         }

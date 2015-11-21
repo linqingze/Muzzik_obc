@@ -1050,7 +1050,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = [NSString stringWithFormat:@"api/user/%@/muzziks",self.uid];
+    center.subUrlString = [NSString stringWithFormat:@"http://117.121.26.174/api/user/%@/muzziks",self.uid];
     center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page, nil];
     center.isPage = YES;
     center.singleMusic = NO;

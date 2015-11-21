@@ -1098,7 +1098,7 @@
     }
     if ([lyricArray count]>0) {
         for (NSDictionary *dic in lyricArray) {
-            if ([[[dic allKeys] objectAtIndex:0] isEqualToString:itemStr]) {
+            if ([[dic allKeys] count] >0 &&[[[dic allKeys] objectAtIndex:0] isEqualToString:itemStr]) {
                 [self performSelector:@selector(scrolllyric:) withObject:dic afterDelay:0.5];
                 
                 break;

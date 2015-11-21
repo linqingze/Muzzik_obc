@@ -220,7 +220,7 @@
 #define Constant_userInfo_follow    @"follow"
 
 #define MUSIC_FileName              @"muzzik_musicFileForSaving"
-
+#define Muzzik_Login_Info_Token     @"Muzzik_Login_Info_Token"
 #define Image_Size_Small            @"?imageView2/1/w/150/h/150"
 #define Image_Size_Big            @"?imageView2/1/w/500/h/500"
 #endif

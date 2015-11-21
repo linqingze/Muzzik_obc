@@ -305,7 +305,6 @@
         if ([weakrequestsquare responseStatusCode] == 200) {
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            [MuzzikItem addMessageToLocal:responseObject];
             user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -326,9 +325,7 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-            }
+            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         else if ([weakrequestsquare responseStatusCode] == 400)
         {
@@ -390,7 +387,6 @@
         if ([weakrequestsquare responseStatusCode] == 200) {
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            [MuzzikItem addMessageToLocal:responseObject];
             user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -411,9 +407,7 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-            }
+           [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         if ([user.token length]>0) {
             ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
@@ -475,7 +469,6 @@
             if ([weakrequestsquare responseStatusCode] == 200) {
                 NSData *data = [weakrequestsquare responseData];
                 NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                [MuzzikItem addMessageToLocal:responseObject];
                 
                 
                 if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -496,9 +489,7 @@
                 if ([[responseObject allKeys] containsObject:@"name"]) {
                     user.name = [responseObject objectForKey:@"name"];
                 }
-                if ([[responseObject allKeys] containsObject:@"token"]) {
-                    user.token = [responseObject objectForKey:@"token"];
-                }
+                [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
             }
             else if ([weakrequestsquare responseStatusCode] == 400)
             {

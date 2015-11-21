@@ -323,7 +323,7 @@
 }
 -(void)playMuzzikWithIndex:(NSInteger)index{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = URL_Music_Search;
+    center.subUrlString = [NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search];
     center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInteger:page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
     center.isPage = YES;
     center.singleMusic = NO;

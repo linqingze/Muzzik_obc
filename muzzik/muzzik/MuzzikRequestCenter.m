@@ -24,7 +24,7 @@
     if (!self.singleMusic) {
         if (self.isPage) {
             
-            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,self.subUrlString]]];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :self.subUrlString]];
             [requestForm addBodyDataSourceWithJsonByDic:self.requestDic Method:GetMethod auth:YES];
             __weak ASIHTTPRequest *weakrequest = requestForm;
             [requestForm setCompletionBlock :^{

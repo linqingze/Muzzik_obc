@@ -134,7 +134,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             userInfo *user = [userInfo shareClass];
             user.token = [dic objectForKey:@"token"];
             user.uid = [dic objectForKey:@"_id"];
-            [MuzzikItem addMessageToLocal:dic];
+            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.uid,@"_id",nil]];
             setNameVc *setname = [[setNameVc alloc] init];
             [self.navigationController pushViewController:setname animated:YES];
         }else{

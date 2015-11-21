@@ -262,7 +262,7 @@
 */
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = [NSString stringWithFormat:@"api/user/%@/muzziks",self.uid];
+    center.subUrlString = [NSString stringWithFormat:@"http://117.121.26.174/api/user/%@/muzziks",self.uid];
     center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:lastId,Parameter_from,Limit_Constant,Parameter_Limit, nil];
     center.isPage = NO;
     center.singleMusic = NO;

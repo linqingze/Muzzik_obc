@@ -54,7 +54,6 @@
 		E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7C1AB4442B0001A61C /* CoreTelephony.framework */; };
 		E162BD7F1AB444370001A61C /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7E1AB444370001A61C /* libstdc++.dylib */; };
 		E16716251AAD77830068AE98 /* userInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E16716241AAD77830068AE98 /* userInfo.m */; };
-		E1FA12A91AB148B1005EDA1D /* FMLrcView.m in Sources */ = {isa = PBXBuildFile; fileRef = E1FA12A61AB148B1005EDA1D /* FMLrcView.m */; };
 		E1FA12AD1AB14922005EDA1D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12AC1AB14922005EDA1D /* AVFoundation.framework */; };
 		E1FA12AF1AB14939005EDA1D /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12AE1AB14939005EDA1D /* AudioToolbox.framework */; };
 		E1FA12B11AB1494A005EDA1D /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E1FA12B01AB1494A005EDA1D /* Security.framework */; };
@@ -344,8 +343,6 @@
 		E16716241AAD77830068AE98 /* userInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userInfo.m; sourceTree = "<group>"; };
 		E167163D1AAED0AA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "muzzik-PrefixHeader.pch"; sourceTree = "<group>"; };
-		E1FA12A51AB148B1005EDA1D /* FMLrcView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMLrcView.h; sourceTree = "<group>"; };
-		E1FA12A61AB148B1005EDA1D /* FMLrcView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMLrcView.m; sourceTree = "<group>"; };
 		E1FA12AC1AB14922005EDA1D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E1FA12AE1AB14939005EDA1D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E1FA12B01AB1494A005EDA1D /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -1106,8 +1103,6 @@
 			children = (
 				E1FA13441AB195E0005EDA1D /* Globle.h */,
 				E1FA13451AB195E0005EDA1D /* Globle.m */,
-				E1FA12A51AB148B1005EDA1D /* FMLrcView.h */,
-				E1FA12A61AB148B1005EDA1D /* FMLrcView.m */,
 				E1FA12CA1AB14CEF005EDA1D /* NSDate+Additions.h */,
 				E1FA12CB1AB14CEF005EDA1D /* NSDate+Additions.m */,
 				E1FA12CC1AB14CEF005EDA1D /* NSError+Additions.h */,
@@ -1736,7 +1731,6 @@
 				F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */,
 				F2E558A81B164D420080F9C9 /* MJRefreshBaseView.m in Sources */,
 				F29290291ADFC74B0086E8D4 /* phoneForResetVC.m in Sources */,
-				E1FA12A91AB148B1005EDA1D /* FMLrcView.m in Sources */,
 				F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */,
 				F216ACC61BD554110074ADF4 /* LineSlider.m in Sources */,
 				E11246441AAAB1F20014D461 /* ASIDataDecompressor.m in Sources */,
