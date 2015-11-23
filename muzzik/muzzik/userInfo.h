@@ -58,6 +58,7 @@
 @property (nonatomic,assign) NSInteger notificationNumParticipationTopic;
 @property (nonatomic,assign) BOOL notificationNumParticipationTopicNew;
 @property (nonatomic,retain) UIImageView *playNowImageView;
+@property (nonatomic,retain) NSMutableDictionary *followDic;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

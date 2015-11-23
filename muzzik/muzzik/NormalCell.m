@@ -22,27 +22,26 @@
 -(void)setup{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 36, 50, 50)];
+    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 16, 50, 50)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
     [self addSubview:_userImage];
-    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 39, 8, 8)];
+    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 17, 8, 8)];
     [self addSubview:_repostImage];
-    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 38, 150, 10)];
+    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 16, 150, 10)];
     [_repostUserName setTextColor:Color_Additional_5];
     [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:9]];
     [self addSubview:_repostUserName];
     
     _songModel = [muzzik new];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 15, 96, 9)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 48, 96, 9)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
-    _timeStamp.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 15, 9, 9)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 50, 8, 8)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self.contentView addSubview:_timeImage];
     
@@ -51,12 +50,12 @@
     [_privateImage setHidden:YES];
     [self addSubview:_privateImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, SCREEN_WIDTH-120, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
     [self.contentView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 66, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];

@@ -11,6 +11,10 @@
 @implementation muzzik
 -(NSMutableArray*)makeMuzziksByMuzzikArray:(NSMutableArray *)array{
     NSMutableArray *muzziks = [NSMutableArray array];
+    userInfo *user = [userInfo shareClass];
+    if (!user.followDic) {
+        user.followDic = [NSMutableDictionary dictionary];
+    }
     for (NSDictionary *dic in array) {
         muzzik *newmuzzik = [muzzik new];
         newmuzzik.muzzik_id = [dic objectForKey:@"_id"];
@@ -48,6 +52,7 @@
         newmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
         newmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
         newmuzzik.MuzzikUser.isFollow =[[[dic objectForKey:@"user"] objectForKey:@"isFollow"] boolValue];
+        [user.followDic setValue:[[dic objectForKey:@"user"] objectForKey:@"isFollow"] forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
         newmuzzik.MuzzikUser.isFans =[[[dic objectForKey:@"user"] objectForKey:@"isFans"] boolValue];
         newmuzzik.music = [music new];
         newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];

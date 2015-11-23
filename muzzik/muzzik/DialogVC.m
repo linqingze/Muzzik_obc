@@ -222,13 +222,13 @@
     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
     _muzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 36, 50, 50)];
+    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 16, 50, 50)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
     
     [_muzzikView addSubview:_userImage];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 15, 96, 9)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 48, 96, 9)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
@@ -237,11 +237,11 @@
     
     
     [_muzzikView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 15, 9, 9)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 50, 8, 8)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [_muzzikView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-96, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, SCREEN_WIDTH-96, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
@@ -251,7 +251,7 @@
     [_muzzikView addSubview:MprivateImage];
     
     [_muzzikView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 16, 100, SCREEN_WIDTH-32, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 16, 78, SCREEN_WIDTH-32, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     
@@ -2139,7 +2139,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }else{
             _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
         }
-        
+        [_timeStamp sizeToFit];
+        [_timeImage setFrame:CGRectMake(CGRectGetMaxX(_timeStamp.frame)+3, _timeImage.frame.origin.y, _timeImage.frame.size.width, _timeImage.frame.size.height)];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakreq = requestForm;
