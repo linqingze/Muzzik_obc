@@ -35,7 +35,7 @@
 @property (nonatomic) UIButton *shareButton;
 @property (nonatomic) UIButton *commentButton;
 @property (nonatomic) NSString *colorName;
-@property (nonatomic,weak) id<CellDelegate> delegate;
+@property (nonatomic,weak) UIViewController<CellDelegate> *delegate;
 @property (nonatomic) muzzik *songModel;
 @property (nonatomic) NSString *muzzik_id;
 @property (nonatomic) BOOL isMoved;
@@ -45,5 +45,7 @@
 @property (nonatomic) BOOL isPlaying;
 @property (nonatomic) UIImageView *poImage;
 @property (nonatomic) UIImageView *privateImage;
+@property (nonatomic,retain) UIButton *attentionButton;
+@property (nonatomic,assign) BOOL isFollow;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end

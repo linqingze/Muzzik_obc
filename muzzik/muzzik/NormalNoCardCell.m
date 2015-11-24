@@ -52,6 +52,11 @@
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
     [self.contentView addSubview:_userName];
+    _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
+    [_attentionButton setImage:[UIImage imageNamed:@"followImageSQ"] forState:UIControlStateNormal];
+    [_attentionButton setHidden:YES];
+    [_attentionButton addTarget:self action:@selector(getAttention) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_attentionButton];
     _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 66, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
@@ -260,5 +265,60 @@
 
 -(void)goToUser{
     [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+}
+
+-(void)setIsFollow:(BOOL)isFollow{
+    
+    if (isFollow) {
+        [self.attentionButton setHidden:YES];
+    }else{
+        [self.attentionButton setHidden:NO];
+        
+    }
+}
+
+-(void) getAttention{
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        [_attentionButton setImage:[UIImage imageNamed:@"followedImageSQ"] forState:UIControlStateNormal];
+        [UIView animateWithDuration:1 animations:^{
+            [_attentionButton setAlpha:0];
+        } completion:^(BOOL finished) {
+            [_attentionButton setImage:[UIImage imageNamed:@"followImageSQ"] forState:UIControlStateNormal];
+            [_attentionButton setHidden:YES];
+            [_attentionButton setAlpha:1];
+        }];
+        [user.followDic setValue:[NSNumber numberWithBool:YES] forKey:_songModel.MuzzikUser.user_id];
+        
+        MuzzikUser *attentionuser = [MuzzikUser new];
+        attentionuser.user_id = _songModel.MuzzikUser.user_id;
+        attentionuser.isFollow = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+        
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:_songModel.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            
+        }];
+        [requestForm startAsynchronous];
+
+    }else{
+        
+        [userInfo checkLoginWithVC:self.delegate];
+    }
 }
 @end

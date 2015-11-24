@@ -106,6 +106,7 @@
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNewSendMuzzik:) name:String_SendNewMuzzikDataSource_update object:nil];
@@ -681,7 +682,7 @@
         if (dic) {
             [self.trendMuzziks removeAllObjects];
             muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            NSArray *array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.trendMuzziks) {
@@ -781,7 +782,7 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            NSArray *array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.trendMuzziks) {
@@ -1038,7 +1039,6 @@
     }else{
         tempMuzzik = [self.trendMuzziks objectAtIndex:indexPath.row];
     }
-    NSLog(@"%@",[tempMuzzik.date class]);
     if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"])
     {
         if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
@@ -1082,7 +1082,13 @@
                     
                 }];
 
-                
+                if (tableView == trendTableView) {
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 [cell.repostImage setHidden:NO];
                 cell.repostUserName.text = tempMuzzik.reposter.name;
@@ -1093,6 +1099,7 @@
                 cell.isReposted = tempMuzzik.isReposted;
                 cell.index = indexPath.row;
                 cell.muzzikMessage.delegate = self;
+                
                 CGFloat textHeight = [MuzzikItem heightForLabel:cell.muzzikMessage WithText:cell.muzzikMessage.text];
                 if (textHeight>limitHeight) {
                     [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, limitHeight)];
@@ -1181,7 +1188,13 @@
                     [cell.privateImage setHidden:YES];
                     [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-120, 20)];
                 }
-                
+                if (tableView == trendTableView) {
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
                 cell.repostUserName.text = @"";
                 [cell.repostImage setHidden:YES];
                 cell.muzzikMessage.text = tempMuzzik.message;
@@ -1310,6 +1323,13 @@
                 }else{
                     cell.isPlaying = NO;
                 }
+                if (tableView == trendTableView) {
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 if (tempMuzzik.isprivate ) {
                     [cell.privateImage setHidden:NO];
@@ -1427,6 +1447,13 @@
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
+                }
+                if (tableView == trendTableView) {
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                    }else{
+                        cell.isFollow = NO;
+                    }
                 }
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (tableView == trendTableView) {
@@ -2050,7 +2077,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 trendLastId = [dic objectForKey:@"tail"];
                 [self.trendMuzziks removeAllObjects];
                 muzzik *muzzikToy = [muzzik new];
-                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                NSArray *array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
                 for (muzzik *tempmuzzik in array) {
                     BOOL isContained = NO;
                     for (muzzik *arrayMuzzik in self.trendMuzziks) {
@@ -2065,6 +2092,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                     }
                     isContained = NO;
                 }
+                [trendTableView reloadData];
             }
         }
         
@@ -2079,7 +2107,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             if (dic) {
                 
                 muzzik *muzzikToy = [muzzik new];
-                NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+                NSArray *array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
                 for (muzzik *tempmuzzik in array) {
                     BOOL isContained = NO;
                     for (muzzik *arrayMuzzik in self.trendMuzziks) {
@@ -2128,18 +2156,18 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                         }
                         [MuzzikItem SetUserInfoWithMuzziks:self.trendMuzziks title:Constant_userInfo_square description:nil];
                         
-                        trendLastId = [dic objectForKey:@"tail"];;
-                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                            [trendTableView reloadData];
-                            [trendTableView headerEndRefreshing];
-                        });
+                        trendLastId = [dic objectForKey:@"tail"];
+                        [trendTableView reloadData];
+                        
+//                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+//                            
+//                        });
                         
                     }
                     
                 }];
                 [requestCard setFailedBlock:^{
-                    
-                    [trendTableView headerEndRefreshing];
+                    [trendTableView reloadData];
                 }];
                 [requestCard startAsynchronous];
                 
@@ -2914,5 +2942,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self.navigationController pushViewController:showvc animated:YES];
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 
+}
+-(void)dataSourceUserUpdate:(id)sender{
+    [trendTableView reloadData];
 }
 @end

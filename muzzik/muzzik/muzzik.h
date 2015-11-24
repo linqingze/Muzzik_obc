@@ -39,5 +39,5 @@
 @property (nonatomic,copy) NSString *replystring;
 -(NSMutableArray*)makeMuzziksByMuzzikArray:(NSMutableArray *)array;
 -(NSMutableArray*)makeMuzziksByMusicArray:(NSMutableArray *)array;
-
+-(NSMutableArray*)makeMuzziksNeedsSetUserByMuzzikArray:(NSMutableArray *)array;
 @end
