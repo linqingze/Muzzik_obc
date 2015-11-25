@@ -69,6 +69,9 @@
     ReFreshPoImageDic = [NSMutableDictionary dictionary];
     self.uid = [userInfo shareClass].uid;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
+    if ([self.requstType isEqualToString:@"moved"]) {
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
+    }
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     // [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -108,7 +111,14 @@
         if (dic) {
             page = 1;
             muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            NSArray *array;
+            if ([self.requstType isEqualToString:@"moved"]) {
+                array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }else{
+                array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }
+
+            
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.muzziks) {
@@ -169,7 +179,12 @@
         if (dic) {
             page++;
             muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            NSArray *array;
+            if ([self.requstType isEqualToString:@"moved"]) {
+                array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }else{
+                array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.muzziks) {
@@ -329,6 +344,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    userInfo *user = [userInfo shareClass];
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
     if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] || [tempMuzzik.type isEqualToString:@"muzzikCard"])
@@ -336,11 +352,24 @@
         if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length] == 0) {
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
+                
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
+                }
+                if ([self.requstType isEqualToString:@"moved"]) {
+                    cell.indexpath = indexPath;
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
+                    }else{
+                        cell.isFollow = NO;
+                    }
                 }
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 if (tempMuzzik.isprivate ) {
@@ -417,12 +446,25 @@
             }
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
                 }
+                if ([self.requstType isEqualToString:@"moved"]) {
+                    cell.indexpath = indexPath;
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
+
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                         [cell.userImage setAlpha:0];
@@ -502,6 +544,7 @@
                 }else{
                     cell.isPlaying = NO;
                 }
+                
                 cell.delegate = self;
                 cell.cardTitle.text = tempMuzzik.title;
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
@@ -540,12 +583,25 @@
         }else{
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
                 }
+                if ([self.requstType isEqualToString:@"moved"]) {
+                    cell.indexpath = indexPath;
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
+
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 if (tempMuzzik.isprivate ) {
                     [cell.privateImage setHidden:NO];
@@ -630,12 +686,25 @@
             }
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
                 }
+                if ([self.requstType isEqualToString:@"moved"]) {
+                    cell.indexpath = indexPath;
+                    if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }
+
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
                         [cell.userImage setAlpha:0];
@@ -966,7 +1035,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
     if (dic) {
         muzzik *muzzikToy = [muzzik new];
-        NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+        NSArray *array;
+        if ([self.requstType isEqualToString:@"moved"]) {
+            array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
+        }else{
+            array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+        }
         for (muzzik *tempmuzzik in array) {
             BOOL isContained = NO;
             for (muzzik *arrayMuzzik in self.muzziks) {
@@ -1010,7 +1084,12 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if (dic) {
             [self.muzziks removeAllObjects];
             muzzik *muzzikToy = [muzzik new];
-            NSArray *array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            NSArray *array;
+            if ([self.requstType isEqualToString:@"moved"]) {
+                array = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }else{
+                array = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            }
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.muzziks) {
@@ -1540,5 +1619,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [MytableView reloadRowsAtIndexPaths:[NSArray arrayWithObjects:indexPath,nil] withRowAnimation:UITableViewRowAnimationNone];
     }
     
+}
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MytableView reloadData];
+    });
 }
 @end

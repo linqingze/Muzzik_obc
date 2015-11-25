@@ -112,8 +112,24 @@
         newmuzzik.MuzzikUser.gender = [[dic objectForKey:@"user"] objectForKey:@"gender"];
         newmuzzik.MuzzikUser.name = [[dic objectForKey:@"user"] objectForKey:@"name"];
         newmuzzik.MuzzikUser.isFollow =[[[dic objectForKey:@"user"] objectForKey:@"isFollow"] boolValue];
-        [user.followDic setValue:[[dic objectForKey:@"user"] objectForKey:@"isFollow"] forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
         newmuzzik.MuzzikUser.isFans =[[[dic objectForKey:@"user"] objectForKey:@"isFans"] boolValue];
+        newmuzzik.isNewDataForAttention = YES;
+        if (newmuzzik.MuzzikUser.isFollow) {
+            if (newmuzzik.MuzzikUser.isFans) {
+                [user.followDic setValue:Friend_follow_Each forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
+            }else{
+                [user.followDic setValue:Friend_isFollow forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
+            }
+        }else{
+            if (newmuzzik.MuzzikUser.isFans) {
+                [user.followDic setValue:Friend_Isfans forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
+            }else{
+                [user.followDic setValue:Friend_strange forKey:[[dic objectForKey:@"user"] objectForKey:@"_id"]];
+            }
+        }
+        
+        
+        
         newmuzzik.music = [music new];
         newmuzzik.music.music_id = [[dic objectForKey:@"music"] objectForKey:@"_id"];
         newmuzzik.music.artist = [[dic objectForKey:@"music"] objectForKey:@"artist"];

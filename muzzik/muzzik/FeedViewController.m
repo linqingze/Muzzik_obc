@@ -488,8 +488,13 @@
     
 }
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
-    [notifyBtn setHidden:YES];
-    [notifyBtn removeFromSuperview];
+    [UIView animateWithDuration:1 animations:^{
+        [notifyBtn setAlpha:0];
+    } completion:^(BOOL finished) {
+        [notifyBtn setHidden:YES];
+        [notifyBtn removeFromSuperview];
+    }];
+    
 }
 -(void)activityShareAction:(UIButton *)sender{
     
@@ -1045,6 +1050,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
@@ -1084,7 +1090,11 @@
 
                 if (tableView == trendTableView) {
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
                     }else{
                         cell.isFollow = NO;
                     }
@@ -1152,6 +1162,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
@@ -1190,7 +1201,11 @@
                 }
                 if (tableView == trendTableView) {
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
                     }else{
                         cell.isFollow = NO;
                     }
@@ -1318,6 +1333,7 @@
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
@@ -1325,7 +1341,11 @@
                 }
                 if (tableView == trendTableView) {
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
                     }else{
                         cell.isFollow = NO;
                     }
@@ -1443,6 +1463,7 @@
             else if([tempMuzzik.type isEqualToString:@"normal"]){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
                 cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
@@ -1450,7 +1471,11 @@
                 }
                 if (tableView == trendTableView) {
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        cell.isFollow = [[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] boolValue];
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                            cell.isFollow = YES;
+                        }else{
+                            cell.isFollow = NO;
+                        }
                     }else{
                         cell.isFollow = NO;
                     }
@@ -2262,7 +2287,10 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                                     }
                                     
                                 }
-                                [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                                if (self.trendMuzziks && [[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] && tempDic) {
+                                    [self.trendMuzziks insertObject:[[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithObjects:tempDic, nil]][0] atIndex:1];
+                                }
+                                
                                 break;
                             }
                             
@@ -2943,7 +2971,26 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 
 }
--(void)dataSourceUserUpdate:(id)sender{
+-(void)scrollCell:(NSIndexPath *) indexpath{
+    [trendTableView scrollToRowAtIndexPath:indexpath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
+
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    userInfo *user = [userInfo shareClass];
+    MuzzikUser *muzzikuser = notify.object;
+    if (muzzikuser.isFollow) {
+        if (muzzikuser.isFans) {
+            [user.followDic setValue:Friend_follow_Each forKey:muzzikuser.user_id];
+        }else{
+            [user.followDic setValue:Friend_isFollow forKey:muzzikuser.user_id];
+        }
+    }else{
+        if (muzzikuser.isFans) {
+            [user.followDic setValue:Friend_Isfans forKey:muzzikuser.user_id];
+        }else{
+            [user.followDic setValue:Friend_strange forKey:muzzikuser.user_id];
+        }
+    }
     [trendTableView reloadData];
 }
 @end

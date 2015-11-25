@@ -59,6 +59,7 @@
 -(void)viewDidLoad{
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceUserUpdate:) name:String_UserDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataSourceMuzzikUpdate:) name:String_MuzzikDataSource_update object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
     [self initNagationBar:@"歌曲相关内容" leftBtn:Constant_backImage rightBtn:0];
@@ -121,7 +122,7 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
-            self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            self.muzziks = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
             lastId = [dic objectForKey:@"tail"];
             headId = [dic objectForKey:@"from"];
             [MytableView reloadData];
@@ -161,7 +162,9 @@
    
 }
 
-
+-(void)scrollCell:(NSIndexPath *) indexpath{
+    [MytableView scrollToRowAtIndexPath:indexpath atScrollPosition:UITableViewScrollPositionTop animated:YES];
+}
 
 - (void)refreshHeader
 {
@@ -177,7 +180,7 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
-            self.muzziks = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
+            self.muzziks = [muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]];
             lastId = [dic objectForKey:@"tail"];
             headId = [dic objectForKey:@"from"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -209,7 +212,7 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         if (dic) {
             muzzik *muzzikToy = [muzzik new];
-            [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]]];
+            [self.muzziks addObjectsFromArray:[muzzikToy makeMuzziksNeedsSetUserByMuzzikArray:[dic objectForKey:@"muzziks"]]];
             lastId = [dic objectForKey:@"tail"];
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MytableView reloadData];
@@ -328,6 +331,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    userInfo *user = [userInfo shareClass];
     Globle *glob = [Globle shareGloble];
     muzzik *tempMuzzik = [self.muzziks objectAtIndex:indexPath.row];
     if ([tempMuzzik.type isEqualToString:@"repost"] || [tempMuzzik.type isEqualToString:@"normal"] )
@@ -336,11 +340,21 @@
             
             if ([tempMuzzik.type isEqualToString:@"repost"] ){
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
+                }
+                if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                    if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        cell.isFollow = YES;
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }else{
+                    cell.isFollow = NO;
                 }
                 cell.userName.text = tempMuzzik.MuzzikUser.name;
                 if (tempMuzzik.isprivate ) {
@@ -349,7 +363,7 @@
                     [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
                 }else{
                     [cell.privateImage setHidden:YES];
-                    [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-120, 20)];
+                    [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-160, 20)];
                 }
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
@@ -426,11 +440,21 @@
             }
             else {
                 NormalNoCardCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalNoCardCell" forIndexPath:indexPath];
-                cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+                cell.songModel = tempMuzzik;
+                cell.indexpath = indexPath;
                 if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                     cell.isPlaying = YES;
                 }else{
                     cell.isPlaying = NO;
+                }
+                if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                    if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        cell.isFollow = YES;
+                    }else{
+                        cell.isFollow = NO;
+                    }
+                }else{
+                    cell.isFollow = NO;
                 }
                 [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
                     if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
@@ -462,7 +486,7 @@
                     [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
                 }else{
                     [cell.privateImage setHidden:YES];
-                    [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-120, 20)];
+                    [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-160, 20)];
                 }
                 cell.repostUserName.text = @"";
                 [cell.repostImage setHidden:YES];
@@ -518,11 +542,22 @@
         }
         else{if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-            cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+            cell.songModel = tempMuzzik;
+            cell.indexpath = indexPath;
+            
             if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
                 cell.isPlaying = NO;
+            }
+            if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                    cell.isFollow = YES;
+                }else{
+                    cell.isFollow = NO;
+                }
+            }else{
+                cell.isFollow = NO;
             }
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             if (tempMuzzik.isprivate ) {
@@ -531,7 +566,7 @@
                 [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
-                [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-120, 20)];
+                [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-160, 20)];
             }
             
             [cell.userImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,tempMuzzik.MuzzikUser.avatar,Image_Size_Small]] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
@@ -599,7 +634,8 @@
         }
         else {
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];
-            cell.songModel = [self.muzziks objectAtIndex:indexPath.row];
+            cell.songModel = tempMuzzik;
+            cell.indexpath = indexPath;
             if ([tempMuzzik.muzzik_id isEqualToString:[MuzzikPlayer shareClass].playingMuzzik.muzzik_id] &&!glob.isPause && glob.isPlaying) {
                 cell.isPlaying = YES;
             }else{
@@ -616,7 +652,15 @@
                 
                 
             }];
-            
+            if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
+                if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                    cell.isFollow = YES;
+                }else{
+                    cell.isFollow = NO;
+                }
+            }else{
+                cell.isFollow = NO;
+            }
             cell.userName.text = tempMuzzik.MuzzikUser.name;
             if (tempMuzzik.isprivate ) {
                 [cell.privateImage setHidden:NO];
@@ -624,7 +668,7 @@
                 [cell.privateImage setFrame:CGRectMake(cell.userName.frame.origin.x+cell.userName.frame.size.width+2, cell.userName.frame.origin.y, 20, 20)];
             }else{
                 [cell.privateImage setHidden:YES];
-                [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-120, 20)];
+                [cell.userName setFrame:CGRectMake(80, cell.userName.frame.origin.y, SCREEN_WIDTH-160, 20)];
             }
             
             cell.repostUserName.text = @"";
@@ -1284,5 +1328,9 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     }
     
 }
-
+-(void)dataSourceUserUpdate:(NSNotification *)notify{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [MytableView reloadData];
+    });
+}
 @end

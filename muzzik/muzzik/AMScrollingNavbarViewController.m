@@ -48,6 +48,9 @@
     [self.headerView setAlpha:1];
     
 }
+-(void)dealloc{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 -(void)networkErrorShow{
     if (!_networkView) {
         _networkView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 40)];

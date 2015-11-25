@@ -36,6 +36,7 @@
 @property (nonatomic,copy) NSString *repostDate;
 @property (nonatomic,assign) BOOL isReposted;
 @property (nonatomic,assign) BOOL isCheckFollow;
+@property (nonatomic,assign) BOOL isNewDataForAttention;
 @property (nonatomic,copy) NSString *replystring;
 -(NSMutableArray*)makeMuzziksByMuzzikArray:(NSMutableArray *)array;
 -(NSMutableArray*)makeMuzziksByMusicArray:(NSMutableArray *)array;

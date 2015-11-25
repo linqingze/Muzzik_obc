@@ -231,4 +231,9 @@
 
 #define Constant_Comment            @"Coment"
 #define Constant_showComment        @"showComment"
+
+#define Friend_follow_Each                  @"3"
+#define Friend_Isfans                       @"1"
+#define Friend_isFollow                     @"2"
+#define Friend_strange                      @"0"
 #endif

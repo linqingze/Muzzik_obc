@@ -46,7 +46,9 @@
 @property (nonatomic) UIImageView *poImage;
 @property (nonatomic) UIImageView *privateImage;
 @property (nonatomic) NSString *colorstring;
+@property (nonatomic,retain) NSIndexPath *indexpath;
 @property (nonatomic,retain) UIButton *attentionButton;
+@property (nonatomic,retain) UIButton *notifyBtn;
 @property (nonatomic,assign) BOOL isFollow;
 -(void) colorViewWithColorString:(NSString *) colorString;
 @end

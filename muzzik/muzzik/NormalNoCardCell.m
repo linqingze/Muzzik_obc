@@ -47,7 +47,7 @@
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self.contentView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, 180, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
@@ -155,6 +155,55 @@
 -(void)playMusicAction:(id) sender{
     NSLog(@"play");
     [self.delegate playSongWithSongModel:self.songModel];
+    userInfo *user = [userInfo shareClass];
+    if (_songModel.isNewDataForAttention && !user.hasTeachToFollow && !_songModel.MuzzikUser.isFollow) {
+        user.hasTeachToFollow = YES;
+       [MuzzikItem addObjectToLocal:[NSNumber numberWithBool:YES] ForKey:@"User_first_Listen_song"];
+        if ([self convertPoint:CGPointMake(0, 0) toView:self.delegate.view].y<0) {
+            if ([self.delegate respondsToSelector:@selector(scrollCell:)]) {
+                [self.delegate performSelector:@selector(scrollCell:) withObject:self.indexpath];
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
+                [_notifyBtn setImage:[UIImage imageNamed:@"guide"] forState:UIControlStateNormal];
+                [self.contentView addSubview:_notifyBtn];
+                [UIView beginAnimations:@"upAndDown" context:NULL];
+                [UIView setAnimationDuration:1];
+                
+                [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationRepeatAutoreverses:YES];
+                [UIView setAnimationRepeatCount:3];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-190, 21, 130, 34)];
+                [UIView commitAnimations];
+            });
+        }else{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
+            [_notifyBtn setImage:[UIImage imageNamed:@"guide"] forState:UIControlStateNormal];
+            [self.contentView addSubview:_notifyBtn];
+            [UIView beginAnimations:@"leftAndRight" context:NULL];
+            [UIView setAnimationDuration:1];
+            
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+            [UIView setAnimationDelegate:self];
+            [UIView setAnimationRepeatAutoreverses:YES];
+            [UIView setAnimationRepeatCount:3];
+            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-190, 21, 130, 34)];
+            [UIView commitAnimations];
+            });
+        }
+        
+    }
+}
+-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    [UIView animateWithDuration:0.5 animations:^{
+        [_notifyBtn setAlpha:0];
+    } completion:^(BOOL finished) {
+        [_notifyBtn setHidden:YES];
+        [_notifyBtn removeFromSuperview];
+    }];
+    
 }
 -(void) colorViewWithColorString:(NSString *) colorString{
     UIColor *color;
@@ -292,6 +341,7 @@
         
         MuzzikUser *attentionuser = [MuzzikUser new];
         attentionuser.user_id = _songModel.MuzzikUser.user_id;
+        attentionuser.isFans = _songModel.MuzzikUser.isFans;
         attentionuser.isFollow = YES;
         [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
         
