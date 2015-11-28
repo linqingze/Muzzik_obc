@@ -38,12 +38,12 @@
     [self addSubview:_repostUserName];
     
     _songModel = [muzzik new];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 48, 96, 8)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, 96, 8)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
     _timeStamp.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 50, 8, 8)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 52, 8, 8)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self.contentView addSubview:_timeImage];
     
@@ -57,7 +57,7 @@
     [_attentionButton setHidden:YES];
     [_attentionButton addTarget:self action:@selector(getAttention) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:_attentionButton];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 66, SCREEN_WIDTH-110, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 71, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
@@ -165,7 +165,7 @@
             }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
-                [_notifyBtn setImage:[UIImage imageNamed:@"guide"] forState:UIControlStateNormal];
+                [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
                 [self.contentView addSubview:_notifyBtn];
                 [UIView beginAnimations:@"upAndDown" context:NULL];
                 [UIView setAnimationDuration:1];
@@ -174,13 +174,13 @@
                 [UIView setAnimationDelegate:self];
                 [UIView setAnimationRepeatAutoreverses:YES];
                 [UIView setAnimationRepeatCount:3];
-                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-190, 21, 130, 34)];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
                 [UIView commitAnimations];
             });
         }else{
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
-            [_notifyBtn setImage:[UIImage imageNamed:@"guide"] forState:UIControlStateNormal];
+            [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
             [self.contentView addSubview:_notifyBtn];
             [UIView beginAnimations:@"leftAndRight" context:NULL];
             [UIView setAnimationDuration:1];
@@ -189,7 +189,7 @@
             [UIView setAnimationDelegate:self];
             [UIView setAnimationRepeatAutoreverses:YES];
             [UIView setAnimationRepeatCount:3];
-            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-190, 21, 130, 34)];
+            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
             [UIView commitAnimations];
             });
         }
@@ -369,6 +369,8 @@
     }else{
         
         [userInfo checkLoginWithVC:self.delegate];
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        [app.tabviewController setTabBarHidden:YES animated:YES];
     }
 }
 @end

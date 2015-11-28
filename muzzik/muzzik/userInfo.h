@@ -60,6 +60,9 @@
 @property (nonatomic,retain) UIImageView *playNowImageView;
 @property (nonatomic,assign) BOOL hasTeachToFollow;
 @property (nonatomic,retain) NSMutableDictionary *followDic;
+
+
+
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

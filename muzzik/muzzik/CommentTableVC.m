@@ -345,18 +345,18 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     if ([[components allKeys] containsObject:@"topic_id"]) {
         TopicDetail *topicDetail = [[TopicDetail alloc] init];
         topicDetail.topic_id = [components objectForKey:@"topic_id"];
-        [self.navigationController pushViewController:topicDetail animated:YES];
+        [self.keeper.navigationController pushViewController:topicDetail animated:YES];
     }else if([[components allKeys] containsObject:@"at_name"]){
         
         userInfo *user = [userInfo shareClass];
         if ([[components objectForKey:@"at_name"] isEqualToString:user.name]) {
             UserHomePage *home = [[UserHomePage alloc] init];
             home.isPush = YES;
-            [self.navigationController pushViewController:home animated:YES];
+            [self.keeper.navigationController pushViewController:home animated:YES];
         }else{
             userDetailInfo *uInfo = [[userDetailInfo alloc] init];
             uInfo.uid = [[components objectForKey:@"at_name"] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            [self.navigationController pushViewController:uInfo animated:YES];
+            [self.keeper.navigationController pushViewController:uInfo animated:YES];
         }
     }
 }

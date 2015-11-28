@@ -51,7 +51,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"编辑信息" leftBtn:Constant_backImage rightBtn:2];
+    [self initNagationBar:@"编辑信息" leftBtn:Constant_backImage rightBtn:5];
     UIButton *topicButton = [[UIButton alloc] initWithFrame:CGRectMake(view_padding, 16, 80, 20)];
     topicButton.layer.cornerRadius = 3;
     topicButton.clipsToBounds = YES;
@@ -304,6 +304,8 @@
 
 -(void)AtFriend{
     FriendVC *friendvc = [[FriendVC alloc] init];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    mobject.atFriendFrom = At_From_Message;
     [self.navigationController pushViewController:friendvc animated:YES];
 }
 

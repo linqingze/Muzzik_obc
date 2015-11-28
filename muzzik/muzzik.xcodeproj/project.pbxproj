@@ -83,6 +83,7 @@
 		F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B01B3DED940093AE8A /* NotifyButton.m */; };
 		F20553B61B400C840093AE8A /* HotSearchTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B51B400C840093AE8A /* HotSearchTopic.m */; };
 		F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */; };
+		F20740291C096F74005D8FBE /* hot.muzziks in Resources */ = {isa = PBXBuildFile; fileRef = F20740281C096F74005D8FBE /* hot.muzziks */; };
 		F20878951B9D3C4600A9FA45 /* NotificationCenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878941B9D3C4600A9FA45 /* NotificationCenterViewController.m */; };
 		F20878AE1B9EE5B600A9FA45 /* NotificationCategoryCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878AD1B9EE5B600A9FA45 /* NotificationCategoryCell.m */; };
 		F20878B71B9F2A7F00A9FA45 /* badgeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878B61B9F2A7F00A9FA45 /* badgeImageView.m */; };
@@ -125,6 +126,7 @@
 		F21BFD481BDA97F900FE857E /* STKLocalFileDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD3D1BDA97F900FE857E /* STKLocalFileDataSource.m */; };
 		F21BFD491BDA97F900FE857E /* STKQueueEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD3F1BDA97F900FE857E /* STKQueueEntry.m */; };
 		F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */; };
+		F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
@@ -395,6 +397,7 @@
 		F20553B51B400C840093AE8A /* HotSearchTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchTopic.m; sourceTree = "<group>"; };
 		F20553B71B400D9D0093AE8A /* HotSearchTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HotSearchTopicCell.h; sourceTree = "<group>"; };
 		F20553B81B400D9D0093AE8A /* HotSearchTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HotSearchTopicCell.m; sourceTree = "<group>"; };
+		F20740281C096F74005D8FBE /* hot.muzziks */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = hot.muzziks; sourceTree = "<group>"; };
 		F20878931B9D3C4600A9FA45 /* NotificationCenterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCenterViewController.h; sourceTree = "<group>"; };
 		F20878941B9D3C4600A9FA45 /* NotificationCenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotificationCenterViewController.m; sourceTree = "<group>"; };
 		F20878AC1B9EE5B600A9FA45 /* NotificationCategoryCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotificationCategoryCell.h; sourceTree = "<group>"; };
@@ -477,6 +480,8 @@
 		F21BFD401BDA97F900FE857E /* StreamingKit-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "StreamingKit-Prefix.pch"; sourceTree = "<group>"; };
 		F21BFD4A1BDAA32000FE857E /* UIButton+autoCycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+autoCycle.h"; sourceTree = "<group>"; };
 		F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+autoCycle.m"; sourceTree = "<group>"; };
+		F21D57CA1C085E4300C7FA45 /* SettingNewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingNewCell.h; sourceTree = "<group>"; };
+		F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingNewCell.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
@@ -777,6 +782,7 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F20740281C096F74005D8FBE /* hot.muzziks */,
 				E11245F61AAAAE4B0014D461 /* Info.plist */,
 				E11245F71AAAAE4B0014D461 /* main.m */,
 				F2FD3B051B30617F001B2332 /* popWords.plist */,
@@ -1142,6 +1148,8 @@
 			children = (
 				F2F089D61B00920D00FB1639 /* settingSystemVC.h */,
 				F2F089D71B00920D00FB1639 /* settingSystemVC.m */,
+				F21D57CA1C085E4300C7FA45 /* SettingNewCell.h */,
+				F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */,
 				F2F089DE1B009CCA00FB1639 /* SettingCell.h */,
 				F2F089DF1B009CCA00FB1639 /* SettingCell.m */,
 				F2F68F591B23FAEA005F19E6 /* DraftBoxVC.h */,
@@ -1639,6 +1647,7 @@
 				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
+				F20740291C096F74005D8FBE /* hot.muzziks in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
 				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
 				E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */,
@@ -1707,6 +1716,7 @@
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
 				F21BFD441BDA97F900FE857E /* STKCoreFoundationDataSource.m in Sources */,
+				F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */,
 				F2E380001B790663008FF496 /* MuzzikRequestCenter.m in Sources */,
 				F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */,
 				F26131281ADE23DB0042F1D4 /* AFViewShaker.m in Sources */,

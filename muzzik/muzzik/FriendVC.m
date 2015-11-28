@@ -227,12 +227,12 @@
         MuzzikUser *muzzikuser = [friendArray[[array[0] integerValue] ][[array[1] integerValue]] objectForKey:@"user"];
         message = [message stringByAppendingString:[NSString stringWithFormat:@"@%@ ",muzzikuser.name]];
     }
-
+    muzzikobject.atFriendFrom = @"";
     muzzikobject.tempmessage = message;
     [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    AtFriendSearchVC *atsearch = [[AtFriendSearchVC alloc]  init];
+    AtFriendSearchVC *atsearch = [[AtFriendSearchVC alloc] init];
     atsearch.friendArray = friendArray;
     atsearch.Fdictionary = Fdictionary;
     atsearch.localUsers = allUsers;

@@ -236,4 +236,8 @@
 #define Friend_Isfans                       @"1"
 #define Friend_isFollow                     @"2"
 #define Friend_strange                      @"0"
+
+#define At_From_detail                      @"1"
+#define At_from_Dialog                      @"2"
+#define At_From_Message                     @"3"
 #endif

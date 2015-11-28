@@ -27,6 +27,7 @@
 @interface AppDelegate (){
     BOOL isLaunched;
     UIViewController *itemVC;
+    BOOL needsReplay;
 }
 
 @end
@@ -976,14 +977,22 @@
 //}
 -(void)onAudioSessionEvent:(NSNotification *)notify{
     NSLog(@"%@",notify.userInfo);
-    NSLog(@"all key%@",[notify.userInfo allKeys]);
+    Globle *glob = [Globle shareGloble];
     if ([[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionOptionKey"] && [[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionTypeKey"]) {
         if ([[notify.userInfo objectForKey:@"AVAudioSessionInterruptionOptionKey"] integerValue] == 1 && [[notify.userInfo objectForKey:@"AVAudioSessionInterruptionTypeKey"] integerValue] == 0) {
-            [[MuzzikPlayer shareClass].player resume];
+            if (needsReplay) {
+                [[MuzzikPlayer shareClass].player resume];
+                needsReplay = NO;
+            }
+            
         }
     }else if([[notify.userInfo allKeys] containsObject:@"AVAudioSessionInterruptionTypeKey"]){
         if ([[notify.userInfo objectForKey:@"AVAudioSessionInterruptionTypeKey"] integerValue] == 1) {
-            [[MuzzikPlayer shareClass].player pause];
+            if (glob.isPlaying && !glob.isPause) {
+                needsReplay = YES;
+                [[MuzzikPlayer shareClass].player pause];
+            }
+            
         }
     }
 }

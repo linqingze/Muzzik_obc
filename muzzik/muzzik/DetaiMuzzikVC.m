@@ -558,7 +558,7 @@
         }else{
             [requestDic setObject:[NSNumber numberWithBool:NO] forKey:@"private"];
         }
-        [requestDic setObject:commentToMuzzik.muzzik_id forKey:@"reply"];
+        [requestDic setValue:commentToMuzzik.muzzik_id forKey:@"reply"];
         [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
         __weak ASIHTTPRequest *weakShare = shareRequest;
         [shareRequest setCompletionBlock:^{
@@ -628,6 +628,8 @@
         if (growingTextView.text.length> commentText.length) {
             NSString *temp = [growingTextView.text substringFromIndex:[growingTextView.text length]-1];
             if ([temp isEqualToString:@"@"] || [temp isEqualToString:@"＠"]) {
+                MuzzikObject *mobject = [MuzzikObject shareClass];
+                mobject.atFriendFrom = At_From_detail;
                 FriendVC *friendvc = [[FriendVC alloc] init];
                 [self.navigationController pushViewController:friendvc animated:YES];
             }else if([temp isEqualToString:@"#"] || [temp isEqualToString:@"＃"]){

@@ -290,16 +290,16 @@
         CGFloat textHeight = [MuzzikItem heightForLabel:label WithText:label.text];
         if (textHeight>limitHeight) {
             if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+3;
+                return (int)(260+limitHeight+SCREEN_WIDTH*3/4)+8;
             }else{
-                return 243+limitHeight;
+                return 248+limitHeight;
             }
             
         }else{
             if (![tempMuzzik.image isKindOfClass:[NSNull class]] && [tempMuzzik.image length]>0) {
-                return (int)(260+textHeight+SCREEN_WIDTH*3/4)-7;
+                return (int)(260+textHeight+SCREEN_WIDTH*3/4)-2;
             }else{
-                return 243+(int)textHeight;
+                return 248+(int)textHeight;
             }
         }
     }else if([tempMuzzik.type isEqualToString:@"muzzikCard"]){
@@ -362,7 +362,7 @@
                 if ([self.requstType isEqualToString:@"moved"]) {
                     cell.indexpath = indexPath;
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
                         }else{
                             cell.isFollow = NO;
@@ -410,7 +410,7 @@
                 }else{
                     [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
                 }
-                [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(78+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+                [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -455,7 +455,7 @@
                 if ([self.requstType isEqualToString:@"moved"]) {
                     cell.indexpath = indexPath;
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
                         }else{
                             cell.isFollow = NO;
@@ -502,7 +502,7 @@
                 }else{
                     [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
                 }
-                [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(78+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
+                [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -592,7 +592,7 @@
                 if ([self.requstType isEqualToString:@"moved"]) {
                     cell.indexpath = indexPath;
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
                         }else{
                             cell.isFollow = NO;
@@ -650,7 +650,7 @@
                 }else{
                     [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
                 }
-                [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( 78+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
+                [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
@@ -695,7 +695,7 @@
                 if ([self.requstType isEqualToString:@"moved"]) {
                     cell.indexpath = indexPath;
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
-                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2) {
+                        if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
                         }else{
                             cell.isFollow = NO;
@@ -752,7 +752,7 @@
                 }else{
                     [cell.muzzikMessage setFrame:CGRectMake((int)floor(cell.muzzikMessage.frame.origin.x), (int)floor(cell.muzzikMessage.frame.origin.y), cell.muzzikMessage.frame.size.width, textHeight)];
                 }
-                [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(78+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
+                [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
                 cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];

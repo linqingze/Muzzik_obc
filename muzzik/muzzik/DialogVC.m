@@ -597,6 +597,8 @@
         if (growingTextView.text.length> commentText.length) {
             NSString *temp = [growingTextView.text substringFromIndex:[growingTextView.text length]-1];
             if ([temp isEqualToString:@"@"] || [temp isEqualToString:@"＠"]) {
+                MuzzikObject *mobject = [MuzzikObject shareClass];
+                mobject.atFriendFrom = At_from_Dialog;
                 FriendVC *friendvc = [[FriendVC alloc] init];
                 [self.navigationController pushViewController:friendvc animated:YES];
             }else if([temp isEqualToString:@"#"] || [temp isEqualToString:@"＃"]){
