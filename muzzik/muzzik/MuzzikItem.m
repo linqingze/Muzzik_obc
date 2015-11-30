@@ -887,7 +887,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [alterLabel setBackgroundColor:Color_NavigationBar];
         alterLabel.text = text;
         [alterLabel sizeToFit];
-        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-180, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
         alterLabel.layer.cornerRadius = 5;
         alterLabel.clipsToBounds = YES;
         alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
@@ -935,7 +935,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     mobject.lyricTipsLabel.text = text;
     [mobject.lyricTipsLabel sizeToFit];
-    [mobject.lyricTipsLabel setFrame:CGRectMake(SCREEN_WIDTH/2-mobject.lyricTipsLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, mobject.lyricTipsLabel.frame.size.width+20, mobject.lyricTipsLabel.frame.size.height+20)];
+    [mobject.lyricTipsLabel setFrame:CGRectMake(SCREEN_WIDTH/2-mobject.lyricTipsLabel.frame.size.width/2-10, SCREEN_HEIGHT-180, mobject.lyricTipsLabel.frame.size.width+20, mobject.lyricTipsLabel.frame.size.height+20)];
     mobject.lyricTipsLabel.layer.cornerRadius = 5;
     mobject.lyricTipsLabel.clipsToBounds = YES;
     [mobject.lyricTipsLabel setAlpha:0];

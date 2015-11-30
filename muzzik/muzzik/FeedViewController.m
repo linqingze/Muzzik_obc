@@ -361,19 +361,17 @@
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     addView = [[UIView alloc] initWithFrame:self.navigationController.view.bounds];
     coverImageView = [[UIImageView alloc] initWithFrame:self.navigationController.view.bounds];
-    if (fullImage) {
+    UIImageView *startSlogan;
+    
+    if (fullImage && sloganImage) {
         [coverImageView setImage:fullImage];
+        startSlogan =[[UIImageView alloc] initWithImage:sloganImage];
     }else{
         [coverImageView setImage:[UIImage imageNamed:@"startImage"]];
+        startSlogan =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
     }
     
     coverImageView.contentMode = UIViewContentModeScaleAspectFill;
-    UIImageView *startSlogan;
-    if (sloganImage) {
-        startSlogan =[[UIImageView alloc] initWithImage:sloganImage];
-    }else{
-        startSlogan =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
-    }
     CGFloat sizeScale = startSlogan.image.size.width/(SCREEN_WIDTH*0.9);
     if (sizeScale >= 1) {
         [startSlogan setFrame:CGRectMake(SCREEN_WIDTH*3/80, 64, startSlogan.image.size.width/sizeScale, startSlogan.image.size.height/sizeScale)];
@@ -1032,8 +1030,12 @@
                 }];
 
                 if (tableView == trendTableView) {
-                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 36, 45, 23)];
-                    [cell.userName setFrame:CGRectMake(80, 37, SCREEN_WIDTH-160, 20)];
+                    cell.userImage.frame = CGRectMake(16, 20, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 21, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 20, 150, 10);
+                    
+                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 39, 45, 23)];
+                    [cell.userName setFrame:CGRectMake(80, 41, SCREEN_WIDTH-160, 20)];
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
                         if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
@@ -1047,6 +1049,10 @@
                     [cell.timeImage setHidden:YES];
                     [cell.timeStamp setHidden:YES];
                 }else{
+                    cell.userImage.frame = CGRectMake(16, 16, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 17, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 16, 150, 10);
+                    
                     [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
                     [cell.userName setFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
                     cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -1146,8 +1152,12 @@
                 }];
                 
                 if (tableView == trendTableView) {
-                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 36, 45, 23)];
-                    [cell.userName setFrame:CGRectMake(80, 37, SCREEN_WIDTH-160, 20)];
+                    cell.userImage.frame = CGRectMake(16, 20, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 21, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 20, 150, 10);
+                    
+                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 39, 45, 23)];
+                    [cell.userName setFrame:CGRectMake(80, 41, SCREEN_WIDTH-160, 20)];
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
                         if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
@@ -1161,6 +1171,10 @@
                     [cell.timeImage setHidden:YES];
                     [cell.timeStamp setHidden:YES];
                 }else{
+                    cell.userImage.frame = CGRectMake(16, 16, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 17, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 16, 150, 10);
+                    
                     [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
                     [cell.userName setFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
                     cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -1290,8 +1304,12 @@
                     cell.isPlaying = NO;
                 }
                 if (tableView == trendTableView) {
-                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 36, 45, 23)];
-                    [cell.userName setFrame:CGRectMake(80, 37, SCREEN_WIDTH-160, 20)];
+                    cell.userImage.frame = CGRectMake(16, 20, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 21, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 20, 150, 10);
+                    
+                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 39, 45, 23)];
+                    [cell.userName setFrame:CGRectMake(80, 41, SCREEN_WIDTH-160, 20)];
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
                         if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
@@ -1305,6 +1323,10 @@
                     [cell.timeImage setHidden:YES];
                     [cell.timeStamp setHidden:YES];
                 }else{
+                    cell.userImage.frame = CGRectMake(16, 16, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 17, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 16, 150, 10);
+                    
                     [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
                     [cell.userName setFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
                     cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
@@ -1423,8 +1445,12 @@
                     cell.isPlaying = NO;
                 }
                 if (tableView == trendTableView) {
-                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 36, 45, 23)];
-                    [cell.userName setFrame:CGRectMake(80, 37, SCREEN_WIDTH-160, 20)];
+                    cell.userImage.frame = CGRectMake(16, 20, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 21, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 20, 150, 10);
+                    
+                    [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 39, 45, 23)];
+                    [cell.userName setFrame:CGRectMake(80, 41, SCREEN_WIDTH-160, 20)];
                     if ([[user.followDic allKeys] containsObject:tempMuzzik.MuzzikUser.user_id]) {
                         if (([[user.followDic objectForKey:tempMuzzik.MuzzikUser.user_id] integerValue] ^ 2) <2 || [user.uid isEqualToString:tempMuzzik.MuzzikUser.user_id]) {
                             cell.isFollow = YES;
@@ -1438,6 +1464,10 @@
                     [cell.timeImage setHidden:YES];
                     [cell.timeStamp setHidden:YES];
                 }else{
+                    cell.userImage.frame = CGRectMake(16, 16, 50, 50);
+                    cell.repostImage.frame = CGRectMake(66, 17, 8, 8);
+                    cell.repostUserName.frame = CGRectMake(80, 16, 150, 10);
+                    
                     [cell.attentionButton setFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
                     [cell.userName setFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
                     cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];

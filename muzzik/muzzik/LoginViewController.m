@@ -302,6 +302,7 @@
     [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] Method:PostMethod auth:YES];
     __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
     [requestsquare setCompletionBlock :^{
+        loginButton.userInteractionEnabled = YES;
         if ([weakrequestsquare responseStatusCode] == 200) {
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
@@ -350,6 +351,7 @@
         }
     }];
     [requestsquare setFailedBlock:^{
+        loginButton.userInteractionEnabled = YES;
         [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败"];
     }];
     [requestsquare startAsynchronous];
