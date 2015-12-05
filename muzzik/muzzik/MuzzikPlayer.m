@@ -259,6 +259,7 @@
         if (_isPlayBack) {
             [self playnow];
         }else{
+            [self.player stop];
             [self playNext];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"Muzzik_Player_PlayNewSong" object:nil];
         }
