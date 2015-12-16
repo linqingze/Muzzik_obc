@@ -99,6 +99,9 @@
 		F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */; };
 		F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */; };
 		F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EE51B6A48D100331101 /* IBActionSheet.m */; };
+		F20E15011C16E67C00793865 /* mainSquareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15001C16E67C00793865 /* mainSquareViewController.m */; };
+		F20E15041C17CDEA00793865 /* HJCarouselViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15031C17CDEA00793865 /* HJCarouselViewLayout.m */; };
+		F20E15071C17D4F500793865 /* squareCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15061C17D4F500793865 /* squareCollectionCell.m */; };
 		F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD681AF74A05008A71C0 /* SearchForSong.m */; };
 		F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6B1AF74B0C008A71C0 /* SearchForUser.m */; };
 		F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD6E1AF74B24008A71C0 /* SearchForTopic.m */; };
@@ -128,6 +131,8 @@
 		F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */; };
 		F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
+		F22721881C186F2700DFF9F7 /* SquareImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22721871C186F2700DFF9F7 /* SquareImageCell.m */; };
+		F227218B1C186F4500DFF9F7 /* SquareNoImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F227218A1C186F4500DFF9F7 /* SquareNoImageCell.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
 		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
@@ -427,6 +432,12 @@
 		F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTopic.m; sourceTree = "<group>"; };
 		F20C4EE41B6A48D100331101 /* IBActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IBActionSheet.h; sourceTree = "<group>"; };
 		F20C4EE51B6A48D100331101 /* IBActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IBActionSheet.m; sourceTree = "<group>"; };
+		F20E14FF1C16E67C00793865 /* mainSquareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainSquareViewController.h; sourceTree = "<group>"; };
+		F20E15001C16E67C00793865 /* mainSquareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainSquareViewController.m; sourceTree = "<group>"; };
+		F20E15021C17CDEA00793865 /* HJCarouselViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJCarouselViewLayout.h; sourceTree = "<group>"; };
+		F20E15031C17CDEA00793865 /* HJCarouselViewLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HJCarouselViewLayout.m; sourceTree = "<group>"; };
+		F20E15051C17D4F500793865 /* squareCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = squareCollectionCell.h; sourceTree = "<group>"; };
+		F20E15061C17D4F500793865 /* squareCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = squareCollectionCell.m; sourceTree = "<group>"; };
 		F20FDD671AF74A05008A71C0 /* SearchForSong.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForSong.h; sourceTree = "<group>"; };
 		F20FDD681AF74A05008A71C0 /* SearchForSong.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchForSong.m; sourceTree = "<group>"; };
 		F20FDD6A1AF74B0C008A71C0 /* SearchForUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchForUser.h; sourceTree = "<group>"; };
@@ -484,6 +495,10 @@
 		F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingNewCell.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
+		F22721861C186F2700DFF9F7 /* SquareImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquareImageCell.h; sourceTree = "<group>"; };
+		F22721871C186F2700DFF9F7 /* SquareImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareImageCell.m; sourceTree = "<group>"; };
+		F22721891C186F4500DFF9F7 /* SquareNoImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SquareNoImageCell.h; sourceTree = "<group>"; };
+		F227218A1C186F4500DFF9F7 /* SquareNoImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SquareNoImageCell.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
@@ -992,6 +1007,16 @@
 				F2E8F11C1AE9121E0000509B /* 发po分享 */,
 				F200B7AD1B2AC7F6002A6F61 /* FeedViewController.h */,
 				F200B7AE1B2AC7F6002A6F61 /* FeedViewController.m */,
+				F20E14FF1C16E67C00793865 /* mainSquareViewController.h */,
+				F20E15001C16E67C00793865 /* mainSquareViewController.m */,
+				F20E15021C17CDEA00793865 /* HJCarouselViewLayout.h */,
+				F20E15031C17CDEA00793865 /* HJCarouselViewLayout.m */,
+				F20E15051C17D4F500793865 /* squareCollectionCell.h */,
+				F20E15061C17D4F500793865 /* squareCollectionCell.m */,
+				F22721861C186F2700DFF9F7 /* SquareImageCell.h */,
+				F22721871C186F2700DFF9F7 /* SquareImageCell.m */,
+				F22721891C186F4500DFF9F7 /* SquareNoImageCell.h */,
+				F227218A1C186F4500DFF9F7 /* SquareNoImageCell.m */,
 			);
 			name = "首页";
 			sourceTree = "<group>";
@@ -1691,9 +1716,11 @@
 				F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */,
 				F200B7A41B28B727002A6F61 /* SDLoopProgressView.m in Sources */,
 				E11245F81AAAAE4B0014D461 /* main.m in Sources */,
+				F20E15011C16E67C00793865 /* mainSquareViewController.m in Sources */,
 				F261312B1ADE4DD90042F1D4 /* setHeadImageVC.m in Sources */,
 				F2E933701AFD232600B2C6B4 /* CommentMuzzikCell.m in Sources */,
 				F2A62EE51AE94FDE00FAAA01 /* SongTableViewController.m in Sources */,
+				F22721881C186F2700DFF9F7 /* SquareImageCell.m in Sources */,
 				F20B68201AF340FE0058820D /* PlayListObject.m in Sources */,
 				F25C504D1B034B5E00F03A61 /* showUsersVC.m in Sources */,
 				F2A5E2091AD90F9F00FD8B3E /* MuzzikUser.m in Sources */,
@@ -1708,6 +1735,7 @@
 				E11246461AAAB1F20014D461 /* ASIFormDataRequest.m in Sources */,
 				F20FDD6C1AF74B0C008A71C0 /* SearchForUser.m in Sources */,
 				F21BFD451BDA97F900FE857E /* STKDataSource.m in Sources */,
+				F227218B1C186F4500DFF9F7 /* SquareNoImageCell.m in Sources */,
 				F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */,
 				F21BFD471BDA97F900FE857E /* STKHTTPDataSource.m in Sources */,
 				F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */,
@@ -1770,6 +1798,7 @@
 				F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */,
 				F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */,
 				F2F7EE521AEEABC100265596 /* AtfreindCell.m in Sources */,
+				F20E15041C17CDEA00793865 /* HJCarouselViewLayout.m in Sources */,
 				E112466D1AAAB20B0014D461 /* NSData+ImageContentType.m in Sources */,
 				F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */,
 				F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */,
@@ -1848,6 +1877,7 @@
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				F200B7A61B28B727002A6F61 /* SDPieProgressView.m in Sources */,
 				F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */,
+				F20E15071C17D4F500793865 /* squareCollectionCell.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */,

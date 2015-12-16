@@ -18,6 +18,7 @@
 #import "settingSystemVC.h"
 #import "UIImageView+WebCache.m"
 #import "NotificationCenterViewController.h"
+#import "mainSquareViewController.h"
 #import "FeedViewController.h"
 #import "UserHomePage.h"
 #import "TopicVC.h"
@@ -107,7 +108,7 @@
         [self createAlbum];
     }
     [self QueryAllMusic];
-    FeedViewController *feedVC = [[FeedViewController alloc] init];
+    mainSquareViewController *feedVC = [[mainSquareViewController alloc] init];
     self.feedVC = [[UINavigationController alloc] initWithRootViewController:feedVC];
     
     TopicVC *topicVC = [[TopicVC alloc] init];
@@ -125,7 +126,6 @@
     self.tabviewController = tabBarController;
     //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
     //    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
-    
     self.tabviewController.tabBar.translucent = YES;
     
     [self customizeTabBarForController:tabBarController];

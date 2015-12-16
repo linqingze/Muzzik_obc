@@ -107,7 +107,6 @@
     _reposts.titleLabel.textAlignment = NSTextAlignmentCenter;
     [_musicPlayView addSubview:_reposts];
     
-
     
     _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)(SCREEN_WIDTH/2), (int)SCREEN_WIDTH*3/4+80, (int)((SCREEN_WIDTH*3)/16.0), 40)];
     [_shares setTitle:@"分享数" forState:UIControlStateNormal];

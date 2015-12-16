@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 
 @interface muzzik : NSObject
+@property (nonatomic,assign) CGFloat cellHeight;
 @property (nonatomic,copy) NSString *muzzik_id;
 @property (nonatomic,copy) NSString *date;
 @property (nonatomic,assign) BOOL ismoved;

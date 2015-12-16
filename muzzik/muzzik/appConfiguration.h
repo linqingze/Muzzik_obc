@@ -5,13 +5,14 @@
 //  Created by 林清泽 on 15/3/3.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //http://117.121.26.174:8000/api/notify?token=o8SAVQenhKzgD3R5gHxIzl3ahCHPWKY6rJvIT9aMnk0~&type=participate_topic
-
+// 172.11.23.22:8080
 #ifndef muzzik_appConfiguration_h
 #define muzzik_appConfiguration_h
 //手机屏幕
 #define SCREEN_WIDTH [ UIScreen mainScreen ].bounds.size.width
 #define SCREEN_HEIGHT [ UIScreen mainScreen ].bounds.size.height
-
+#define SquareCELL_Width [ UIScreen mainScreen ].bounds.size.width-60
+#define SquareCELL_Height [ UIScreen mainScreen ].bounds.size.height-200
 #pragma -mark URL Address
 #define URL_Muzzik_download     @"http://www.muzziker.com/download"
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"

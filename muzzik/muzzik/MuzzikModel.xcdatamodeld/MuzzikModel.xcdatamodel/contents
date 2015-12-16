@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9525" systemVersion="14F1505" minimumToolsVersion="Xcode 7.0">
+    <entity name="Music" representedClassName="Music" syncable="YES">
+        <attribute name="key" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="music_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="singer" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="newRelationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Muzzik" inverseName="newRelationship1" inverseEntity="Muzzik" syncable="YES"/>
+    </entity>
+    <entity name="Muzzik" representedClassName="Muzzik" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="comment_count" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="imageKey" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="images" optional="YES" attributeType="Transformable" syncable="YES"/>
+        <attribute name="like_count" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="message" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="play_count" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="root_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="share_count" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="newRelationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="MuzzikUser" inverseName="newRelationship" inverseEntity="MuzzikUser" syncable="YES"/>
+        <relationship name="newRelationship1" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Music" inverseName="newRelationship" inverseEntity="Music" syncable="YES"/>
+    </entity>
+    <entity name="MuzzikUser" representedClassName="MuzzikUser" syncable="YES">
+        <attribute name="avatar" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="uid" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="newRelationship" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Muzzik" inverseName="newRelationship" inverseEntity="Muzzik" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Muzzik" positionX="-387" positionY="-90" width="128" height="238"/>
+        <element name="Music" positionX="-54" positionY="-9" width="128" height="103"/>
+        <element name="MuzzikUser" positionX="-198" positionY="243" width="128" height="103"/>
+    </elements>
+</model>
