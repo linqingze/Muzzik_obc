@@ -23,5 +23,6 @@
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     
+    
 }
 @end
