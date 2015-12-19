@@ -99,6 +99,13 @@
 		F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDC1B68CA5800331101 /* MuzzikUserCell.m */; };
 		F20C4EE01B68CA6E00331101 /* MuzzikTopic.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */; };
 		F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = F20C4EE51B6A48D100331101 /* IBActionSheet.m */; };
+		F20CF1F11C2513C10087546C /* AFHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1E51C2513C10087546C /* AFHTTPSessionManager.m */; };
+		F20CF1F21C2513C10087546C /* AFNetworkReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1E81C2513C10087546C /* AFNetworkReachabilityManager.m */; };
+		F20CF1F31C2513C10087546C /* AFSecurityPolicy.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1EA1C2513C10087546C /* AFSecurityPolicy.m */; };
+		F20CF1F41C2513C10087546C /* AFURLRequestSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1EC1C2513C10087546C /* AFURLRequestSerialization.m */; };
+		F20CF1F51C2513C10087546C /* AFURLResponseSerialization.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1EE1C2513C10087546C /* AFURLResponseSerialization.m */; };
+		F20CF1F61C2513C10087546C /* AFURLSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1F01C2513C10087546C /* AFURLSessionManager.m */; };
+		F20CF1FD1C2560AA0087546C /* MuzzikHTTPSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F20CF1FC1C2560AA0087546C /* MuzzikHTTPSessionManager.m */; };
 		F20E15011C16E67C00793865 /* mainSquareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15001C16E67C00793865 /* mainSquareViewController.m */; };
 		F20E15041C17CDEA00793865 /* HJCarouselViewLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15031C17CDEA00793865 /* HJCarouselViewLayout.m */; };
 		F20E15071C17D4F500793865 /* squareCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20E15061C17D4F500793865 /* squareCollectionCell.m */; };
@@ -442,6 +449,21 @@
 		F20C4EDF1B68CA6E00331101 /* MuzzikTopic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikTopic.m; sourceTree = "<group>"; };
 		F20C4EE41B6A48D100331101 /* IBActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IBActionSheet.h; sourceTree = "<group>"; };
 		F20C4EE51B6A48D100331101 /* IBActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IBActionSheet.m; sourceTree = "<group>"; };
+		F20CF1E41C2513C10087546C /* AFHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPSessionManager.h; sourceTree = "<group>"; };
+		F20CF1E51C2513C10087546C /* AFHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFHTTPSessionManager.m; sourceTree = "<group>"; };
+		F20CF1E61C2513C10087546C /* AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworking.h; sourceTree = "<group>"; };
+		F20CF1E71C2513C10087546C /* AFNetworkReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFNetworkReachabilityManager.h; sourceTree = "<group>"; };
+		F20CF1E81C2513C10087546C /* AFNetworkReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFNetworkReachabilityManager.m; sourceTree = "<group>"; };
+		F20CF1E91C2513C10087546C /* AFSecurityPolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFSecurityPolicy.h; sourceTree = "<group>"; };
+		F20CF1EA1C2513C10087546C /* AFSecurityPolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFSecurityPolicy.m; sourceTree = "<group>"; };
+		F20CF1EB1C2513C10087546C /* AFURLRequestSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLRequestSerialization.h; sourceTree = "<group>"; };
+		F20CF1EC1C2513C10087546C /* AFURLRequestSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLRequestSerialization.m; sourceTree = "<group>"; };
+		F20CF1ED1C2513C10087546C /* AFURLResponseSerialization.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLResponseSerialization.h; sourceTree = "<group>"; };
+		F20CF1EE1C2513C10087546C /* AFURLResponseSerialization.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLResponseSerialization.m; sourceTree = "<group>"; };
+		F20CF1EF1C2513C10087546C /* AFURLSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFURLSessionManager.h; sourceTree = "<group>"; };
+		F20CF1F01C2513C10087546C /* AFURLSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AFURLSessionManager.m; sourceTree = "<group>"; };
+		F20CF1FB1C2560AA0087546C /* MuzzikHTTPSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikHTTPSessionManager.h; sourceTree = "<group>"; };
+		F20CF1FC1C2560AA0087546C /* MuzzikHTTPSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikHTTPSessionManager.m; sourceTree = "<group>"; };
 		F20E14FF1C16E67C00793865 /* mainSquareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mainSquareViewController.h; sourceTree = "<group>"; };
 		F20E15001C16E67C00793865 /* mainSquareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mainSquareViewController.m; sourceTree = "<group>"; };
 		F20E15021C17CDEA00793865 /* HJCarouselViewLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HJCarouselViewLayout.h; sourceTree = "<group>"; };
@@ -587,6 +609,7 @@
 		F26D21AA1C24281400FB2298 /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
 		F26D21AB1C24281400FB2298 /* ViewController+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ViewController+MASAdditions.h"; sourceTree = "<group>"; };
 		F26D21AC1C24281400FB2298 /* ViewController+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ViewController+MASAdditions.m"; sourceTree = "<group>"; };
+		F26D21B71C2430F400FB2298 /* MuzzikConfigure.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikConfigure.h; sourceTree = "<group>"; };
 		F27902D11BD249E100B802A7 /* audioPlayerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = audioPlayerViewController.h; sourceTree = "<group>"; };
 		F27902D21BD249E100B802A7 /* audioPlayerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = audioPlayerViewController.m; sourceTree = "<group>"; };
 		F27EBB9E1B7D065600A5A599 /* LocalMusicTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocalMusicTableViewController.h; sourceTree = "<group>"; };
@@ -813,6 +836,8 @@
 				E14F4A4B1ACD2B3700270903 /* 登录 */,
 				E11245F91AAAAE4B0014D461 /* AppDelegate.h */,
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
+				F20CF1FB1C2560AA0087546C /* MuzzikHTTPSessionManager.h */,
+				F20CF1FC1C2560AA0087546C /* MuzzikHTTPSessionManager.m */,
 				F27902D11BD249E100B802A7 /* audioPlayerViewController.h */,
 				F27902D21BD249E100B802A7 /* audioPlayerViewController.m */,
 				F216ACC71BD62EF40074ADF4 /* MuzzikPlayer.h */,
@@ -820,6 +845,7 @@
 				F200B7B21B2D4252002A6F61 /* 设置 */,
 				E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */,
 				E11246921AAABFED0014D461 /* appConfiguration.h */,
+				F26D21B71C2430F400FB2298 /* MuzzikConfigure.h */,
 				F2F7EE1B1AEDEA5300265596 /* StringConstantConfigure.h */,
 				F2EB60F61AFA1138000B7579 /* DeleGateMethodConfigure.h */,
 				E11246021AAAAE4B0014D461 /* Images.xcassets */,
@@ -897,6 +923,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F20CF1E31C2513C10087546C /* AFNetworking */,
 				F26D21931C24281400FB2298 /* Masonry */,
 				F21BFD2D1BDA97F900FE857E /* StreamingKit */,
 				F24B8F531BCD1CB900FC2597 /* RDVTabBarController */,
@@ -1272,6 +1299,26 @@
 				F20C4EE51B6A48D100331101 /* IBActionSheet.m */,
 			);
 			name = actionsheet;
+			sourceTree = "<group>";
+		};
+		F20CF1E31C2513C10087546C /* AFNetworking */ = {
+			isa = PBXGroup;
+			children = (
+				F20CF1E41C2513C10087546C /* AFHTTPSessionManager.h */,
+				F20CF1E51C2513C10087546C /* AFHTTPSessionManager.m */,
+				F20CF1E61C2513C10087546C /* AFNetworking.h */,
+				F20CF1E71C2513C10087546C /* AFNetworkReachabilityManager.h */,
+				F20CF1E81C2513C10087546C /* AFNetworkReachabilityManager.m */,
+				F20CF1E91C2513C10087546C /* AFSecurityPolicy.h */,
+				F20CF1EA1C2513C10087546C /* AFSecurityPolicy.m */,
+				F20CF1EB1C2513C10087546C /* AFURLRequestSerialization.h */,
+				F20CF1EC1C2513C10087546C /* AFURLRequestSerialization.m */,
+				F20CF1ED1C2513C10087546C /* AFURLResponseSerialization.h */,
+				F20CF1EE1C2513C10087546C /* AFURLResponseSerialization.m */,
+				F20CF1EF1C2513C10087546C /* AFURLSessionManager.h */,
+				F20CF1F01C2513C10087546C /* AFURLSessionManager.m */,
+			);
+			path = AFNetworking;
 			sourceTree = "<group>";
 		};
 		F20FDD661AF749B0008A71C0 /* search */ = {
@@ -1807,6 +1854,7 @@
 				F292902C1ADFCA9B0086E8D4 /* messageForResetVC.m in Sources */,
 				F21BFD471BDA97F900FE857E /* STKHTTPDataSource.m in Sources */,
 				F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */,
+				F20CF1F61C2513C10087546C /* AFURLSessionManager.m in Sources */,
 				F2FBE8F41AFB3B870070831D /* ProfileSetting.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
@@ -1841,10 +1889,12 @@
 				F205539C1B340C1A0093AE8A /* SelectionLabel.m in Sources */,
 				F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */,
 				F2F7EE1A1AED69B600265596 /* MessageStepViewController.m in Sources */,
+				F20CF1F11C2513C10087546C /* AFHTTPSessionManager.m in Sources */,
 				F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
 				F2F68F641B25C9C1005F19E6 /* PhotoImageView.m in Sources */,
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
+				F20CF1F51C2513C10087546C /* AFURLResponseSerialization.m in Sources */,
 				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,
 				F2E558A91B164D420080F9C9 /* MJRefreshConst.m in Sources */,
 				F20553AB1B3D7FC70093AE8A /* MusicLyricCell.m in Sources */,
@@ -1928,6 +1978,7 @@
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				F25C50531B038AAB00F03A61 /* topicLabel.m in Sources */,
 				F2A2E9081B08C69B00D65514 /* suggestCollectionCell.m in Sources */,
+				F20CF1F41C2513C10087546C /* AFURLRequestSerialization.m in Sources */,
 				F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */,
 				F26D21AE1C24281400FB2298 /* MASConstraint.m in Sources */,
 				E11246451AAAB1F20014D461 /* ASIDownloadCache.m in Sources */,
@@ -1948,14 +1999,17 @@
 				E1FA13491AB1ABDD005EDA1D /* Reachability.m in Sources */,
 				F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */,
 				F2FBE8F71AFB541E0070831D /* UserMuzzikVC.m in Sources */,
+				F20CF1FD1C2560AA0087546C /* MuzzikHTTPSessionManager.m in Sources */,
 				E112467B1AAAB20B0014D461 /* UIView+WebCacheOperation.m in Sources */,
 				F2E558AC1B164D420080F9C9 /* UIScrollView+MJExtension.m in Sources */,
 				F26167321ADEDD6300E1B11E /* setGenderVC.m in Sources */,
 				F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */,
 				F200B7A61B28B727002A6F61 /* SDPieProgressView.m in Sources */,
+				F20CF1F21C2513C10087546C /* AFNetworkReachabilityManager.m in Sources */,
 				F2F68F5B1B23FAEA005F19E6 /* DraftBoxVC.m in Sources */,
 				F20E15071C17D4F500793865 /* squareCollectionCell.m in Sources */,
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
+				F20CF1F31C2513C10087546C /* AFSecurityPolicy.m in Sources */,
 				F26D21B61C24281400FB2298 /* ViewController+MASAdditions.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */,

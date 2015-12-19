@@ -33,6 +33,13 @@
     squareCollectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [squareCollectionView registerClass:[squareCollectionCell class] forCellWithReuseIdentifier:@"squareCollectionCell"];
     [self.view addSubview: squareCollectionView];
+    MuzzikHTTPSessionManager *muzzikhttp = [MuzzikHTTPSessionManager sharedManager];
+    [muzzikhttp GET:API_Muzzik_Square parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"%@",responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
     // Do any additional setup after loading the view.
 }
 - (NSIndexPath *)curIndexPath {

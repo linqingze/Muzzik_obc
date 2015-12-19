@@ -30,6 +30,9 @@
 #import "MuzzikRequestCenter.h"
 #import "UIButton_UserMuzzik.h"
 #import "MuzzikPlayer.h"
+
+#import "MuzzikConfigure.h"
+#import "MuzzikHTTPSessionManager.h"
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 
