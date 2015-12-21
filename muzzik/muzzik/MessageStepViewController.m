@@ -190,6 +190,10 @@
         [addMusicTipsLabel setHidden:YES];
 //        [MuzzikItem getLyricByMusic:mobject.music];
     }
+    if (mobject.image) {
+        [headImage setImage:mobject.image];
+        userImage = mobject.image;
+    }
     if ([mobject.tempmessage length]>0) {
         hpTextview.text = [hpTextview.text stringByAppendingString:mobject.tempmessage];
         charaterLabel.text = [NSString stringWithFormat:@"%lu",140 - hpTextview.text.length];
@@ -457,8 +461,12 @@
         NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
         
         [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        
-        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
+        NSDictionary *dic;
+        if (userImage) {
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key",UIImagePNGRepresentation(userImage) ,@"image", nil];
+        }else{
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
+        }
         if ([muzzikDrafts count] == 0) {
             muzzikDrafts = @[dic];
         }else{
@@ -467,15 +475,12 @@
             muzzikDrafts = [mutableArr copy];
         }
         [MuzzikItem addMuzzikDraftsToLocal:muzzikDrafts];
-        mobject.music = nil;
-        mobject.isMessageVCOpen = NO;
-        mobject.tempmessage = @"";
+        [mobject clearObject];
+        
         [self.navigationController popViewControllerAnimated:YES];
     }else if(buttonIndex == 1){
         MuzzikObject *mobject = [MuzzikObject shareClass];
-        mobject.music = nil;
-        mobject.isMessageVCOpen = NO;
-        mobject.tempmessage = @"";
+        [mobject clearObject];
         [self.navigationController popViewControllerAnimated:YES];
     }
     
@@ -488,6 +493,7 @@
     
 }
 -(void)closeImage{
+    userImage = nil;
     [headImage setImage:nil];
     [headerView addSubview:separateLineDown];
     [headerView addSubview:separateLineUp];

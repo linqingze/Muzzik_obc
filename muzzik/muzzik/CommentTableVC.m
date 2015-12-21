@@ -376,7 +376,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 
     [MytableView reloadData];
     if (self.isViewLoaded &&self.view.window) {
-        [self updateAnimation];
+        [self.keeper updateAnimation];
     }
 }
 @end

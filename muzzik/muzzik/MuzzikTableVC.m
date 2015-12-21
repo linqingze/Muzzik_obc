@@ -1138,7 +1138,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)playnextMuzzikUpdate{
     [MytableView reloadData];
     if (self.isViewLoaded &&self.view.window) {
-        [self updateAnimation];
+        [self.keeper updateAnimation];
     }
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{

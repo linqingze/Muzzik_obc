@@ -166,8 +166,8 @@
             if ([self.delegate respondsToSelector:@selector(scrollCell:)]) {
                 [self.delegate performSelector:@selector(scrollCell:) withObject:self.indexpath];
             }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y+(34-_attentionButton.frame.size.height)/2, 130, 34)];
                 [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
                 [self.contentView addSubview:_notifyBtn];
                 [UIView beginAnimations:@"upAndDown" context:NULL];
@@ -181,7 +181,7 @@
                 [UIView commitAnimations];
             });
         }else{
-            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
+            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y+(34-_attentionButton.frame.size.height)/2, 130, 34)];
             [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
             [self.contentView addSubview:_notifyBtn];
             [UIView beginAnimations:@"upAndDown" context:NULL];

@@ -25,7 +25,7 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     self.timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(10, 0, 33, 60)];
     [self addSubview:self.timeImage];
-    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 25, 20, 10)];
+    self.timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(14, 25, 22, 10)];
     self.timeLabel.textColor = [UIColor whiteColor];
     [self.timeLabel setFont:[UIFont systemFontOfSize:7]];
     [self addSubview:self.timeLabel];

@@ -164,7 +164,7 @@
      SongListCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SongListCell" forIndexPath:indexPath];
     muzzik *tempMuzzik = self.muzziks[indexPath.row];
     Globle *glob = [Globle shareGloble];
-    cell.timeLabel.text = [MuzzikItem transtromTime:tempMuzzik.date];
+    cell.timeLabel.text = [MuzzikItem transtromTimeNday:tempMuzzik.date];
     cell.songName.text = tempMuzzik.music.name;
     cell.Artist.text = tempMuzzik.music.artist;
     cell.cellMuzzik = tempMuzzik;
