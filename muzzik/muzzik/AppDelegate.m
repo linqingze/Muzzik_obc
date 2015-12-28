@@ -24,6 +24,7 @@
 #import "DetaiMuzzikVC.h"
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
+#import <RongIMKit/RongIMKit.h>
 @interface AppDelegate (){
     BOOL isLaunched;
     UIViewController *itemVC;
@@ -87,7 +88,7 @@
     [session setCategory:AVAudioSessionCategoryPlayback error:nil];
     [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
     user.hasTeachToFollow = [[MuzzikItem getStringForKey:@"User_first_Listen_song"] boolValue];
-     [self reqqqq];
+     [self requestForActivity];
 
     
     
@@ -146,9 +147,10 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
+    [self registerRongClound];
     return YES;
 }
--(void)reqqqq{
+-(void)requestForActivity{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
     __weak ASIHTTPRequest *weakrequest = requestForm;
@@ -1385,4 +1387,31 @@
 //        return NO;
 //    }
 //}
+
+-(void) registerRongClound{
+    [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
+    ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RongClound_Token]]];
+    [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+    __weak ASIHTTPRequest *weakrequest = rongRequest;
+    [rongRequest setCompletionBlock :^{
+        if ([weakrequest responseStatusCode] == 200) {
+            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+            NSLog(@"%@",dic);
+            [[RCIM sharedRCIM] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
+                NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
+            } error:^(RCConnectErrorCode status) {
+                NSLog(@"登陆的错误码为:%d", status);
+            } tokenIncorrect:^{
+                //token过期或者不正确。
+                //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
+                //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
+                NSLog(@"token错误");
+            }];
+        }
+    }];
+    [rongRequest setFailedBlock:^{
+        NSLog(@"%@",[weakrequest error]);
+    }];
+    [rongRequest startAsynchronous];
+}
 @end
