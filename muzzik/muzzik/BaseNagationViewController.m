@@ -267,6 +267,9 @@
         case 12:
             btnImage = [NSString stringWithFormat:@"保存"];
             break;
+        case 13:
+            btnImage = [NSString stringWithFormat:@"聊天"];
+            break;
         default:
             btnImage = nil;
             break;
