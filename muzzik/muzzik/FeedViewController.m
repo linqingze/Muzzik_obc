@@ -214,7 +214,7 @@
             NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
             NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
             NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"MM-dd"];
+            [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
             NSString *now   = [formatter stringFromDate:[NSDate date]];
             NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
             if ([now compare:from]>=0  && [now compare:to]<=0) {
@@ -301,24 +301,14 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     NSDate *localDate = [dateFormatter dateFromString:time];
-    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
-    //设置转换后的目标日期时区
-    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
-    //得到源日期与世界标准时间的偏移量
-    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
-    //目标日期与本地时区的偏移量
-    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
-    //得到时间偏移量的差值
-    NSTimeInterval Tinterval =destinationGMTOffset- sourceGMTOffset;
-    //转为现在时间
-    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+    NSDate *Tdate = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
     
-    //    NSString* timeStr = @"2011-01-26 17:40:50";
+    NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"MM-dd"];
-    return [formatter stringFromDate:destinationDateNow];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    return [formatter stringFromDate:aimDate];
 
 }
 -(void)updateTime{

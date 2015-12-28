@@ -959,7 +959,7 @@
 
     [message setThumbImage:image];
     WXMusicObject *ext = [WXMusicObject object];
-    ext.musicUrl = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,localMuzzik.muzzik_id];
+    ext.musicUrl = @"http://a.app.qq.com/o/simple.jsp?pkgname=com.blueorbit.Muzzik";
     ext.musicDataUrl = [NSString stringWithFormat:@"%@%@",BaseURL_audio,localMuzzik.music.key];
     message.mediaObject = ext;
     
