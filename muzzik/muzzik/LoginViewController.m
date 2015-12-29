@@ -516,7 +516,9 @@
             }
         }];
         [requestsquare setFailedBlock:^{
+            NSLog(@"%@",[weakrequestsquare error]);
             [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败"];
+            loginButton.userInteractionEnabled = NO;
         }];
         [requestsquare startAsynchronous];
     }

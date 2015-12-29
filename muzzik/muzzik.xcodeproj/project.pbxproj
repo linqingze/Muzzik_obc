@@ -84,6 +84,7 @@
 		F20878B71B9F2A7F00A9FA45 /* badgeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878B61B9F2A7F00A9FA45 /* badgeImageView.m */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
+		F2094EF71C323FB400E90272 /* libUMessage_Sdk_1.2.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */; };
 		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
 		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
 		F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */; };
@@ -424,6 +425,8 @@
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
+		F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMessage_Sdk_1.2.2.a; sourceTree = "<group>"; };
+		F2094EF61C323FB400E90272 /* UMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMessage.h; sourceTree = "<group>"; };
 		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
 		F20B10311AF69D8D0067EBD3 /* searchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchViewController.m; sourceTree = "<group>"; };
 		F20B10341AF6B4A30067EBD3 /* UserHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserHomePage.h; sourceTree = "<group>"; };
@@ -761,6 +764,7 @@
 				F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */,
 				F24F0A771BB42A340073F6FA /* libWeiboSDK.a in Frameworks */,
 				E1FA13361AB18DAF005EDA1D /* Foundation.framework in Frameworks */,
+				F2094EF71C323FB400E90272 /* libUMessage_Sdk_1.2.2.a in Frameworks */,
 				F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */,
 				F2738ACC1C312CD100F7F2F6 /* RongIMKit.framework in Frameworks */,
 				E142A31A1AB834F3002BBCB0 /* libGexinSdk-1.1.1.a in Frameworks */,
@@ -917,6 +921,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2094EF41C323FB400E90272 /* UMessage_Sdk_1.2.2 */,
 				F2738ABD1C312CD100F7F2F6 /* Rong_Cloud_iOS_SDK_v2_4_2_stable */,
 				F21BFD2D1BDA97F900FE857E /* StreamingKit */,
 				F24B8F531BCD1CB900FC2597 /* RDVTabBarController */,
@@ -1240,6 +1245,15 @@
 				F20553A11B36B7B70093AE8A /* ZJSwitch.m */,
 			);
 			name = switch;
+			sourceTree = "<group>";
+		};
+		F2094EF41C323FB400E90272 /* UMessage_Sdk_1.2.2 */ = {
+			isa = PBXGroup;
+			children = (
+				F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */,
+				F2094EF61C323FB400E90272 /* UMessage.h */,
+			);
+			path = UMessage_Sdk_1.2.2;
 			sourceTree = "<group>";
 		};
 		F20B10331AF6B41A0067EBD3 /* 我 */ = {
@@ -1688,7 +1702,7 @@
 		E11245EA1AAAAE4B0014D461 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = muzziker;
 				TargetAttributes = {
 					E11245F11AAAAE4B0014D461 = {
@@ -2007,6 +2021,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -2098,8 +2113,10 @@
 					"$(PROJECT_DIR)/muzzik",
 					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 					"$(PROJECT_DIR)/muzzik/Rong_Cloud_iOS_SDK_v2_4_2_stable",
+					"$(PROJECT_DIR)/muzzik/UMessage_Sdk_1.2.2",
 				);
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2138,8 +2155,10 @@
 					"$(PROJECT_DIR)/muzzik",
 					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 					"$(PROJECT_DIR)/muzzik/Rong_Cloud_iOS_SDK_v2_4_2_stable",
+					"$(PROJECT_DIR)/muzzik/UMessage_Sdk_1.2.2",
 				);
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -2161,6 +2180,7 @@
 				);
 				INFOPLIST_FILE = muzzikTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "muzzik.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/muzzik.app/muzzik";
@@ -2179,6 +2199,7 @@
 				);
 				INFOPLIST_FILE = muzzikTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "muzzik.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/muzzik.app/muzzik";

@@ -11,6 +11,7 @@
 
 
 #define AppKey_RongClound   @"cpj2xarljg8rn"
+#define AppKey_UMeng        @"55a7d11367e58e98ba005693"
 
 #pragma mark -URL
 

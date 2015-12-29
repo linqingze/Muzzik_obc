@@ -25,6 +25,7 @@
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
 #import <RongIMKit/RongIMKit.h>
+#import "UMessage_Sdk_1.2.2/UMessage.h"
 @interface AppDelegate (){
     BOOL isLaunched;
     UIViewController *itemVC;
@@ -148,6 +149,7 @@
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
     [self registerRongClound];
+    [self configureUmengNotificationWithOptions:launchOptions];
     return YES;
 }
 -(void)requestForActivity{
@@ -519,6 +521,7 @@
 }
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
+    [UMessage registerDeviceToken:deviceToken];
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     NSLog(@"deviceToken:%@", _deviceToken);
@@ -555,7 +558,7 @@
     
    // [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    
+    [UMessage didReceiveRemoteNotification:userInfo];
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
     NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
@@ -869,6 +872,9 @@
             }
             if ([[responseObject allKeys] containsObject:@"_id"]) {
                 user.uid = [responseObject objectForKey:@"_id"];
+                [UMessage addAlias:user.uid type:@"Muzzik" response:^(id responseObject, NSError *error) {
+                    NSLog(@"object:%@,error:%@",responseObject,error);
+                }];
             }
             if ([[responseObject allKeys] containsObject:@"blocked"]) {
                 user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
@@ -900,7 +906,7 @@
             }
         }];
         [requestsquare setFailedBlock:^{
-            
+            NSLog(@"%@",[weakrequestsquare error]);
         }];
         [requestsquare startAsynchronous];
         
@@ -1414,4 +1420,50 @@
     }];
     [rongRequest startAsynchronous];
 }
+#pragma mark configure Method
+
+-(void) configureUmengNotificationWithOptions:(NSDictionary *)launchOptions {
+    [UMessage startWithAppkey:AppKey_UMeng launchOptions:launchOptions];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= _IPHONE80_
+    if(IOS_8_OR_LATER)
+    {
+        //register remoteNotification types （iOS 8.0及其以上版本）
+        UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
+        action1.identifier = @"action1_identifier";
+        action1.title=@"Accept";
+        action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
+        
+        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
+        action2.identifier = @"action2_identifier";
+        action2.title=@"Reject";
+        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
+        action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
+        action2.destructive = YES;
+        
+        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
+        categorys.identifier = @"category1";//这组动作的唯一标示
+        [categorys setActions:@[action1,action2] forContext:(UIUserNotificationActionContextDefault)];
+        
+        UIUserNotificationSettings *userSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert
+                                                                                     categories:[NSSet setWithObject:categorys]];
+        [UMessage registerRemoteNotificationAndUserNotificationSettings:userSettings];
+        
+    } else{
+        //register remoteNotification types (iOS 8.0以下)
+        [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
+         |UIRemoteNotificationTypeSound
+         |UIRemoteNotificationTypeAlert];
+    }
+#else
+    
+    //register remoteNotification types (iOS 8.0以下)
+    [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
+     |UIRemoteNotificationTypeSound
+     |UIRemoteNotificationTypeAlert];
+    
+#endif
+    //for log
+    [UMessage setLogEnabled:YES];
+}
+
 @end
