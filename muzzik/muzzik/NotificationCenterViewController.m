@@ -13,7 +13,7 @@
 #import "RDVTabBarController.h"
 #import "searchViewController.h"
 #import <RongIMLib/RongIMLib.h>
-
+#import "showUsersVC.h"
 
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *notifyTabelView;
@@ -51,6 +51,15 @@
         
         notifyTabelView.contentInset = insets;
         notifyTabelView.scrollIndicatorInsets = insets;
+        RCIMClient *client = [RCIMClient sharedRCIMClient];
+        NSArray *conversationList = [client
+                                     getConversationList:@[@(ConversationType_PRIVATE),
+                                                           @(ConversationType_DISCUSSION),
+                                                           @(ConversationType_GROUP),
+                                                           @(ConversationType_SYSTEM),
+                                                           @(ConversationType_APPSERVICE),
+                                                           @(ConversationType_PUBLICSERVICE)]];
+        NSLog(@"%@",conversationList);
     }
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     
@@ -319,7 +328,11 @@
 -(void)rightBtnAction:(UIButton *)sender{
 //    IMListViewController *rcc = [[IMListViewController alloc] init];
 //    [self.navigationController pushViewController:rcc animated:YES];
+    showUsersVC *showuser = [[showUsersVC alloc] init];
+    showuser.showType = @"follows";
+    [self.navigationController pushViewController:showuser animated:YES];
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
