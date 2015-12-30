@@ -10,7 +10,6 @@
 		E11245F81AAAAE4B0014D461 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E11245F71AAAAE4B0014D461 /* main.m */; };
 		E11245FB1AAAAE4B0014D461 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E11245FA1AAAAE4B0014D461 /* AppDelegate.m */; };
 		E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E11246021AAAAE4B0014D461 /* Images.xcassets */; };
-		E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = E11246041AAAAE4B0014D461 /* LaunchScreen.xib */; };
 		E11246121AAAAE4B0014D461 /* muzzikTests.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246111AAAAE4B0014D461 /* muzzikTests.m */; };
 		E11246421AAAB1F20014D461 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = E112462D1AAAB1F20014D461 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		E11246431AAAB1F20014D461 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246301AAAB1F20014D461 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -116,6 +115,7 @@
 		F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */; };
 		F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2190DC01BBAB13C00588A7D /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */; };
+		F21A8F1E1C33FB5D00B3F70C /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = F21A8F1D1C33FB5D00B3F70C /* LaunchScreen.xib */; };
 		F21BFD411BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD2F1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m */; };
 		F21BFD421BDA97F900FE857E /* STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD311BDA97F900FE857E /* STKAudioPlayer.m */; };
 		F21BFD431BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD331BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m */; };
@@ -257,7 +257,6 @@
 		E11245F91AAAAE4B0014D461 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E11245FA1AAAAE4B0014D461 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E11246021AAAAE4B0014D461 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		E11246051AAAAE4B0014D461 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		E112460B1AAAAE4B0014D461 /* muzzikTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = muzzikTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E11246101AAAAE4B0014D461 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E11246111AAAAE4B0014D461 /* muzzikTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = muzzikTests.m; sourceTree = "<group>"; };
@@ -343,7 +342,6 @@
 		E162BD7E1AB444370001A61C /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		E16716231AAD77830068AE98 /* userInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userInfo.h; sourceTree = "<group>"; };
 		E16716241AAD77830068AE98 /* userInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userInfo.m; sourceTree = "<group>"; };
-		E167163D1AAED0AA0068AE98 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		E1B230481AB6E6FA004E50DA /* muzzik-PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "muzzik-PrefixHeader.pch"; sourceTree = "<group>"; };
 		E1FA12AC1AB14922005EDA1D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E1FA12AE1AB14939005EDA1D /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -459,6 +457,7 @@
 		F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLImageCropperView.m; sourceTree = "<group>"; };
 		F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
 		F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
+		F21A8F1D1C33FB5D00B3F70C /* LaunchScreen.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LaunchScreen.xib; sourceTree = "<group>"; };
 		F21BFD2E1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+STKAudioPlayer.h"; sourceTree = "<group>"; };
 		F21BFD2F1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+STKAudioPlayer.m"; sourceTree = "<group>"; };
 		F21BFD301BDA97F900FE857E /* STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STKAudioPlayer.h; sourceTree = "<group>"; };
@@ -773,7 +772,6 @@
 				F2F7EE1B1AEDEA5300265596 /* StringConstantConfigure.h */,
 				F2EB60F61AFA1138000B7579 /* DeleGateMethodConfigure.h */,
 				E11246021AAAAE4B0014D461 /* Images.xcassets */,
-				E11246041AAAAE4B0014D461 /* LaunchScreen.xib */,
 				E11245F51AAAAE4B0014D461 /* Supporting Files */,
 			);
 			path = muzzik;
@@ -782,6 +780,7 @@
 		E11245F51AAAAE4B0014D461 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				F21A8F1D1C33FB5D00B3F70C /* LaunchScreen.xib */,
 				F20740281C096F74005D8FBE /* hot.muzziks */,
 				E11245F61AAAAE4B0014D461 /* Info.plist */,
 				E11245F71AAAAE4B0014D461 /* main.m */,
@@ -1642,9 +1641,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F21A8F1E1C33FB5D00B3F70C /* LaunchScreen.xib in Resources */,
 				F24F0A781BB42A340073F6FA /* WeiboSDK.bundle in Resources */,
 				F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */,
-				E11246061AAAAE4B0014D461 /* LaunchScreen.xib in Resources */,
 				F2E558A71B164D420080F9C9 /* MJRefresh.bundle in Resources */,
 				F2FD3B061B30617F001B2332 /* popWords.plist in Resources */,
 				F20740291C096F74005D8FBE /* hot.muzziks in Resources */,
@@ -1875,18 +1874,6 @@
 			targetProxy = E112460C1AAAAE4B0014D461 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		E11246041AAAAE4B0014D461 /* LaunchScreen.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				E11246051AAAAE4B0014D461 /* Base */,
-				E167163D1AAED0AA0068AE98 /* zh-Hans */,
-			);
-			name = LaunchScreen.xib;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		E11246131AAAAE4B0014D461 /* Debug */ = {

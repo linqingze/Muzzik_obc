@@ -123,7 +123,6 @@
     titleView = [[UILabel alloc] initWithFrame:CGRectMake(80, 32, SCREEN_WIDTH-160, 20)];
     [titleView setTextColor:[UIColor whiteColor]];
     titleView.textAlignment = NSTextAlignmentCenter;
-    titleView.adjustsFontSizeToFitWidth = YES;
     titleView.font = [UIFont boldSystemFontOfSize:16];
     
     UIImageView *grayImage = [[UIImageView alloc] initWithFrame:self.view.bounds];

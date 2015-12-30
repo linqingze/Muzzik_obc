@@ -167,45 +167,48 @@
                 [self.delegate performSelector:@selector(scrollCell:) withObject:self.indexpath];
             }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y+(34-_attentionButton.frame.size.height)/2, 130, 34)];
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
                 [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
                 [self.contentView addSubview:_notifyBtn];
-                [UIView beginAnimations:@"upAndDown" context:NULL];
+                [UIView beginAnimations:@"LeftAndRight" context:NULL];
                 [UIView setAnimationDuration:1];
                 
                 [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
                 [UIView setAnimationDelegate:self];
                 [UIView setAnimationRepeatAutoreverses:YES];
                 [UIView setAnimationRepeatCount:3];
-                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
                 [UIView commitAnimations];
             });
         }else{
-            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y+(34-_attentionButton.frame.size.height)/2, 130, 34)];
+             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
             [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
             [self.contentView addSubview:_notifyBtn];
-            [UIView beginAnimations:@"upAndDown" context:NULL];
+            [UIView beginAnimations:@"LeftAndRight" context:NULL];
             [UIView setAnimationDuration:1];
             
             [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
             [UIView setAnimationDelegate:self];
             [UIView setAnimationRepeatAutoreverses:YES];
             [UIView setAnimationRepeatCount:3];
-            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
+            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
             [UIView commitAnimations];
+             });
         }
         
     }
 
 }
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    if ([anim.description isEqualToString:@"leftAndRight"]) {
     [UIView animateWithDuration:1 animations:^{
         [_notifyBtn setAlpha:0];
     } completion:^(BOOL finished) {
         [_notifyBtn setHidden:YES];
         [_notifyBtn removeFromSuperview];
     }];
-    
+    }
 }
 
 -(void) colorViewWithColorString:(NSString *) colorString{

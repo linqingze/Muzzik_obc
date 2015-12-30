@@ -1198,10 +1198,18 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
         return @"6天前";
     }else {
-        [formatter setDateFormat:@"yyyy.MM.dd"];
-        nowString = [formatter stringFromDate:aimDate];
-        
-        return nowString;
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+        nowString = [formatter stringFromDate:now];
+        timeString = [formatter stringFromDate:aimDate];
+        if ([[nowString substringToIndex:4] isEqualToString:[timeString substringToIndex:4]]) {
+            NSLog(@"%@",[nowString substringToIndex:4]);
+            NSLog(@"%@",[timeString substringToIndex:4]);
+            NSLog(@"%@",[timeString substringFromIndex:5]);
+            return [timeString substringFromIndex:5];
+        }else{
+            NSLog(@"%@",timeString);
+            return timeString;
+        }
     }
     
 }
@@ -1277,10 +1285,20 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
         return @"6天前";
     }else {
-        [formatter setDateFormat:@"yyyy.MM.dd"];
+        
+        [formatter setDateFormat:@"yyyy-MM-dd"];
+        nowString = [formatter stringFromDate:now];
         timeString = [formatter stringFromDate:date];
-
-        return timeString;
+        if ([[nowString substringToIndex:4] isEqualToString:[timeString substringToIndex:4]]) {
+            NSLog(@"%@",[nowString substringToIndex:4]);
+            NSLog(@"%@",[timeString substringToIndex:4]);
+            NSLog(@"%@",[timeString substringFromIndex:5]);
+            return [timeString substringFromIndex:5];
+        }else{
+            NSLog(@"%@",timeString);
+            return timeString;
+        }
+        
     }
     
     return @"";
