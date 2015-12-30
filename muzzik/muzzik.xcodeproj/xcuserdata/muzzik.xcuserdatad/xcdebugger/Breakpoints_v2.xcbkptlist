@@ -20,11 +20,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/settingSystemVC.m"
-            timestampString = "472989287.572513"
+            timestampString = "473156333.158293"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
             landmarkName = "-alertView:didDismissWithButtonIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -36,11 +36,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/settingSystemVC.m"
-            timestampString = "472989292.870987"
+            timestampString = "473156333.158293"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "185"
-            endingLineNumber = "185"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "-alertView:didDismissWithButtonIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -52,11 +52,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/settingSystemVC.m"
-            timestampString = "472989310.421123"
+            timestampString = "473156333.158293"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "191"
-            endingLineNumber = "191"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
             landmarkName = "-alertView:didDismissWithButtonIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -132,38 +132,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/AppDelegate.m"
-            timestampString = "473060901.432243"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "855"
-            endingLineNumber = "855"
-            landmarkName = "-onResp:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "473060901.432243"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "861"
-            endingLineNumber = "861"
-            landmarkName = "-onResp:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
             timestampString = "473065634.031291"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -196,12 +164,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/AppDelegate.m"
-            timestampString = "473065669.472457"
+            timestampString = "473155854.486925"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "873"
-            endingLineNumber = "873"
-            landmarkName = "-onResp:"
+            startingLineNumber = "423"
+            endingLineNumber = "423"
+            landmarkName = "-application:didReceiveRemoteNotification:fetchCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -212,76 +180,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/AppDelegate.m"
-            timestampString = "473065670.009198"
+            timestampString = "473155862.733237"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "875"
-            endingLineNumber = "875"
-            landmarkName = "-onResp:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__22-[AppDelegate onResp:]_block_invoke"
-                  moduleName = "muzzik"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/muzzik/ios/muzzik_ios/muzzik/muzzik/AppDelegate.m"
-                  timestampString = "473077743.444582"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "875"
-                  endingLineNumber = "875"
-                  offsetFromSymbolStart = "1112">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__22-[AppDelegate onResp:]_block_invoke_2"
-                  moduleName = "muzzik"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/muzzik/ios/muzzik_ios/muzzik/muzzik/AppDelegate.m"
-                  timestampString = "473077743.44468"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "875"
-                  endingLineNumber = "875"
-                  offsetFromSymbolStart = "72">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "473065670.744053"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "876"
-            endingLineNumber = "876"
-            landmarkName = "-onResp:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "473065740.211452"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "882"
-            endingLineNumber = "882"
-            landmarkName = "-onResp:"
+            startingLineNumber = "556"
+            endingLineNumber = "556"
+            landmarkName = "-application:didReceiveRemoteNotification:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

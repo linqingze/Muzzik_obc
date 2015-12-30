@@ -12,7 +12,7 @@
 #import "NotificationVC.h"
 #import "RDVTabBarController.h"
 #import "searchViewController.h"
-
+#import <RongIMLib/RongIMLib.h>
 
 
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
@@ -55,7 +55,7 @@
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     
     // Do any additional setup after loading the view.
-    
+    //120480220855
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];

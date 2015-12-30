@@ -13,6 +13,7 @@
 #import "FeedBackVC.h"
 #import <TencentOpenAPI/TencentOAuth.h>
 #import "UIImageView+WebCache.h"
+#import "UMessage_Sdk_1.2.2/UMessage.h"
 @interface settingSystemVC ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *settingTable;
     UIView *shareViewFull;
@@ -197,7 +198,9 @@
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 if ([weakrequest responseStatusCode] == 200) {
                     userInfo *user = [userInfo shareClass];
-                    
+                    [UMessage removeAlias:user.uid type:kUMessageAliasTypeSina response:^(id responseObject, NSError *error) {
+                        NSLog(@"%@",responseObject);
+                    }];
                     user.token = @"";
                     user.uid = @"";
                     user.avatar = @"";
