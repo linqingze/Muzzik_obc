@@ -411,7 +411,11 @@
             
         }
         MuzzikCount.text = [NSString stringWithFormat:@"%@ 信息",[_profileDic objectForKey:@"muzzikTotal"]];
-        movedCount.text = [NSString stringWithFormat:@"%@ 喜欢",[_profileDic objectForKey:@"movedTotal"]];
+        if ([_profileDic objectForKey:@"movedTotal"]) {
+            movedCount.text = [NSString stringWithFormat:@"%@ 喜欢",[_profileDic objectForKey:@"movedTotal"]];
+        }else{
+            movedCount.text = @"喜欢";
+        }
         topicCount.text = [NSString stringWithFormat:@"%@ 话题",[_profileDic objectForKey:@"topicsTotal"]];
         followCount.text = [NSString stringWithFormat:@"%@ 关注",[_profileDic objectForKey:@"followsCount"]];
         fansCount.text = [NSString stringWithFormat:@"%@ 粉丝",[_profileDic objectForKey:@"fansCount"]];
