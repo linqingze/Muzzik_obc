@@ -112,6 +112,8 @@
 		F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */; };
 		F2190DBF1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */; };
 		F2190DC01BBAB13C00588A7D /* TencentOpenAPI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */; };
+		F21A8F211C341E6300B3F70C /* IMFriendListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */; };
+		F21A8F241C34275200B3F70C /* IMConversationViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */; };
 		F21BFD411BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD2F1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m */; };
 		F21BFD421BDA97F900FE857E /* STKAudioPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD311BDA97F900FE857E /* STKAudioPlayer.m */; };
 		F21BFD431BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD331BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m */; };
@@ -479,6 +481,10 @@
 		F2190DBA1BBA86CA00588A7D /* NLImageCropperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NLImageCropperView.m; sourceTree = "<group>"; };
 		F2190DBD1BBAB13C00588A7D /* TencentOpenApi_IOS_Bundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TencentOpenApi_IOS_Bundle.bundle; sourceTree = "<group>"; };
 		F2190DBE1BBAB13C00588A7D /* TencentOpenAPI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TencentOpenAPI.framework; sourceTree = "<group>"; };
+		F21A8F1F1C341E6300B3F70C /* IMFriendListViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMFriendListViewController.h; sourceTree = "<group>"; };
+		F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMFriendListViewController.m; sourceTree = "<group>"; };
+		F21A8F221C34275200B3F70C /* IMConversationViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMConversationViewcontroller.h; sourceTree = "<group>"; };
+		F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMConversationViewcontroller.m; sourceTree = "<group>"; };
 		F21BFD2E1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+STKAudioPlayer.h"; sourceTree = "<group>"; };
 		F21BFD2F1BDA97F900FE857E /* NSMutableArray+STKAudioPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+STKAudioPlayer.m"; sourceTree = "<group>"; };
 		F21BFD301BDA97F900FE857E /* STKAudioPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = STKAudioPlayer.h; sourceTree = "<group>"; };
@@ -1138,6 +1144,10 @@
 				F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */,
 				F20878931B9D3C4600A9FA45 /* NotificationCenterViewController.h */,
 				F20878941B9D3C4600A9FA45 /* NotificationCenterViewController.m */,
+				F21A8F1F1C341E6300B3F70C /* IMFriendListViewController.h */,
+				F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */,
+				F21A8F221C34275200B3F70C /* IMConversationViewcontroller.h */,
+				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
 				F20878AC1B9EE5B600A9FA45 /* NotificationCategoryCell.h */,
 				F20878AD1B9EE5B600A9FA45 /* NotificationCategoryCell.m */,
 				F20878B51B9F2A7E00A9FA45 /* badgeImageView.h */,
@@ -1817,6 +1827,7 @@
 				F2FBE8F41AFB3B870070831D /* ProfileSetting.m in Sources */,
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
+				F21A8F241C34275200B3F70C /* IMConversationViewcontroller.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
 				F21BFD441BDA97F900FE857E /* STKCoreFoundationDataSource.m in Sources */,
 				F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */,
@@ -1954,6 +1965,7 @@
 				F2F0FC901ADE0E9100668103 /* checkVerifyCode.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */,
+				F21A8F211C341E6300B3F70C /* IMFriendListViewController.m in Sources */,
 				E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */,
 				F21BFD431BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m in Sources */,
 				F2B81FF11ADD6C6A00012ED6 /* MuzzikItem.m in Sources */,

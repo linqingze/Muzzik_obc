@@ -158,51 +158,55 @@
     userInfo *user = [userInfo shareClass];
     if (_songModel.isNewDataForAttention && !user.hasTeachToFollow && !_songModel.MuzzikUser.isFollow) {
         user.hasTeachToFollow = YES;
-       [MuzzikItem addObjectToLocal:[NSNumber numberWithBool:YES] ForKey:@"User_first_Listen_song"];
+        [MuzzikItem addObjectToLocal:[NSNumber numberWithBool:YES] ForKey:@"User_first_Listen_song"];
         if ([self convertPoint:CGPointMake(0, 0) toView:self.delegate.view].y<0) {
             if ([self.delegate respondsToSelector:@selector(scrollCell:)]) {
                 [self.delegate performSelector:@selector(scrollCell:) withObject:self.indexpath];
             }
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
                 [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
                 [self.contentView addSubview:_notifyBtn];
-                [UIView beginAnimations:@"upAndDown" context:NULL];
+                [UIView beginAnimations:@"leftAndRight" context:NULL];
                 [UIView setAnimationDuration:1];
                 
                 [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
                 [UIView setAnimationDelegate:self];
                 [UIView setAnimationRepeatAutoreverses:YES];
                 [UIView setAnimationRepeatCount:3];
-                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
                 [UIView commitAnimations];
             });
         }else{
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, 21, 130, 34)];
-            [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
-            [self.contentView addSubview:_notifyBtn];
-            [UIView beginAnimations:@"leftAndRight" context:NULL];
-            [UIView setAnimationDuration:1];
-            
-            [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-            [UIView setAnimationDelegate:self];
-            [UIView setAnimationRepeatAutoreverses:YES];
-            [UIView setAnimationRepeatCount:3];
-            [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, 21, 130, 34)];
-            [UIView commitAnimations];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
+                [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
+                [self.contentView addSubview:_notifyBtn];
+                [UIView beginAnimations:@"leftAndRight" context:NULL];
+                [UIView setAnimationDuration:1];
+                
+                [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationRepeatAutoreverses:YES];
+                [UIView setAnimationRepeatCount:3];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
+                [UIView commitAnimations];
             });
         }
         
     }
 }
 -(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
-    [UIView animateWithDuration:0.5 animations:^{
-        [_notifyBtn setAlpha:0];
-    } completion:^(BOOL finished) {
-        [_notifyBtn setHidden:YES];
-        [_notifyBtn removeFromSuperview];
-    }];
+    NSLog(@"%@",anim.description);
+    if ([anim.description isEqualToString:@"leftAndRight"]) {
+        [UIView animateWithDuration:0.5 animations:^{
+            [_notifyBtn setAlpha:0];
+        } completion:^(BOOL finished) {
+            [_notifyBtn setHidden:YES];
+            [_notifyBtn removeFromSuperview];
+        }];
+    }
+    
     
 }
 -(void) colorViewWithColorString:(NSString *) colorString{

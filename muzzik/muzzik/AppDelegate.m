@@ -24,7 +24,7 @@
 #import "DetaiMuzzikVC.h"
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
-#import <RongIMLib/RongIMLib.h>
+#import <RongIMKit/RongIMKit.h>
 #import "UMessage_Sdk_1.2.2/UMessage.h"
 @interface AppDelegate (){
     BOOL isLaunched;
@@ -1395,8 +1395,7 @@
 //}
 
 -(void) registerRongClound{
-    RCIMClient *client = [RCIMClient sharedRCIMClient];
-    [client  initWithAppKey:AppKey_RongClound];
+    [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
     ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RongClound_Token]]];
     [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = rongRequest;
@@ -1405,7 +1404,7 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             NSLog(@"%@",dic);
             
-            [client connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
+            [[RCIM sharedRCIM] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
                 NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
             } error:^(RCConnectErrorCode status) {
                 NSLog(@"登陆的错误码为:%d", status);

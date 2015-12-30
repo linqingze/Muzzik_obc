@@ -1,16 +1,18 @@
 //
-//  FriendVC.m
-//  Where
+//  IMFriendListViewController.m
+//  muzzik
 //
-//  Created by 林清泽 on 15/4/20.
-//  Copyright (c) 2015年 iOS Fangli. All rights reserved.
+//  Created by muzzik on 15/12/30.
+//  Copyright © 2015年 muzziker. All rights reserved.
 //
 
-#import "FriendVC.h"
+#import "IMFriendListViewController.h"
+#import "BATableView.h"
 #import "TransfromTime.h"
 #import "UIImageView+WebCache.h"
-#import "AtFriendSearchVC.h"
-@interface FriendVC ()<UITableViewDataSource,UITableViewDelegate,BATableViewDelegate>{
+#import <RongIMKit/RongIMKit.h>
+#import "IMConversationViewcontroller.h"
+@interface IMFriendListViewController ()<BATableViewDelegate,UITableViewDataSource,UITableViewDelegate>{
     NSMutableDictionary *RefreshDic;
     BATableView *MytableView;
     NSMutableArray *recentContactArray;
@@ -18,32 +20,30 @@
     NSMutableArray *arrCapital;
     NSInteger friendCount;
     NSInteger page;
-    NSMutableDictionary *Fdictionary;
     UIButton *nextButton;
     NSMutableArray *allUsers;
 }
-
 @property (nonatomic,retain)TransfromTime *transfrom;
-
 @end
 
-@implementation FriendVC
+@implementation IMFriendListViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
     RefreshDic = [NSMutableDictionary dictionary];
-    Fdictionary = [NSMutableDictionary dictionary];
     [self initNagationBar:@" @ 好友" leftBtn:Constant_backImage rightBtn:4];
     friendArray = [NSMutableArray array];
     MytableView = [[BATableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     MytableView.delegate = self;
     [self.view addSubview:MytableView];
-    nextButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-67, SCREEN_HEIGHT-133, 54, 52)];
-    [nextButton setImage:[UIImage imageNamed:@"cycledone"] forState:UIControlStateNormal];
-    [self.view addSubview: nextButton];
-    [nextButton addTarget:self action:@selector(nextAction) forControlEvents:UIControlEventTouchUpInside];
-    [nextButton setHidden:YES];
     page = 1;
+    
+    NSData *data = [MuzzikItem getDataFromLocalKey:@"Muzzik_recent_Friend_Contact"];
+    recentContactArray = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+    [self requestForFriend];
+    
     ASIHTTPRequest *requestRecent = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RecentContact]]];
     [requestRecent addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequestRecent = requestRecent;
@@ -52,10 +52,7 @@
         NSLog(@"%@",[weakrequestRecent responseString]);
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestRecent responseData] options:NSJSONReadingMutableContainers error:nil];
         recentContactArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-        [self requestForFriend];
-    }];
-    [requestRecent setFailedBlock:^{
-        NSLog(@"%@",[weakrequestRecent error]);
+        
     }];
     [requestRecent startAsynchronous];
     
@@ -63,14 +60,17 @@
     // Do any additional setup after loading the view.
     self.transfrom = [[TransfromTime alloc] init];
     [self.view setBackgroundColor:[UIColor whiteColor]];
+    
 }
+
+
 -(void) requestForFriend{
-    ASIHTTPRequest *requestfriend = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Friends_get]]];
+    ASIHTTPRequest *requestfriend = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/follows",BaseURL,[userInfo shareClass].uid]]];
     [requestfriend addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"100",Parameter_Limit,[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, nil] Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestfriend;
     [requestfriend setCompletionBlock:^{
-//        NSLog(@"%@",[weakrequest originalURL]);
-//        NSLog(@"%@",[weakrequest responseString]);
+        //        NSLog(@"%@",[weakrequest originalURL]);
+        //        NSLog(@"%@",[weakrequest responseString]);
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
         NSMutableArray *tempArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
         for (int i = (int)tempArray.count -1; i>=0; i--) {
@@ -128,12 +128,6 @@
     }];
     [requestfriend startAsynchronous];
 }
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 #pragma mark - UITableViewDataSource
 - (NSArray *) sectionIndexTitlesForABELTableView:(BATableView *)tableView {
     return arrCapital;
@@ -144,7 +138,7 @@
     return arrCapital[section];
 }
 //-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//    
+//
 //}
 - (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
     return [friendArray count];
@@ -175,71 +169,30 @@
         
     }];
     cell.label.text = muzzikuser.name;
-    BOOL isSelected = NO;
-    for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]]) {
-            isSelected = YES;
-            break;
-        }
-    }
-    if (isSelected) {
-        [cell.label setTextColor:Color_Additional_4];
-        cell.label.font = [UIFont boldSystemFontOfSize:15];
-    }else{
-        cell.label.font = [UIFont boldSystemFontOfSize:14];
-        cell.label.textColor = Color_Text_2;
-    }
     
     //self.dataSource[indexPath.section][@"data"][indexPath.row];
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    NSLog(@"%@",indexPath.description);
-    BOOL isSelected = NO;
-    for (NSString *string in [Fdictionary allKeys]) {
-        if ([string isEqualToString:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]]) {
-            isSelected = YES;
-            break;
-        }
-    }
-    if (isSelected) {
-        [Fdictionary removeObjectForKey:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]];
-    }else{
-        [Fdictionary setObject:indexPath forKey:[NSString stringWithFormat:@"%ld-%ld",(long)indexPath.section,(long)indexPath.row]];
-        
-    }
-    if ([[Fdictionary allKeys] count]>0) {
-        [nextButton setHidden:NO];
-    }else{
-        [nextButton setHidden:YES];
-    }
-    [tableView reloadData];
+    IMConversationViewcontroller *conversationVC = [[IMConversationViewcontroller alloc] init];
+    conversationVC.conversationType = ConversationType_PRIVATE;
+    MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
+    
+    conversationVC.targetId = muzzikuser.user_id;
+    conversationVC.title = [NSString stringWithFormat:@"与 %@ 的对话",muzzikuser.name];
+    [self.navigationController pushViewController:conversationVC animated:YES];
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
 
--(void) nextAction{
-    MuzzikObject *muzzikobject = [MuzzikObject shareClass];
-    NSString *message = @"";
-    for (NSString *indexstring in [Fdictionary allKeys]) {
-        NSArray *array = [indexstring componentsSeparatedByString:@"-"];
-        MuzzikUser *muzzikuser = [friendArray[[array[0] integerValue] ][[array[1] integerValue]] objectForKey:@"user"];
-        message = [message stringByAppendingString:[NSString stringWithFormat:@"@%@ ",muzzikuser.name]];
-    }
-    muzzikobject.atFriendFrom = @"";
-    muzzikobject.tempmessage = message;
-    [self.navigationController popViewControllerAnimated:YES];
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
 }
--(void)rightBtnAction:(UIButton *)sender{
-    AtFriendSearchVC *atsearch = [[AtFriendSearchVC alloc] init];
-    atsearch.friendArray = friendArray;
-    atsearch.Fdictionary = Fdictionary;
-    atsearch.localUsers = allUsers;
-    [self.navigationController pushViewController:atsearch animated:YES];
-}
+
 /*
 #pragma mark - Navigation
 

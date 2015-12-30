@@ -12,9 +12,8 @@
 #import "NotificationVC.h"
 #import "RDVTabBarController.h"
 #import "searchViewController.h"
-#import <RongIMLib/RongIMLib.h>
-#import "showUsersVC.h"
-
+#import <RongIMKit/RongIMKit.h>
+#import "IMFriendListViewController.h"
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
@@ -328,8 +327,7 @@
 -(void)rightBtnAction:(UIButton *)sender{
 //    IMListViewController *rcc = [[IMListViewController alloc] init];
 //    [self.navigationController pushViewController:rcc animated:YES];
-    showUsersVC *showuser = [[showUsersVC alloc] init];
-    showuser.showType = @"follows";
+    IMFriendListViewController *showuser = [[IMFriendListViewController alloc] init];
     [self.navigationController pushViewController:showuser animated:YES];
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
 
