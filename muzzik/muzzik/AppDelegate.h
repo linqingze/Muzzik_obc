@@ -18,7 +18,7 @@ typedef enum {
     SdkStatusStarted
 } SdkStatus;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate>{
+@interface AppDelegate : UIResponder {
      NSString *_deviceToken;
 }
 @property (strong, nonatomic) RDVTabBarController *tabviewController;

@@ -14,7 +14,7 @@
 #import "searchViewController.h"
 #import <RongIMKit/RongIMKit.h>
 #import "IMFriendListViewController.h"
-@interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate>{
+@interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate,RCIMReceiveMessageDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
     NSInteger page;
@@ -79,6 +79,14 @@
     user.notificationNumRepostNew = NO;
     user.notificationNumFollowNew = NO;
     user.notificationNumMetionNew = NO;
+}
+- (void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left{
+    NSLog(@"left:%d     message:%@",left,message);
+}
+
+- (BOOL)onRCIMCustomAlertSound:(RCMessage *)message{
+    NSLog(@"%@",message);
+    return YES;
 }
 -(void)checkNewNotification{
     userInfo *user = [userInfo shareClass];

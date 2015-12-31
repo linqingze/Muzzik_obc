@@ -26,7 +26,7 @@
 #import "LoginViewController.h"
 #import <RongIMKit/RongIMKit.h>
 #import "UMessage_Sdk_1.2.2/UMessage.h"
-@interface AppDelegate (){
+@interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate,RCIMUserInfoDataSource,RCIMGroupInfoDataSource>{
     BOOL isLaunched;
     UIViewController *itemVC;
     BOOL needsReplay;
@@ -1396,6 +1396,9 @@
 
 -(void) registerRongClound{
     [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
+    [[RCIM sharedRCIM] setUserInfoDataSource:self];
+    [[RCIM sharedRCIM] setGroupInfoDataSource:self];
+    
     ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RongClound_Token]]];
     [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = rongRequest;
@@ -1465,6 +1468,72 @@
 #endif
     //for log
     [UMessage setLogEnabled:YES];
+}
+
+
+- (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *))completion{
+    __block NSMutableDictionary *dic = [[MuzzikItem getDictionaryFromLocalForKey:@"Im_UserInfo"] mutableCopy];
+    RCUserInfo *user = [[RCUserInfo alloc]init];
+    if (dic) {
+        if ([[dic allKeys] containsObject:userId]) {
+            
+            user.userId = userId;
+            user.name = [[dic objectForKey:userId] objectForKey:@"name"];
+            user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[dic objectForKey:userId] objectForKey:@"avatar"]];
+            return completion(user);
+        }else{
+            ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
+            [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = rongRequest;
+            [rongRequest setCompletionBlock :^{
+                if ([weakrequest responseStatusCode] == 200) {
+                    NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
+                    if (reqDic) {
+                        [dic setObject:reqDic forKey:userId];
+                        [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
+                        user.userId = userId;
+                        user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
+                        user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
+                       // [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:userId];
+                        return completion(user);
+                        
+                        
+                    }
+                }
+                
+                
+            }];
+            [rongRequest setFailedBlock:^{
+                NSLog(@"%@",[weakrequest error]);
+            }];
+            [rongRequest startSynchronous];
+        }
+    }else{
+        dic = [NSMutableDictionary dictionary];
+        ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
+        [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = rongRequest;
+        [rongRequest setCompletionBlock :^{
+            if ([weakrequest responseStatusCode] == 200) {
+                NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
+                if (reqDic) {
+                    [dic setObject:reqDic forKey:userId];
+                    [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
+                    user.userId = userId;
+                    user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
+                    user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
+                    return completion(user);
+                    
+                }
+            }
+            
+            
+        }];
+        [rongRequest setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+        }];
+        [rongRequest startSynchronous];
+    }
 }
 
 @end
