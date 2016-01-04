@@ -10,7 +10,7 @@
 #import "BATableView.h"
 #import "TransfromTime.h"
 #import "UIImageView+WebCache.h"
-#import <RongIMKit/RongIMKit.h>
+#import <RongIMLib/RongIMLib.h>
 #import "IMConversationViewcontroller.h"
 @interface IMFriendListViewController ()<BATableViewDelegate,UITableViewDataSource,UITableViewDelegate>{
     NSMutableDictionary *RefreshDic;
@@ -181,7 +181,13 @@
     
     conversationVC.targetId = muzzikuser.user_id;
     conversationVC.title = [NSString stringWithFormat:@"与 %@ 的对话",muzzikuser.name];
-    [self.navigationController pushViewController:conversationVC animated:YES];
+    [[RCIMClient sharedRCIMClient] getRemoteHistoryMessages:ConversationType_PRIVATE targetId:muzzikuser.user_id recordTime:42949670000 count:10 success:^(NSArray *messages) {
+        NSLog(@"%@",messages);
+    } error:^(RCErrorCode status) {
+        NSLog(@"%d",status);
+    }];
+    RCConversation *rcCon = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_PRIVATE targetId:muzzikuser.user_id];
+    NSArray *array = [[RCIMClient sharedRCIMClient] getHistoryMessages:ConversationType_PRIVATE targetId:muzzikuser.user_id oldestMessageId:4294967303 count:20];
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

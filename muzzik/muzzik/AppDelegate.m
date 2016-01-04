@@ -24,9 +24,9 @@
 #import "DetaiMuzzikVC.h"
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
-#import <RongIMKit/RongIMKit.h>
+#import <RongIMLib/RongIMLib.h>
 #import "UMessage_Sdk_1.2.2/UMessage.h"
-@interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate,RCIMUserInfoDataSource,RCIMGroupInfoDataSource>{
+@interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate>{
     BOOL isLaunched;
     UIViewController *itemVC;
     BOOL needsReplay;
@@ -1395,9 +1395,10 @@
 //}
 
 -(void) registerRongClound{
-    [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
-    [[RCIM sharedRCIM] setUserInfoDataSource:self];
-    [[RCIM sharedRCIM] setGroupInfoDataSource:self];
+//    [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
+//    [[RCIM sharedRCIM] setUserInfoDataSource:self];
+//    [[RCIM sharedRCIM] setGroupInfoDataSource:self];
+    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
     
     ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RongClound_Token]]];
     [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
@@ -1407,7 +1408,8 @@
             NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
             NSLog(@"%@",dic);
             
-            [[RCIM sharedRCIM] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
+            [[RCIMClient sharedRCIMClient] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
+                
                 NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
             } error:^(RCConnectErrorCode status) {
                 NSLog(@"登陆的错误码为:%d", status);
@@ -1424,6 +1426,9 @@
     }];
     [rongRequest startAsynchronous];
 }
+
+
+
 #pragma mark configure Method
 
 -(void) configureUmengNotificationWithOptions:(NSDictionary *)launchOptions {

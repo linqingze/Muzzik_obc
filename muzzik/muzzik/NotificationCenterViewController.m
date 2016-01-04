@@ -12,9 +12,9 @@
 #import "NotificationVC.h"
 #import "RDVTabBarController.h"
 #import "searchViewController.h"
-#import <RongIMKit/RongIMKit.h>
+#import <RongIMLib/RongIMLib.h>
 #import "IMFriendListViewController.h"
-@interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate,RCIMReceiveMessageDelegate>{
+@interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate,RCIMClientReceiveMessageDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
     NSInteger page;
@@ -50,16 +50,14 @@
         
         notifyTabelView.contentInset = insets;
         notifyTabelView.scrollIndicatorInsets = insets;
-        RCIMClient *client = [RCIMClient sharedRCIMClient];
-        NSArray *conversationList = [client
-                                     getConversationList:@[@(ConversationType_PRIVATE),
-                                                           @(ConversationType_DISCUSSION),
-                                                           @(ConversationType_GROUP),
-                                                           @(ConversationType_SYSTEM),
-                                                           @(ConversationType_APPSERVICE),
-                                                           @(ConversationType_PUBLICSERVICE)]];
-        NSLog(@"%@",conversationList);
+        
+        
     }
+    RCIMClient *client = [RCIMClient sharedRCIMClient];
+    [client setReceiveMessageDelegate:self object:nil];
+    NSArray *conversationList = [client
+                                 getConversationList:@[@(ConversationType_PRIVATE)]];
+    NSLog(@"%@",conversationList);
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
     
     // Do any additional setup after loading the view.
@@ -69,6 +67,7 @@
     [super viewWillAppear:animated];
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [self checkNewNotification];
+    
     [notifyTabelView reloadData];
 }
 -(void)dealloc{
@@ -80,13 +79,15 @@
     user.notificationNumFollowNew = NO;
     user.notificationNumMetionNew = NO;
 }
-- (void)onRCIMReceiveMessage:(RCMessage *)message left:(int)left{
-    NSLog(@"left:%d     message:%@",left,message);
-}
-
-- (BOOL)onRCIMCustomAlertSound:(RCMessage *)message{
-    NSLog(@"%@",message);
-    return YES;
+- (void)onReceived:(RCMessage *)message
+              left:(int)nLeft
+            object:(id)object {
+    if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+        RCTextMessage *testMessage = (RCTextMessage *)message.content;
+        NSLog(@"消息内容：%@", testMessage.content);
+    }
+    
+    NSLog(@"还剩余的未接收的消息数：%d", nLeft);
 }
 -(void)checkNewNotification{
     userInfo *user = [userInfo shareClass];
