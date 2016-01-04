@@ -1207,10 +1207,10 @@
         NSDictionary *dic1 = (NSDictionary *)obj1;
         NSDictionary *dic2 = (NSDictionary *)obj2;
         // [[dic1 allKeys] objectAtIndex:0]
-        if ([[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedAscending) {
+        if ([[dic1 allKeys] count] > 0 &&[[dic2 allKeys] count] > 0 && [[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedAscending) {
             return NSOrderedAscending;//递减
         }
-        if ([[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedDescending){
+        if ([[dic1 allKeys] count] > 0 &&[[dic2 allKeys] count] > 0 &&[[[dic1 allKeys] objectAtIndex:0] compare:[[dic2 allKeys] objectAtIndex:0] options:NSCaseInsensitiveSearch]==NSOrderedDescending){
             return NSOrderedDescending;
         }
         return NSOrderedSame;
@@ -1219,7 +1219,7 @@
     for (long i = larray.count-1; i>0; i--) {
         NSDictionary *dic = larray[i];
         // NSLog(@"%d",[[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet symbolCharacterSet]] length]);
-        if ([[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0 ) {
+        if ([[dic allValues] count]>0 && [[[dic allValues][0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] length] == 0 ) {
             [lyricArray removeObjectAtIndex:[larray indexOfObject:dic]];
         }
     }
