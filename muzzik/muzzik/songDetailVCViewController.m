@@ -407,7 +407,7 @@
                 [cell.musicPlayView setFrame:CGRectMake(0,(int)floor( cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, (int)cell.musicPlayView.frame.size.height)];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+                cell.timeStamp.text = [MuzzikItem transtromTimeWithNum:[tempMuzzik.date doubleValue]];
                 [cell.timeStamp sizeToFit];
                 [cell.timeImage setFrame:CGRectMake(CGRectGetMaxX(cell.timeStamp.frame)+3, cell.timeImage.frame.origin.y, cell.timeImage.frame.size.width, cell.timeImage.frame.size.height)];
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
@@ -506,7 +506,7 @@
                 [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, floor(cell.musicPlayView.frame.size.height))];
                 cell.musicArtist.text =tempMuzzik.music.artist;
                 cell.musicName.text = tempMuzzik.music.name;
-                cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+                cell.timeStamp.text = [MuzzikItem transtromTimeWithNum:[tempMuzzik.date doubleValue]];
                 [cell.timeStamp sizeToFit];
                 [cell.timeImage setFrame:CGRectMake(CGRectGetMaxX(cell.timeStamp.frame)+3, cell.timeImage.frame.origin.y, cell.timeImage.frame.size.width, cell.timeImage.frame.size.height)];
                 [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
@@ -601,7 +601,7 @@
             [cell.musicPlayView setFrame:CGRectMake(0, (int)floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
-            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.repostDate];
+            cell.timeStamp.text = [MuzzikItem transtromTimeWithNum:[tempMuzzik.date doubleValue]];
             [cell.timeStamp sizeToFit];
             [cell.timeImage setFrame:CGRectMake(CGRectGetMaxX(cell.timeStamp.frame)+3, cell.timeImage.frame.origin.y, cell.timeImage.frame.size.width, cell.timeImage.frame.size.height)];
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];
@@ -689,7 +689,7 @@
             [cell.musicPlayView setFrame:CGRectMake(0,(int) floor(cell.muzzikMessage.frame.origin.y+8+cell.muzzikMessage.bounds.size.height), SCREEN_WIDTH, cell.musicPlayView.frame.size.height)];
             cell.musicArtist.text =tempMuzzik.music.artist;
             cell.musicName.text = tempMuzzik.music.name;
-            cell.timeStamp.text = [MuzzikItem transtromTime:tempMuzzik.date];
+            cell.timeStamp.text = [MuzzikItem transtromTimeWithNum:[tempMuzzik.date doubleValue]];
             [cell.timeStamp sizeToFit];
             [cell.timeImage setFrame:CGRectMake(CGRectGetMaxX(cell.timeStamp.frame)+3, cell.timeImage.frame.origin.y, cell.timeImage.frame.size.width, cell.timeImage.frame.size.height)];
             [cell colorViewWithColorString:[NSString stringWithFormat:@"%@",tempMuzzik.color]];

@@ -1266,8 +1266,8 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"HH:mm"];
-    NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
-    NSString *nowString = [formatter stringFromDate:now];
+    //NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
+    NSString *nowString = [formatter stringFromDate:Tdate];
     NSString *timeString = [formatter stringFromDate:date];
     BOOL result = [nowString compare:timeString] == NSOrderedAscending;
     if (interval<24*60*60 && !result) {
@@ -1287,7 +1287,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else {
         
         [formatter setDateFormat:@"yyyy-MM-dd"];
-        nowString = [formatter stringFromDate:now];
+        nowString = [formatter stringFromDate:Tdate];
         timeString = [formatter stringFromDate:date];
         if ([[nowString substringToIndex:4] isEqualToString:[timeString substringToIndex:4]]) {
             NSLog(@"%@",[nowString substringToIndex:4]);
