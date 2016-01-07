@@ -8,6 +8,6 @@
 
 #import <RongIMKit/RongIMKit.h>
 
-@interface IMConversationViewcontroller : RCConversationViewController
+@interface IMConversationViewcontroller : AMScrollingNavbarViewController
 
 @end

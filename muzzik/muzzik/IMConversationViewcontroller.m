@@ -8,7 +8,10 @@
 
 #import "IMConversationViewcontroller.h"
 
-@interface IMConversationViewcontroller ()
+@interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate>{
+    UITableView *IMTableView;
+    UIView *IMTalkView;
+}
 
 @end
 
@@ -16,9 +19,20 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self settingTableView];
+    [self settingTalkView];
     // Do any additional setup after loading the view.
 }
-
+-(void) settingTableView{
+    IMTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-50)];
+    IMTableView.backgroundColor = [UIColor whiteColor];
+    IMTableView.delegate = self;
+    IMTableView.dataSource = self;
+    
+}
+-(void) settingTalkView{
+    
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
