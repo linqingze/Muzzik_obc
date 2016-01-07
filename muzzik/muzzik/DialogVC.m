@@ -2125,192 +2125,192 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
         muzzik *muzzikToy = [muzzik new];
         commentArray = [muzzikToy makeMuzziksByMuzzikArray:[dic objectForKey:@"muzziks"]];
-        self.localmuzzik = commentArray[0];
-        [commentArray removeObject:self.localmuzzik];
-        commentToMuzzik = self.localmuzzik;
         
-        if ([self.localmuzzik.type isEqualToString:@"repost"]) {
-            _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
-            [_muzzikView addSubview:_repostImage];
-            _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
-            [_repostUserName setTextColor:Color_Additional_5];
-            [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
-            _repostUserName.text = self.localmuzzik.reposter.name;
-            [_muzzikView addSubview:_repostUserName];
-            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
+        if ([commentArray count] == 0) {
+            [MuzzikItem showNotifyOnView:self.view text:@"来晚一步，该信息已删除"];
         }else{
-            _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
-        }
-        [_timeStamp sizeToFit];
-        [_timeImage setFrame:CGRectMake(CGRectGetMaxX(_timeStamp.frame)+3, _timeImage.frame.origin.y, _timeImage.frame.size.width, _timeImage.frame.size.height)];
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
-        [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakreq = requestForm;
-        [requestForm setCompletionBlock :^{
-            NSLog(@"%@",[weakreq responseString]);
-            NSLog(@"%d",[weakreq responseStatusCode]);
-            if ([weakreq responseStatusCode] == 200) {
-                _profileDic = [NSJSONSerialization JSONObjectWithData:[weakreq responseData]  options:NSJSONReadingMutableContainers error:nil];
-                _muzzikMessage.text = self.localmuzzik.message;
-                [_muzzikMessage addClickMessagewithTopics:self.localmuzzik.topics];
-                [_muzzikMessage addClickMessageForAt];
-                _muzzikMessage.delegate = self;
-                
-                [_muzzikMessage setFrame:CGRectMake( _muzzikMessage.frame.origin.x , _muzzikMessage.frame.origin.y, SCREEN_WIDTH-32, (int)[MuzzikItem heightForLabel:_muzzikMessage WithText:_muzzikMessage.text]+10)];
-                [_muzzikView addSubview:_muzzikMessage];
-                _muzzikView.backgroundColor = [UIColor whiteColor];
-                _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_muzzikMessage.frame)+10, SCREEN_WIDTH-32, 0.5)];
-                [_progress setProgress:1];
-                [_muzzikView addSubview:_progress];
-                _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, CGRectGetMaxY(_progress.frame)+12, SCREEN_WIDTH-150, 20)];
-                [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
-                _musicName.text = self.localmuzzik.music.name;
-                [_muzzikView addSubview:_musicName];
-                
-                _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, CGRectGetMaxY(_progress.frame)+31, SCREEN_WIDTH-150, 25)];
-                [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
-                _musicArtist.text = self.localmuzzik.music.artist;
-                [_muzzikView addSubview:_musicArtist];
-                
-                _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(21, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
-                [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
-                [_muzzikView addSubview:_likeButton];
-                
-                _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
-                
-                [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
-                [_muzzikView addSubview:_playButton];
-                if ([self.localmuzzik.image length]>0) {
-                    _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH-32, SCREEN_WIDTH-32)];
-                    _poImage.delegate = self;
-                    _poImage.layer.cornerRadius = 3;
-                    _poImage.clipsToBounds = YES;
-                    [_poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,self.localmuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-                        [UIView animateWithDuration:0.5 animations:^{
-                            [_poImage setAlpha:1];
+            self.localmuzzik = commentArray[0];
+            [commentArray removeObject:self.localmuzzik];
+            commentToMuzzik = self.localmuzzik;
+            
+            if ([self.localmuzzik.type isEqualToString:@"repost"]) {
+                _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 36, 8, 8)];
+                [_muzzikView addSubview:_repostImage];
+                _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 36, 150, 10)];
+                [_repostUserName setTextColor:Color_Additional_5];
+                [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:8]];
+                _repostUserName.text = self.localmuzzik.reposter.name;
+                [_muzzikView addSubview:_repostUserName];
+                _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
+            }else{
+                _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
+            }
+            [_timeStamp sizeToFit];
+            [_timeImage setFrame:CGRectMake(CGRectGetMaxX(_timeStamp.frame)+3, _timeImage.frame.origin.y, _timeImage.frame.size.width, _timeImage.frame.size.height)];
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
+            [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakreq = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@",[weakreq responseString]);
+                NSLog(@"%d",[weakreq responseStatusCode]);
+                if ([weakreq responseStatusCode] == 200) {
+                    _profileDic = [NSJSONSerialization JSONObjectWithData:[weakreq responseData]  options:NSJSONReadingMutableContainers error:nil];
+                    _muzzikMessage.text = self.localmuzzik.message;
+                    [_muzzikMessage addClickMessagewithTopics:self.localmuzzik.topics];
+                    [_muzzikMessage addClickMessageForAt];
+                    _muzzikMessage.delegate = self;
+                    
+                    [_muzzikMessage setFrame:CGRectMake( _muzzikMessage.frame.origin.x , _muzzikMessage.frame.origin.y, SCREEN_WIDTH-32, (int)[MuzzikItem heightForLabel:_muzzikMessage WithText:_muzzikMessage.text]+10)];
+                    [_muzzikView addSubview:_muzzikMessage];
+                    _muzzikView.backgroundColor = [UIColor whiteColor];
+                    _progress = [[UIProgressView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_muzzikMessage.frame)+10, SCREEN_WIDTH-32, 0.5)];
+                    [_progress setProgress:1];
+                    [_muzzikView addSubview:_progress];
+                    _musicName = [[UILabel alloc] initWithFrame:CGRectMake(80, CGRectGetMaxY(_progress.frame)+12, SCREEN_WIDTH-150, 20)];
+                    [_musicName setFont:[UIFont fontWithName:Font_Next_Bold size:16]];
+                    _musicName.text = self.localmuzzik.music.name;
+                    [_muzzikView addSubview:_musicName];
+                    
+                    _musicArtist = [[UILabel alloc] initWithFrame:CGRectMake(80, CGRectGetMaxY(_progress.frame)+31, SCREEN_WIDTH-150, 25)];
+                    [_musicArtist setFont:[UIFont fontWithName:Font_Next_Bold size:13]];
+                    _musicArtist.text = self.localmuzzik.music.artist;
+                    [_muzzikView addSubview:_musicArtist];
+                    
+                    _likeButton = [[UIButton alloc] initWithFrame:CGRectMake(21, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
+                    [_likeButton addTarget:self action:@selector(moveAction) forControlEvents:UIControlEventTouchUpInside];
+                    [_muzzikView addSubview:_likeButton];
+                    
+                    _playButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57, CGRectGetMaxY(_progress.frame)+13, 36, 36)];
+                    
+                    [_playButton addTarget:self action:@selector(playMusicLocal) forControlEvents:UIControlEventTouchUpInside];
+                    [_muzzikView addSubview:_playButton];
+                    if ([self.localmuzzik.image length]>0) {
+                        _poImage = [[PhotoImageView alloc] initWithFrame:CGRectMake(16, CGRectGetMaxY(_progress.frame)+60, SCREEN_WIDTH-32, SCREEN_WIDTH-32)];
+                        _poImage.delegate = self;
+                        _poImage.layer.cornerRadius = 3;
+                        _poImage.clipsToBounds = YES;
+                        [_poImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,self.localmuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+                            [UIView animateWithDuration:0.5 animations:^{
+                                [_poImage setAlpha:1];
+                            }];
+                            
+                            
                         }];
+                        [_muzzikView addSubview:_poImage];
+                        
+                        _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH+28, (int)((SCREEN_WIDTH-32)/4), 40)];
                         
                         
-                    }];
-                    [_muzzikView addSubview:_poImage];
+                    }else{
+                        _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,CGRectGetMaxY(_progress.frame)+59, SCREEN_WIDTH-32, 1)];
+                        [_upperLine setImage:[UIImage imageNamed:Image_lineImage]];
+                        [_muzzikView addSubview:_upperLine];
+                        _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+60, (int)((SCREEN_WIDTH-32)/4), 40)];
+                        
+                    }
+                    [_reposts setTitle:[self.localmuzzik.reposts integerValue]>0? [NSString stringWithFormat:@"转发数%@",self.localmuzzik.reposts] : @"转发数" forState:UIControlStateNormal];
+                    [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
+                    [_reposts.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
+                    [_reposts addTarget:self action:@selector(pushRepost) forControlEvents:UIControlEventTouchUpInside];
+                    _reposts.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    [_muzzikView addSubview:_reposts];
                     
-                    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+SCREEN_WIDTH+28, (int)((SCREEN_WIDTH-32)/4), 40)];
+                    _moves = [[UIButton alloc] initWithFrame:CGRectMake(16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
+                    [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
+                    [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
+                    [_moves.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
+                    [_moves addTarget:self action:@selector(pushMove) forControlEvents:UIControlEventTouchUpInside];
+                    _moves.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
+                    [_muzzikView addSubview:_moves];
                     
+                    _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/2)+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
+                    [_shares setTitle:@"分享数" forState:UIControlStateNormal];
+                    [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
+                    [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
+                    [_shares addTarget:self action:@selector(pushShare) forControlEvents:UIControlEventTouchUpInside];
+                    [_shares setTitle:[self.localmuzzik.shares integerValue]>0? [NSString stringWithFormat:@"分享数%@",self.localmuzzik.shares] : @"分享数" forState:UIControlStateNormal];
+                    _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    [_muzzikView addSubview:_shares];
                     
-                }else{
-                    _upperLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,CGRectGetMaxY(_progress.frame)+59, SCREEN_WIDTH-32, 1)];
-                    [_upperLine setImage:[UIImage imageNamed:Image_lineImage]];
-                    [_muzzikView addSubview:_upperLine];
-                    _reposts = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)+16, CGRectGetMaxY(_progress.frame)+60, (int)((SCREEN_WIDTH-32)/4), 40)];
-                    
-                }
-                [_reposts setTitle:[self.localmuzzik.reposts integerValue]>0? [NSString stringWithFormat:@"转发数%@",self.localmuzzik.reposts] : @"转发数" forState:UIControlStateNormal];
-                [_reposts setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
-                [_reposts.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
-                [_reposts addTarget:self action:@selector(pushRepost) forControlEvents:UIControlEventTouchUpInside];
-                _reposts.titleLabel.textAlignment = NSTextAlignmentCenter;
-                [_muzzikView addSubview:_reposts];
-                
-                _moves = [[UIButton alloc] initWithFrame:CGRectMake(16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
-                [_moves setTitle:@"喜欢数" forState:UIControlStateNormal];
-                [_moves setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
-                [_moves.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
-                [_moves addTarget:self action:@selector(pushMove) forControlEvents:UIControlEventTouchUpInside];
-                _moves.titleLabel.textAlignment = NSTextAlignmentCenter;
-                [_moves setTitle:[self.localmuzzik.moveds integerValue]>0? [NSString stringWithFormat:@"喜欢数%@",self.localmuzzik.moveds] : @"喜欢数" forState:UIControlStateNormal];
-                [_muzzikView addSubview:_moves];
-                
-                _shares = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/2)+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
-                [_shares setTitle:@"分享数" forState:UIControlStateNormal];
-                [_shares setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
-                [_shares.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
-                [_shares addTarget:self action:@selector(pushShare) forControlEvents:UIControlEventTouchUpInside];
-                [_shares setTitle:[self.localmuzzik.shares integerValue]>0? [NSString stringWithFormat:@"分享数%@",self.localmuzzik.shares] : @"分享数" forState:UIControlStateNormal];
-                _shares.titleLabel.textAlignment = NSTextAlignmentCenter;
-                [_muzzikView addSubview:_shares];
-                
-                _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)*3+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
-                [_comments setTitle:@"评论数" forState:UIControlStateNormal];
-                [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
-                [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
-                [_comments addTarget:self action:@selector(pushComment) forControlEvents:UIControlEventTouchUpInside];
-                [_comments setTitle:[self.localmuzzik.comments integerValue]>0? [NSString stringWithFormat:@"评论数%@",self.localmuzzik.comments] : @"评论数" forState:UIControlStateNormal];
-                _comments.titleLabel.textAlignment = NSTextAlignmentCenter;
-                [_muzzikView addSubview:_comments];
+                    _comments = [[UIButton alloc] initWithFrame:CGRectMake((int)((SCREEN_WIDTH-32)/4)*3+16, _reposts.frame.origin.y, (int)((SCREEN_WIDTH-32)/4), 40)];
+                    [_comments setTitle:@"评论数" forState:UIControlStateNormal];
+                    [_comments setTitleColor:Color_Additional_5 forState:UIControlStateNormal];
+                    [_comments.titleLabel setFont:[UIFont systemFontOfSize:10.0]];
+                    [_comments addTarget:self action:@selector(pushComment) forControlEvents:UIControlEventTouchUpInside];
+                    [_comments setTitle:[self.localmuzzik.comments integerValue]>0? [NSString stringWithFormat:@"评论数%@",self.localmuzzik.comments] : @"评论数" forState:UIControlStateNormal];
+                    _comments.titleLabel.textAlignment = NSTextAlignmentCenter;
+                    [_muzzikView addSubview:_comments];
 #pragma -mark head
-                _headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH/2)];
-                _headimage.contentMode = UIViewContentModeScaleAspectFill;
-                [_headimage setAlpha:0];
-                [headView addSubview:_headimage];
-                _coverImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH/2)];
-                [_coverImage setAlpha:1];
-                [_coverImage setImage:[UIImage imageNamed:Image_prifilebgcover]];
-                [headView addSubview:_coverImage];
-                _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 16, 85, 23)];
-                [_attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
-                [headView addSubview:_attentionButton];
-                
-                _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
-                [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
-                _nameLabel.textColor = [UIColor whiteColor];
-                [headView addSubview:_nameLabel];
-                _genderImage = [[UIImageView alloc] init];
-                [headView addSubview:_genderImage];
-                
-                _constellationImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
-                _constellationLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, SCREEN_WIDTH/2-50, 20)];
-                
-                _birthImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
-                _birthLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
-                
-                _companyImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
-                _companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
-                
-                _schoolImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
-                _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
-                _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
-                
-                
-                
-                
-                _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, SCREEN_WIDTH-32, 1)];
-                [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
-                [_muzzikView addSubview:_downLine];
-                
-                songView = [[UIView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, 55)];
-                [MuzzikItem addLineOnView:songView heightPoint:0 toLeft:10 toRight:10 withColor:Color_line_1];
-                songLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 7.5, SCREEN_WIDTH-100, 20)];
-                [songLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
-                songLabel.textColor = Color_Theme_5;
-                [songView addSubview:songLabel];
-                
-                artistLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 27.5, SCREEN_WIDTH-100, 20)];
-                [artistLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
-                artistLabel.textColor = Color_Theme_5;
-                [songView addSubview:artistLabel];
-                deleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 7.5, 40, 40)];
-                [deleButton setImage:[UIImage imageNamed:Image_deletesongImage] forState:UIControlStateNormal];
-                [deleButton addTarget:self action:@selector(deleSong) forControlEvents:UIControlEventTouchUpInside];
-                [songView addSubview:deleButton];
-                
-                [self setUserInfo:_profileDic];
-                [muzzikTableView reloadData];
-            }
-        }];
-        [requestForm setFailedBlock:^{
-            NSLog(@"%@",[weakreq error]);
-            NSLog(@"hhhh%@  kkk%@",[weakreq responseString],[weakreq responseHeaders]);
-            if (![[weakreq responseString] length]>0) {
-                [self networkErrorShow];
-            }
-        }];
-        [requestForm startAsynchronous];
-        
-        
-        
-        
-        
-        
+                    _headimage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH/2)];
+                    _headimage.contentMode = UIViewContentModeScaleAspectFill;
+                    [_headimage setAlpha:0];
+                    [headView addSubview:_headimage];
+                    _coverImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_WIDTH/2)];
+                    [_coverImage setAlpha:1];
+                    [_coverImage setImage:[UIImage imageNamed:Image_prifilebgcover]];
+                    [headView addSubview:_coverImage];
+                    _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 16, 85, 23)];
+                    [_attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
+                    [headView addSubview:_attentionButton];
+                    
+                    _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
+                    [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
+                    _nameLabel.textColor = [UIColor whiteColor];
+                    [headView addSubview:_nameLabel];
+                    _genderImage = [[UIImageView alloc] init];
+                    [headView addSubview:_genderImage];
+                    
+                    _constellationImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
+                    _constellationLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 5, SCREEN_WIDTH/2-50, 20)];
+                    
+                    _birthImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
+                    _birthLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
+                    
+                    _companyImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
+                    _companyLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
+                    
+                    _schoolImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 5, 8, 8)];
+                    _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
+                    _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
+                    
+                    
+                    
+                    
+                    _downLine = [[UIImageView alloc] initWithFrame:CGRectMake(16,_reposts.frame.origin.y+40, SCREEN_WIDTH-32, 1)];
+                    [_downLine setImage:[UIImage imageNamed:Image_lineImage]];
+                    [_muzzikView addSubview:_downLine];
+                    
+                    songView = [[UIView alloc] initWithFrame:CGRectMake(0, 55, SCREEN_WIDTH, 55)];
+                    [MuzzikItem addLineOnView:songView heightPoint:0 toLeft:10 toRight:10 withColor:Color_line_1];
+                    songLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 7.5, SCREEN_WIDTH-100, 20)];
+                    [songLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:15]];
+                    songLabel.textColor = Color_Theme_5;
+                    [songView addSubview:songLabel];
+                    
+                    artistLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 27.5, SCREEN_WIDTH-100, 20)];
+                    [artistLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:12]];
+                    artistLabel.textColor = Color_Theme_5;
+                    [songView addSubview:artistLabel];
+                    deleButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-40, 7.5, 40, 40)];
+                    [deleButton setImage:[UIImage imageNamed:Image_deletesongImage] forState:UIControlStateNormal];
+                    [deleButton addTarget:self action:@selector(deleSong) forControlEvents:UIControlEventTouchUpInside];
+                    [songView addSubview:deleButton];
+                    
+                    [self setUserInfo:_profileDic];
+                    [muzzikTableView reloadData];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                NSLog(@"%@",[weakreq error]);
+                NSLog(@"hhhh%@  kkk%@",[weakreq responseString],[weakreq responseHeaders]);
+                if (![[weakreq responseString] length]>0) {
+                    [self networkErrorShow];
+                }
+            }];
+            [requestForm startAsynchronous];
+        }
+    
     }];
     [request setFailedBlock:^{
         NSLog(@"%@",[weakrequest error]);
