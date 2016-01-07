@@ -1409,7 +1409,13 @@
             NSLog(@"%@",dic);
             
             [[RCIMClient sharedRCIMClient] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
-                
+                // 5333c121ed9bce7c21ba7c44
+                RCTextMessage *testMessage = [RCTextMessage messageWithContent:@"阿贵啊啊啊 啊啊啊啊啊啊"];
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:@"554e64f05e950daf19e12c06" content:testMessage pushContent:nil success:^(long messageId) {
+                    NSLog(@"发送成功");
+                } error:^(RCErrorCode nErrorCode, long messageId) {
+                    NSLog(@"发送失败");
+                }];
                 NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
             } error:^(RCConnectErrorCode status) {
                 NSLog(@"登陆的错误码为:%d", status);

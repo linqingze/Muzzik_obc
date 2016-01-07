@@ -176,11 +176,11 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     IMConversationViewcontroller *conversationVC = [[IMConversationViewcontroller alloc] init];
-    conversationVC.conversationType = ConversationType_PRIVATE;
+   // conversationVC.conversationType = ConversationType_PRIVATE;
     MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
     
-    conversationVC.targetId = muzzikuser.user_id;
-    conversationVC.title = [NSString stringWithFormat:@"与 %@ 的对话",muzzikuser.name];
+    //conversationVC.targetId = muzzikuser.user_id;
+   // conversationVC.title = [NSString stringWithFormat:@"与 %@ 的对话",muzzikuser.name];
     [[RCIMClient sharedRCIMClient] getRemoteHistoryMessages:ConversationType_PRIVATE targetId:muzzikuser.user_id recordTime:42949670000 count:10 success:^(NSArray *messages) {
         NSLog(@"%@",messages);
     } error:^(RCErrorCode status) {
