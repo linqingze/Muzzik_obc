@@ -5,7 +5,7 @@
 //  Created by kevin's mac on 14-8-1.
 //  Copyright (c) 2014年 IOS. All rights reserved.
 //
-
+#import "Account.h"
 #import <Foundation/Foundation.h>
 @protocol searchSource <NSObject>
 
@@ -60,7 +60,7 @@
 @property (nonatomic,retain) UIImageView *playNowImageView;
 @property (nonatomic,assign) BOOL hasTeachToFollow;
 @property (nonatomic,retain) NSMutableDictionary *followDic;
-
+@property (nonatomic,retain) Account *account;
 
 
 +(userInfo *) shareClass;

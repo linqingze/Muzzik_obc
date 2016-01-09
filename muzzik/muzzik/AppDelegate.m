@@ -1,4 +1,4 @@
-//
+ //
 //  AppDelegate.m
 //  muzzik
 //
@@ -30,29 +30,13 @@
     BOOL isLaunched;
     UIViewController *itemVC;
     BOOL needsReplay;
+
 }
 
 @end
 
 @implementation AppDelegate
-- (void)registerRemoteNotification
-{
-    
-#ifdef __IPHONE_8_0
-    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
-        
-        UIUserNotificationSettings *uns = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound) categories:nil];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:uns];
-    } else {
-        UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
-    }
-#else
-    UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
-#endif
-}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAudioSessionEvent:) name:AVAudioSessionInterruptionNotification object:nil];
     isLaunched = YES;
@@ -64,6 +48,10 @@
     [MobClick startWithAppkey:UMAPPKEY reportPolicy:BATCH channelId:@"App Store"];
 //    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 //    [MobClick setAppVersion:version];
+    
+    
+    
+    
     NSDictionary * dic = [MuzzikItem messageFromLocal];
     if (dic) {
        
@@ -72,7 +60,9 @@
         user.gender = [dic objectForKey:@"gender"];
         user.avatar = [dic objectForKey:@"avatar"];
         user.name = [dic objectForKey:@"name"];
-        
+        if ([user.token length]>0) {
+            [self registerRongClound];
+        }
     }
     if ([user.token length]==0) {
         user.loginType = Is_Not_Logined;
@@ -116,6 +106,7 @@
     self.topicVC = [[UINavigationController alloc] initWithRootViewController:topicVC];
     
     NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+    notifyVC.managedObjectContext = self.managedObjectContext;
     self.notifyVC = [[UINavigationController alloc] initWithRootViewController:notifyVC];
     UserHomePage *userhomeVC = [[UserHomePage alloc] init];
     self.userhomeVC = [[UINavigationController alloc] initWithRootViewController:userhomeVC];
@@ -148,10 +139,30 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
-    [self registerRongClound];
-    [self configureUmengNotificationWithOptions:launchOptions];
+    
+    //[self configureUmengNotificationWithOptions:launchOptions];
     return YES;
 }
+
+- (void)registerRemoteNotification
+{
+    
+#ifdef __IPHONE_8_0
+    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0) {
+        
+        UIUserNotificationSettings *uns = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert|UIUserNotificationTypeBadge|UIUserNotificationTypeSound) categories:nil];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        [[UIApplication sharedApplication] registerUserNotificationSettings:uns];
+    } else {
+        UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
+    }
+#else
+    UIRemoteNotificationType apn_type = (UIRemoteNotificationType)(UIRemoteNotificationTypeAlert|UIRemoteNotificationTypeSound|UIRemoteNotificationTypeBadge);
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:apn_type];
+#endif
+}
+
 -(void)requestForActivity{
     ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/common/splash?platform=ios",BaseURL]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:NO];
@@ -575,7 +586,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    
+    [self saveContext];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -611,6 +622,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"end");
+    [self saveContext];
     [ASIHTTPRequest clearSession];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -758,6 +770,9 @@
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
+                if ([user.token length]>0) {
+                    [self registerRongClound];
+                }
             }
             user.isSwitchUser = YES;
             if ([[responseObject allKeys] containsObject:@"avatar"]) {
@@ -863,6 +878,9 @@
             user.isSwitchUser = YES;
             if ([[responseObject allKeys] containsObject:@"token"]) {
                 user.token = [responseObject objectForKey:@"token"];
+                if ([user.token length]>0) {
+                    [self registerRongClound];
+                }
             }
             if ([[responseObject allKeys] containsObject:@"avatar"]) {
                 user.avatar = [responseObject objectForKey:@"avatar"];
@@ -1409,13 +1427,14 @@
             NSLog(@"%@",dic);
             
             [[RCIMClient sharedRCIMClient] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
-                // 5333c121ed9bce7c21ba7c44
-                RCTextMessage *testMessage = [RCTextMessage messageWithContent:@"阿贵啊啊啊 啊啊啊啊啊啊"];
-                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:@"554e64f05e950daf19e12c06" content:testMessage pushContent:nil success:^(long messageId) {
-                    NSLog(@"发送成功");
-                } error:^(RCErrorCode nErrorCode, long messageId) {
-                    NSLog(@"发送失败");
-                }];
+//                // 5333c121ed9bce7c21ba7c44
+//                RCTextMessage *testMessage = [RCTextMessage messageWithContent:@"阿贵啊啊啊 啊啊啊啊啊啊"];
+//                
+//                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:@"554e64f05e950daf19e12c06" content:testMessage pushContent:nil success:^(long messageId) {
+//                    NSLog(@"发送成功");
+//                } error:^(RCErrorCode nErrorCode, long messageId) {
+//                    NSLog(@"发送失败");
+//                }];
                 NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
             } error:^(RCConnectErrorCode status) {
                 NSLog(@"登陆的错误码为:%d", status);
@@ -1546,5 +1565,86 @@
         [rongRequest startSynchronous];
     }
 }
+
+#pragma mark - Core Data stack
+
+@synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectModel = _managedObjectModel;
+@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+- (NSURL *)applicationDocumentsDirectory {
+    // The directory the application uses to store the Core Data store file. This code uses a directory named "BlueOrbit._____" in the application's documents directory.
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+- (NSManagedObjectModel *)managedObjectModel {
+    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
+    if (_managedObjectModel != nil) {
+        return _managedObjectModel;
+    }
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Muzzik_coreModel" withExtension:@"momd"];
+    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return _managedObjectModel;
+}
+
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+    // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it.
+    if (_persistentStoreCoordinator != nil) {
+        return _persistentStoreCoordinator;
+    }
+    
+    // Create the coordinator and store
+    
+    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Muzzik_coreModel.sqlite"];
+    NSError *error = nil;
+    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
+    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+        // Report any error we got.
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
+        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
+        dict[NSUnderlyingErrorKey] = error;
+        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+        // Replace this with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _persistentStoreCoordinator;
+}
+
+
+- (NSManagedObjectContext *)managedObjectContext {
+    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (!coordinator) {
+        return nil;
+    }
+    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    return _managedObjectContext;
+}
+
+#pragma mark - Core Data Saving support
+
+- (void)saveContext {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    if (managedObjectContext != nil) {
+        NSError *error = nil;
+        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
+}
+
 
 @end

@@ -5,7 +5,12 @@
 //  Created by muzzik on 15/9/7.
 //  Copyright (c) 2015年 muzziker. All rights reserved.
 //
-
+//  @[@(ConversationType_PRIVATE),
+//    @(ConversationType_DISCUSSION),
+//    @(ConversationType_GROUP),
+//    @(ConversationType_SYSTEM),
+//    @(ConversationType_APPSERVICE),
+//    @(ConversationType_PUBLICSERVICE)]
 #import "NotificationCenterViewController.h"
 #import "NotifyObject.h"
 #import "NotificationCategoryCell.h"
@@ -14,11 +19,17 @@
 #import "searchViewController.h"
 #import <RongIMLib/RongIMLib.h>
 #import "IMFriendListViewController.h"
+#import <CoreData/CoreData.h>
+#import "Conversation.h"
+#import "Message.h"
+#import "UserCore.h"
 @interface NotificationCenterViewController ()<UITableViewDataSource,UITableViewDelegate,RCIMClientReceiveMessageDelegate>{
     UITableView *notifyTabelView;
     NSMutableArray *notifyArray;
     NSInteger page;
     NSMutableDictionary *notifyDic;
+    NSMutableArray *conversationList;
+    dispatch_queue_t _serialQueue;
 }
 
 @end
@@ -27,6 +38,8 @@
 #pragma mark view_lifeCycle
 - (void)viewDidLoad {
     [super viewDidLoad];
+    _serialQueue = dispatch_queue_create("IMserialQueue", DISPATCH_QUEUE_SERIAL);
+    
     page = 1;
     self.hidesBottomBarWhenPushed=YES;
     notifyArray = [NSMutableArray array];
@@ -55,18 +68,21 @@
     }
     RCIMClient *client = [RCIMClient sharedRCIMClient];
     [client setReceiveMessageDelegate:self object:nil];
-    NSArray *conversationList = [client
-                                 getConversationList:@[@(ConversationType_PRIVATE)]];
-    NSLog(@"%@",conversationList);
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(deleteMuzzik:) name:String_Muzzik_Delete object:nil];
+    [self getSeverConversation];
+}
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     
-    // Do any additional setup after loading the view.
-    //120480220855
+    
+    
 }
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
     [self checkNewNotification];
+    
+   // [self getLocalConversation];
+    
     
     [notifyTabelView reloadData];
 }
@@ -79,16 +95,7 @@
     user.notificationNumFollowNew = NO;
     user.notificationNumMetionNew = NO;
 }
-- (void)onReceived:(RCMessage *)message
-              left:(int)nLeft
-            object:(id)object {
-    if ([message.content isMemberOfClass:[RCTextMessage class]]) {
-        RCTextMessage *testMessage = (RCTextMessage *)message.content;
-        NSLog(@"消息内容：%@", testMessage.content);
-    }
-    
-    NSLog(@"还剩余的未接收的消息数：%d", nLeft);
-}
+
 -(void)checkNewNotification{
     userInfo *user = [userInfo shareClass];
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
@@ -346,6 +353,263 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+-(void)getCoreConversationByCon:(RCConversation *)conversation{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    // Specify criteria for filtering which objects to fetch
+    // Specify how the fetched objects should be sorted
+    NSLog(@"%@",conversation.targetId);
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", conversation.targetId];
+    [fetchRequest setPredicate:predicate];
+//    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sendTime"
+//                                                                   ascending:YES];
+//    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+    
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"无法打开");
+    }else{
+        if ([fetchedObjects count] >0) {
+            Conversation *ll =fetchedObjects[0];
+            NSLog(@"%@  %@",ll.targetId,ll.description);
+           // return fetchedObjects[0];
+        }else{
+            Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            con.targetId = conversation.targetId;
+            
+            
+        }
+    }
+    
+}
+-(void)getSeverConversation{
+    conversationList = [NSMutableArray array];
+    NSArray *conversationArray = [[RCIMClient sharedRCIMClient]
+                                 getConversationList:@[@(ConversationType_PRIVATE),
+                                                       @(ConversationType_DISCUSSION),
+                                                       @(ConversationType_GROUP),
+                                                       @(ConversationType_SYSTEM),
+                                                       @(ConversationType_APPSERVICE),
+                                                       @(ConversationType_PUBLICSERVICE)]];
+    if ([conversationArray count] > 0) {
+        [self getConversationListByLocalArray:conversationArray];
+    }
+//    for (RCConversation *conversation in conversationArray) {
+//        [conversationList addObject:[self getCoreConversationByCon:conversation]];
+//        NSLog(@"会话类型：%lu，目标会话ID：%@", (unsigned long)conversation.conversationType, conversation.targetId);
+//    }
+    
+//    NSArray *conversationArray = [[RCIMClient sharedRCIMClient] getConversationList:@[@(ConversationType_PRIVATE)]];
+//    for (RCConversation *dic in conversationArray) {
+//        NSLog(@"%@",dic);
+//    }
+}
+
+-(void)getConversationListByLocalArray:(NSArray *) conArray{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    
+    for (RCConversation *conversation in conArray) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", conversation.targetId];
+        [fetchRequest setPredicate:predicate];
+        //    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"sendTime"
+        //                                                                   ascending:YES];
+        //    [fetchRequest setSortDescriptors:[NSArray arrayWithObjects:sortDescriptor, nil]];
+        
+        NSError *error = nil;
+        NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if (fetchedObjects == nil) {
+            NSLog(@"无法打开");
+        }else{
+            dispatch_async(_serialQueue, ^{
+                if ([fetchedObjects count] >0) {
+                    [conversationList addObject:fetchedObjects[0]];
+                }else{
+                    Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+                    con.targetId = conversation.targetId;
+                    con.sendTime = conversation.sentTime;
+                    NSEntityDescription *Messageentity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+                    Message *coreMessage = [[Message alloc] initWithEntity:Messageentity insertIntoManagedObjectContext:self.managedObjectContext];
+                    coreMessage.messageId = (int32_t)conversation.lastestMessageId;
+                    if ([conversation.lastestMessage isMemberOfClass:[RCTextMessage class]]) {
+                        RCTextMessage *testMessage = (RCTextMessage *)conversation.lastestMessage;
+                        coreMessage.messageContent = testMessage.content;
+                    }
+                    coreMessage.sendTime = conversation.sentTime;
+                    [con addMessagesObject:coreMessage];
+                    con.lastMessage = coreMessage;
+                    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+                    NSEntityDescription *userEntity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+                    [fetchRequest setEntity:userEntity];
+                    // Specify criteria for filtering which objects to fetch
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"user_id == %@", conversation.targetId];
+                    [fetchRequest setPredicate:predicate];
+                    // Specify how the fetched objects should be sorted
+                    
+                    
+                    NSError *error = nil;
+                    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+                    if (fetchedObjects == nil) {
+                        NSLog(@"error:%@",error.userInfo);
+                    }else{
+                        if ([fetchedObjects count] == 0) {
+                            [self addUserToConversation:con];
+                        }else{
+                            con.targetUser = fetchedObjects[0];
+                        }
+                    }
+                    
+                }
+            });
+            
+        }
+        
+
+        dispatch_async(_serialQueue, ^{});
+    }
+}
+- (void)onReceived:(RCMessage *)message
+              left:(int)nLeft
+            object:(id)object {
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    // Specify criteria for filtering which objects to fetch
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", message.targetId];
+    [fetchRequest setPredicate:predicate];
+    // Specify how the fetched objects should be sorted
+
+    
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"error:%@",error.userInfo);
+    }else{
+        if ([fetchedObjects count] == 0) {
+            Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            con.targetId = message.targetId;
+            
+            [self addMeaage:message ToConversation:con];
+        }else{
+            Conversation *con = fetchedObjects[0];
+            [self addMeaage:message ToConversation:con];
+        }
+        
+    }
+    if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+        RCTextMessage *testMessage = (RCTextMessage *)message.content;
+        
+        NSLog(@"消息内容：%@", testMessage.content);
+    }
+    
+    NSLog(@"还剩余的未接收的消息数：%d", nLeft);
+}
+
+-(void) addUserToConversation:(Conversation *)con{
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    __weak NotificationCenterViewController *weakSelf = self;
+    [manager GET:[NSString stringWithFormat:@"api/user/%@",con.targetId] parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSLog(@"%@",responseObject);
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:weakSelf.managedObjectContext];
+        UserCore *coreUser = [[UserCore alloc] initWithEntity:entity insertIntoManagedObjectContext:weakSelf.managedObjectContext];
+        coreUser.user_id = con.targetId;
+        if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
+            coreUser.name = [responseObject objectForKey:@"name"];
+        }
+        if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
+            coreUser.avatar = [responseObject objectForKey:@"avatar"];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
+            coreUser.school = [responseObject objectForKey:@"school"];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
+            coreUser.company = [responseObject objectForKey:@"company"];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"topicsTotal"] && [[responseObject objectForKey:@"topicsTotal"] length] >0) {
+            coreUser.topicsTotal = (int32_t)[[responseObject objectForKey:@"topicsTotal"] integerValue];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"musicsTotal"] && [[responseObject objectForKey:@"musicsTotal"] length] >0) {
+            coreUser.musicsTotal = (int32_t)[[responseObject objectForKey:@"musicsTotal"] integerValue];
+        }
+        if ([[responseObject allKeys] containsObject:@"muzzikTotal"] && [[responseObject objectForKey:@"muzzikTotal"] length] >0) {
+            coreUser.muzzikTotal = (int32_t)[[responseObject objectForKey:@"muzzikTotal"] integerValue];
+        }
+        if ([[responseObject allKeys] containsObject:@"followsCount"] && [[responseObject objectForKey:@"followsCount"] length] >0) {
+            coreUser.followsCount = (int32_t)[[responseObject objectForKey:@"followsCount"] integerValue];
+        }
+        if ([[responseObject allKeys] containsObject:@"fansCount"] && [[responseObject objectForKey:@"fansCount"] length] >0) {
+            coreUser.fansCount = (int32_t)[[responseObject objectForKey:@"fansCount"] integerValue];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
+            coreUser.gender = [responseObject objectForKey:@"gender"];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
+            coreUser.astro = [responseObject objectForKey:@"astro"];
+        }
+        
+        if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
+            coreUser.descrip = [responseObject objectForKey:@"description"];
+        }
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
+    }];
+    
+}
+-(void) addMeaage:(RCMessage *) message ToConversation:(Conversation *)con{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+    Message *coreMessage = [[Message alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    coreMessage.messageId = (int32_t)message.messageId;
+    if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+        RCTextMessage *testMessage = (RCTextMessage *)message.content;
+        coreMessage.messageContent = testMessage.content;
+    }
+    con.sendTime = message.sentTime;
+    coreMessage.sendTime = message.sentTime;
+    [con addMessagesObject:coreMessage];
+    con.lastMessage = coreMessage;
+    if ([con.targetUser count] == 0) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+        [fetchRequest setEntity:entity];
+        // Specify criteria for filtering which objects to fetch
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"user_id == %@", message.targetId];
+        [fetchRequest setPredicate:predicate];
+        // Specify how the fetched objects should be sorted
+        
+        
+        NSError *error = nil;
+        NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+        if (fetchedObjects == nil) {
+            NSLog(@"error:%@",error.userInfo);
+        }else{
+            if ([fetchedObjects count] == 0) {
+                [self addUserToConversation:con];
+            }else{
+                con.targetUser = fetchedObjects[0];
+            }
+        }
+        
+        
+    }else{
+        [self.managedObjectContext save:nil];
+    }
+    
+    
+    
+    
+}
 /*
 #pragma mark - Navigation
 

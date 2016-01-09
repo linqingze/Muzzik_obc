@@ -9,5 +9,6 @@
 #import "AMScrollingNavbarViewController.h"
 
 @interface NotificationCenterViewController : AMScrollingNavbarViewController
+@property ( strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 -(void)checkNewNotification;
 @end
