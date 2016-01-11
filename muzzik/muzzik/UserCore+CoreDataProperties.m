@@ -2,7 +2,7 @@
 //  UserCore+CoreDataProperties.m
 //  muzzik
 //
-//  Created by muzzik on 16/1/9.
+//  Created by muzzik on 16/1/11.
 //  Copyright © 2016年 muzziker. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,23 +13,24 @@
 
 @implementation UserCore (CoreDataProperties)
 
+@dynamic astro;
 @dynamic avatar;
 @dynamic birthday;
+@dynamic company;
 @dynamic descrip;
+@dynamic fansCount;
+@dynamic followsCount;
 @dynamic gender;
+@dynamic genres;
 @dynamic isFans;
 @dynamic isFollow;
-@dynamic name;
-@dynamic school;
-@dynamic user_id;
-@dynamic company;
 @dynamic musicsTotal;
 @dynamic muzzikTotal;
-@dynamic followsCount;
-@dynamic fansCount;
+@dynamic name;
+@dynamic school;
 @dynamic topicsTotal;
-@dynamic astro;
-@dynamic genres;
+@dynamic user_id;
 @dynamic conversation;
+@dynamic userForAccount;
 
 @end

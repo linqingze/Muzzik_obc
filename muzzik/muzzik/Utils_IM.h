@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @interface Utils_IM : NSObject
-
++(NSString *) getStringFromIMDate:(NSDate*)date;
 @end

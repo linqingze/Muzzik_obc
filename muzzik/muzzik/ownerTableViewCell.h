@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Message.h"
 @interface ownerTableViewCell : UITableViewCell
-
+@property (nonatomic,retain) UIButton *headImage;
+@property (nonatomic,retain) UIImageView *timelineImage;
+@property (nonatomic,retain) UILabel *timeLabel;
+@property (nonatomic,retain) UILabel *messageLabel;
+-(CGFloat) configureCellWithMessage:(Message *) message;
 @end

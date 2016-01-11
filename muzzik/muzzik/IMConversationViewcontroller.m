@@ -7,10 +7,11 @@
 //
 
 #import "IMConversationViewcontroller.h"
-
+#import "ownerTableViewCell.h"
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
+    NSMutableArray *messageArray;
 }
 
 @end
@@ -28,10 +29,40 @@
     IMTableView.backgroundColor = [UIColor whiteColor];
     IMTableView.delegate = self;
     IMTableView.dataSource = self;
+    [IMTableView registerClass:[ownerTableViewCell class] forCellReuseIdentifier:@"ownerTableViewCell"];
     
 }
 -(void) settingTalkView{
     
+}
+#pragma mark tableView_DelegateMethod
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    // Return the number of sections.
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    // Return the number of rows in the section.
+    return messageArray.count;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    Message *message = messageArray[indexPath.row];
+    
+    NSLog(@"%@",message.cellHeight);
+    if (!message.cellHeight) {
+        ownerTableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        message.cellHeight =[NSNumber numberWithDouble:[cell configureCellWithMessage:message]];
+    }
+    return [message.cellHeight doubleValue];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+     ownerTableViewCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"ownerTableViewCell" forIndexPath:indexPath];
+    Message *tempMessage = messageArray[indexPath.row];
+    [cell configureCellWithMessage:tempMessage];
+    return cell;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

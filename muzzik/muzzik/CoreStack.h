@@ -9,6 +9,9 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 #import "Account.h"
+#import "Message.h"
+#import "Conversation.h"
+#import "UserCore.h"
 @interface CoreStack : NSObject
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -20,5 +23,8 @@
 + (id)sharedInstance ;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-
+-(Account *) getAccountByUserName:(NSString *)name userId:(NSString *) uid userToken:(NSString *)token;
+-(Message *) getNewMessage;
+-(UserCore *) getNewUser;
+-(Conversation *) getNewConversation;
 @end

@@ -516,7 +516,10 @@ static NSString * const AFNSURLSessionTaskDidSuspendNotification = @"com.alamofi
 
     if (!configuration) {
         configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-        configuration.HTTPAdditionalHeaders = [NSDictionary dictionaryWithObjectsAndKeys:@"application/json;encoding=utf-8",@"Content-Type",@"X-Auth-Token",[userInfo shareClass].token,nil];
+        if ([[userInfo shareClass].token length]>0) {
+            [configuration setHTTPAdditionalHeaders:@{@"Content-Type":@"application/json",@"X-Auth-Token":[userInfo shareClass].token}];
+        }
+        
     }
 
     self.sessionConfiguration = configuration;

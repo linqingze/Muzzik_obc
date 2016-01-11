@@ -21,12 +21,26 @@
 }
 -(void)setup{
     _titleImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 14, 32, 32)];
+    _timeLabel.layer.cornerRadius = 16;
+    _timeLabel.layer.masksToBounds = YES;
     [self addSubview:_titleImage];
-    _decriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(64, 0, SCREEN_WIDTH-128, 60)];
-    [_decriptionLabel setTextColor:Color_Text_1];
-    _decriptionLabel.font = [UIFont fontWithName:Font_Next_medium size:Font_Size_Muzzik_Message];
-    [self addSubview:_decriptionLabel];
-    _badgeImage = [[badgeImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-32, 22, 16, 16)];
+    _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(64, 14, SCREEN_WIDTH-180, 17)];
+    [_nameLabel setTextColor:Color_Text_1];
+    _nameLabel.font = [UIFont fontWithName:Font_Next_medium size:Font_Size_Muzzik_Message];
+    [self addSubview:_nameLabel];
+    
+    _messageLabel = [[UILabel alloc] initWithFrame:CGRectMake(64, 35, SCREEN_WIDTH-128, 12)];
+    [_messageLabel setTextColor:Color_line_1];
+    _messageLabel.font = [UIFont fontWithName:Font_Next_medium size:Font_Size_Muzzik_Message];
+    [self addSubview:_messageLabel];
+    
+    _timeLabel = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-116, 16, 100, 12)];
+    _timeLabel.textAlignment = NSTextAlignmentRight;
+    [_timeLabel setTextColor:Color_line_1];
+    _timeLabel.font = [UIFont fontWithName:Font_Next_medium size:Font_Size_Muzzik_Message];
+    [self addSubview:_timeLabel];
+    
+    _badgeImage = [[badgeImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-32, 32, 16, 16)];
     [_badgeImage setImage:[UIImage imageNamed:@"noti_cycle"]];
     [self addSubview:_badgeImage];
 

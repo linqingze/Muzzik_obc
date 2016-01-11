@@ -26,6 +26,8 @@
 #import "LoginViewController.h"
 #import <RongIMLib/RongIMLib.h>
 #import "UMessage_Sdk_1.2.2/UMessage.h"
+
+#import "CoreStack.h"
 @interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate>{
     BOOL isLaunched;
     UIViewController *itemVC;
@@ -62,6 +64,9 @@
         user.name = [dic objectForKey:@"name"];
         if ([user.token length]>0) {
             [self registerRongClound];
+        }
+        if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0) {
+            user.account = [[CoreStack sharedInstance] getAccountByUserName:user.name userId:user.uid userToken:user.token];
         }
     }
     if ([user.token length]==0) {
@@ -106,7 +111,6 @@
     self.topicVC = [[UINavigationController alloc] initWithRootViewController:topicVC];
     
     NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
-    notifyVC.managedObjectContext = self.managedObjectContext;
     self.notifyVC = [[UINavigationController alloc] initWithRootViewController:notifyVC];
     UserHomePage *userhomeVC = [[UserHomePage alloc] init];
     self.userhomeVC = [[UINavigationController alloc] initWithRootViewController:userhomeVC];
@@ -303,25 +307,25 @@
 }
 
 #pragma -mark 个推后台推送，消息处理
--(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
-    _payloadId =payloadId;
-    NSData *data = [_gexinPusher retrivePayloadById:payloadId];
-    NSString *payloadMsg = nil;
-//    if (data) {
-//        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
-//        for (UIViewController *vc in nac.viewControllers) {
-//            if ([vc isKindOfClass:[RootViewController class]]){
-//                RootViewController *root = (RootViewController *)vc;
-//                [root getMessage];
-//                
-//            }
-//    }
-//        payloadMsg = [[NSString alloc] initWithBytes:data.bytes
-//                                              length:data.length
-//                                            encoding:NSUTF8StringEncoding];
-//    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
-//    }
-}
+//-(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
+//    _payloadId =payloadId;
+//    NSData *data = [_gexinPusher retrivePayloadById:payloadId];
+//    NSString *payloadMsg = nil;
+////    if (data) {
+////        UINavigationController *nac = (UINavigationController *)self.window.rootViewController;
+////        for (UIViewController *vc in nac.viewControllers) {
+////            if ([vc isKindOfClass:[RootViewController class]]){
+////                RootViewController *root = (RootViewController *)vc;
+////                [root getMessage];
+////                
+////            }
+////    }
+////        payloadMsg = [[NSString alloc] initWithBytes:data.bytes
+////                                              length:data.length
+////                                            encoding:NSUTF8StringEncoding];
+////    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
+////    }
+//}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -586,7 +590,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [self saveContext];
+    [[CoreStack sharedInstance] saveContext];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -622,7 +626,7 @@
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"end");
-    [self saveContext];
+    [[CoreStack sharedInstance] saveContext];
     [ASIHTTPRequest clearSession];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -760,67 +764,52 @@
         self.wbtoken = [(WBAuthorizeResponse *)response accessToken];
         self.wbCurrentUserID = [(WBAuthorizeResponse *)response userID];
         UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-        ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@%@",BaseURL,URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]]]];
-        [requestsquare addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
-        [requestsquare setCompletionBlock :^{
-            //    NSLog(@"%@",weakrequest.originalURL);
-            NSData *data = [weakrequestsquare responseData];
-            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-                if ([user.token length]>0) {
-                    [self registerRongClound];
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager GET:[NSString stringWithFormat:@"%@%@",URL_WeiBo_AUTH,[(WBAuthorizeResponse *)response accessToken]] parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if(responseObject){
+                if ([[responseObject allKeys] containsObject:@"token"]) {
+                    user.token = [responseObject objectForKey:@"token"];
+                    if ([user.token length]>0) {
+                        [self registerRongClound];
+                    }
                 }
-            }
-            user.isSwitchUser = YES;
-            if ([[responseObject allKeys] containsObject:@"avatar"]) {
-                user.avatar = [responseObject objectForKey:@"avatar"];
-            }
-            if ([[responseObject allKeys] containsObject:@"gender"]) {
-                user.gender = [responseObject objectForKey:@"gender"];
-            }
-            if ([[responseObject allKeys] containsObject:@"_id"]) {
-                user.uid = [responseObject objectForKey:@"_id"];
-            }
-            if ([[responseObject allKeys] containsObject:@"blocked"]) {
-                user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
-            }
-            if ([[responseObject allKeys] containsObject:@"name"]) {
-                user.name = [responseObject objectForKey:@"name"];
-            }
-            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
-            if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
-                [nac popViewControllerAnimated:YES];
-            }
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-            [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = request;
-            [request setCompletionBlock :^{
-                NSLog(@"JSON: %@", [weakrequest responseString]);
-            }];
-             [request setFailedBlock:^{
-                 
-             }];
-            [request startAsynchronous];
-            
-            for (UIViewController *vc in nac.viewControllers) {
-                if ([vc isKindOfClass:[settingSystemVC class]]) {
-                    settingSystemVC *settingvc = (settingSystemVC*)vc;
-                    [settingvc reloadTable];
-                    break;
+                user.isSwitchUser = YES;
+                if ([[responseObject allKeys] containsObject:@"avatar"]) {
+                    user.avatar = [responseObject objectForKey:@"avatar"];
                 }
+                if ([[responseObject allKeys] containsObject:@"gender"]) {
+                    user.gender = [responseObject objectForKey:@"gender"];
+                }
+                if ([[responseObject allKeys] containsObject:@"_id"]) {
+                    user.uid = [responseObject objectForKey:@"_id"];
+                }
+                if ([[responseObject allKeys] containsObject:@"blocked"]) {
+                    user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+                }
+                if ([[responseObject allKeys] containsObject:@"name"]) {
+                    user.name = [responseObject objectForKey:@"name"];
+                }
+                [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
+                if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
+                    [nac popViewControllerAnimated:YES];
+                }
+                for (UIViewController *vc in nac.viewControllers) {
+                    if ([vc isKindOfClass:[settingSystemVC class]]) {
+                        settingSystemVC *settingvc = (settingSystemVC*)vc;
+                        [settingvc reloadTable];
+                        break;
+                    }
+                }
+                
+                [manager POST:URL_Set_Notify parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                    NSLog(@"%@",responseObject);
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                    NSLog(@"%@",error);
+                }];
             }
-            
-            
-            
-            
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+             NSLog(@"%@",error);
         }];
-        [requestsquare setFailedBlock:^{
-            NSLog(@"%@,%@",[weakrequestsquare error],[weakrequestsquare responseString]);
-        }];
-        [requestsquare startAsynchronous];
     }
 }
 
@@ -868,51 +857,36 @@
     {
         SendAuthResp *temp = (SendAuthResp*)resp;
         userInfo *user = [userInfo shareClass];
-        ASIHTTPRequest *requestsquare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_WeiChat_AUTH]]];
-        [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
-        [requestsquare setCompletionBlock :^{
-            NSData *data = [weakrequestsquare responseData];
-            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-
-            user.isSwitchUser = YES;
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-                if ([user.token length]>0) {
-                    [self registerRongClound];
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+        [manager GET:URL_WeiChat_AUTH parameters:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+            if(responseObject){
+                if ([[responseObject allKeys] containsObject:@"token"]) {
+                    user.token = [responseObject objectForKey:@"token"];
+                    if ([user.token length]>0) {
+                        [self registerRongClound];
+                    }
                 }
-            }
-            if ([[responseObject allKeys] containsObject:@"avatar"]) {
-                user.avatar = [responseObject objectForKey:@"avatar"];
-            }
-            if ([[responseObject allKeys] containsObject:@"gender"]) {
-                user.gender = [responseObject objectForKey:@"gender"];
-            }
-            if ([[responseObject allKeys] containsObject:@"_id"]) {
-                user.uid = [responseObject objectForKey:@"_id"];
-                [UMessage addAlias:user.uid type:@"Muzzik" response:^(id responseObject, NSError *error) {
-                    NSLog(@"object:%@,error:%@",responseObject,error);
-                }];
-            }
-            if ([[responseObject allKeys] containsObject:@"blocked"]) {
-                user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
-            }
-            if ([[responseObject allKeys] containsObject:@"name"]) {
-                user.name = [responseObject objectForKey:@"name"];
-            }
-            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
-            if ([user.token length]>0) {
-                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
-                [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] Method:PostMethod auth:YES];
-                __weak ASIHTTPRequest *weakrequest = request;
-                [request setCompletionBlock :^{
-                    NSLog(@"JSON: %@", [weakrequest responseString]);
-                }];
-                [request setFailedBlock:^{
-                    
-                }];
-                [request startAsynchronous];
-                UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+                user.isSwitchUser = YES;
+                if ([[responseObject allKeys] containsObject:@"avatar"]) {
+                    user.avatar = [responseObject objectForKey:@"avatar"];
+                }
+                if ([[responseObject allKeys] containsObject:@"gender"]) {
+                    user.gender = [responseObject objectForKey:@"gender"];
+                }
+                if ([[responseObject allKeys] containsObject:@"_id"]) {
+                    user.uid = [responseObject objectForKey:@"_id"];
+                }
+                if ([[responseObject allKeys] containsObject:@"blocked"]) {
+                    user.blocked = [[responseObject objectForKey:@"blocked"] boolValue];
+                }
+                if ([[responseObject allKeys] containsObject:@"name"]) {
+                    user.name = [responseObject objectForKey:@"name"];
+                }
+                [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
+                if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
+                    [nac popViewControllerAnimated:YES];
+                }
                 for (UIViewController *vc in nac.viewControllers) {
                     if ([vc isKindOfClass:[settingSystemVC class]]) {
                         settingSystemVC *settingvc = (settingSystemVC*)vc;
@@ -920,13 +894,16 @@
                         break;
                     }
                 }
-                [nac popViewControllerAnimated:YES];
+                
+                [manager POST:URL_Set_Notify parameters:[NSDictionary dictionaryWithObjectsAndKeys:user.deviceToken,@"deviceToken",@"APN",@"type", nil] progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                    NSLog(@"%@",responseObject);
+                } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                    NSLog(@"%@",error);
+                }];
             }
+        } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+            NSLog(@"%@",error);
         }];
-        [requestsquare setFailedBlock:^{
-            NSLog(@"%@",[weakrequestsquare error]);
-        }];
-        [requestsquare startAsynchronous];
         
     }
     else if ([resp isKindOfClass:[AddCardToWXCardPackageResp class]])
@@ -1413,28 +1390,17 @@
 //}
 
 -(void) registerRongClound{
-//    [[RCIM sharedRCIM] initWithAppKey:AppKey_RongClound];
-//    [[RCIM sharedRCIM] setUserInfoDataSource:self];
-//    [[RCIM sharedRCIM] setGroupInfoDataSource:self];
-    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
+
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0) {
+        user.account = [[CoreStack sharedInstance] getAccountByUserName:user.name userId:user.uid userToken:user.token];
+    }
     
-    ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RongClound_Token]]];
-    [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = rongRequest;
-    [rongRequest setCompletionBlock :^{
-        if ([weakrequest responseStatusCode] == 200) {
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-            NSLog(@"%@",dic);
-            
-            [[RCIMClient sharedRCIMClient] connectWithToken:[dic objectForKey:@"token"] success:^(NSString *userId) {
-//                // 5333c121ed9bce7c21ba7c44
-//                RCTextMessage *testMessage = [RCTextMessage messageWithContent:@"阿贵啊啊啊 啊啊啊啊啊啊"];
-//                
-//                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:@"554e64f05e950daf19e12c06" content:testMessage pushContent:nil success:^(long messageId) {
-//                    NSLog(@"发送成功");
-//                } error:^(RCErrorCode nErrorCode, long messageId) {
-//                    NSLog(@"发送失败");
-//                }];
+    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        if( responseObject){
+            [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
                 NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
             } error:^(RCConnectErrorCode status) {
                 NSLog(@"登陆的错误码为:%d", status);
@@ -1445,11 +1411,9 @@
                 NSLog(@"token错误");
             }];
         }
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"%@",error);
     }];
-    [rongRequest setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [rongRequest startAsynchronous];
 }
  
 
@@ -1500,151 +1464,70 @@
     [UMessage setLogEnabled:YES];
 }
 
-
-- (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *))completion{
-    __block NSMutableDictionary *dic = [[MuzzikItem getDictionaryFromLocalForKey:@"Im_UserInfo"] mutableCopy];
-    RCUserInfo *user = [[RCUserInfo alloc]init];
-    if (dic) {
-        if ([[dic allKeys] containsObject:userId]) {
-            
-            user.userId = userId;
-            user.name = [[dic objectForKey:userId] objectForKey:@"name"];
-            user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[dic objectForKey:userId] objectForKey:@"avatar"]];
-            return completion(user);
-        }else{
-            ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
-            [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = rongRequest;
-            [rongRequest setCompletionBlock :^{
-                if ([weakrequest responseStatusCode] == 200) {
-                    NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
-                    if (reqDic) {
-                        [dic setObject:reqDic forKey:userId];
-                        [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
-                        user.userId = userId;
-                        user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
-                        user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
-                       // [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:userId];
-                        return completion(user);
-                        
-                        
-                    }
-                }
-                
-                
-            }];
-            [rongRequest setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [rongRequest startSynchronous];
-        }
-    }else{
-        dic = [NSMutableDictionary dictionary];
-        ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
-        [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequest = rongRequest;
-        [rongRequest setCompletionBlock :^{
-            if ([weakrequest responseStatusCode] == 200) {
-                NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
-                if (reqDic) {
-                    [dic setObject:reqDic forKey:userId];
-                    [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
-                    user.userId = userId;
-                    user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
-                    user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
-                    return completion(user);
-                    
-                }
-            }
-            
-            
-        }];
-        [rongRequest setFailedBlock:^{
-            NSLog(@"%@",[weakrequest error]);
-        }];
-        [rongRequest startSynchronous];
-    }
-}
-
-#pragma mark - Core Data stack
-
-@synthesize managedObjectContext = _managedObjectContext;
-@synthesize managedObjectModel = _managedObjectModel;
-@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
-
-- (NSURL *)applicationDocumentsDirectory {
-    // The directory the application uses to store the Core Data store file. This code uses a directory named "BlueOrbit._____" in the application's documents directory.
-    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-}
-
-- (NSManagedObjectModel *)managedObjectModel {
-    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
-    if (_managedObjectModel != nil) {
-        return _managedObjectModel;
-    }
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Muzzik_coreModel" withExtension:@"momd"];
-    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
-    return _managedObjectModel;
-}
-
-- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
-    // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it.
-    if (_persistentStoreCoordinator != nil) {
-        return _persistentStoreCoordinator;
-    }
-    
-    // Create the coordinator and store
-    
-    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Muzzik_coreModel.sqlite"];
-    NSError *error = nil;
-    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
-    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
-        // Report any error we got.
-        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
-        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
-        dict[NSUnderlyingErrorKey] = error;
-        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
-        // Replace this with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-    
-    return _persistentStoreCoordinator;
-}
-
-
-- (NSManagedObjectContext *)managedObjectContext {
-    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
-    if (_managedObjectContext != nil) {
-        return _managedObjectContext;
-    }
-    
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (!coordinator) {
-        return nil;
-    }
-    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
-    return _managedObjectContext;
-}
-
-#pragma mark - Core Data Saving support
-
-- (void)saveContext {
-    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
-    if (managedObjectContext != nil) {
-        NSError *error = nil;
-        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
-            // Replace this implementation with code to handle the error appropriately.
-            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-            abort();
-        }
-    }
-}
-
+//
+//- (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *))completion{
+//    __block NSMutableDictionary *dic = [[MuzzikItem getDictionaryFromLocalForKey:@"Im_UserInfo"] mutableCopy];
+//    RCUserInfo *user = [[RCUserInfo alloc]init];
+//    if (dic) {
+//        if ([[dic allKeys] containsObject:userId]) {
+//            
+//            user.userId = userId;
+//            user.name = [[dic objectForKey:userId] objectForKey:@"name"];
+//            user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[dic objectForKey:userId] objectForKey:@"avatar"]];
+//            return completion(user);
+//        }else{
+//            ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
+//            [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+//            __weak ASIHTTPRequest *weakrequest = rongRequest;
+//            [rongRequest setCompletionBlock :^{
+//                if ([weakrequest responseStatusCode] == 200) {
+//                    NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
+//                    if (reqDic) {
+//                        [dic setObject:reqDic forKey:userId];
+//                        [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
+//                        user.userId = userId;
+//                        user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
+//                        user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
+//                       // [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:userId];
+//                        return completion(user);
+//                        
+//                        
+//                    }
+//                }
+//                
+//                
+//            }];
+//            [rongRequest setFailedBlock:^{
+//                NSLog(@"%@",[weakrequest error]);
+//            }];
+//            [rongRequest startSynchronous];
+//        }
+//    }else{
+//        dic = [NSMutableDictionary dictionary];
+//        ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
+//        [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+//        __weak ASIHTTPRequest *weakrequest = rongRequest;
+//        [rongRequest setCompletionBlock :^{
+//            if ([weakrequest responseStatusCode] == 200) {
+//                NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
+//                if (reqDic) {
+//                    [dic setObject:reqDic forKey:userId];
+//                    [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
+//                    user.userId = userId;
+//                    user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
+//                    user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
+//                    return completion(user);
+//                    
+//                }
+//            }
+//            
+//            
+//        }];
+//        [rongRequest setFailedBlock:^{
+//            NSLog(@"%@",[weakrequest error]);
+//        }];
+//        [rongRequest startSynchronous];
+//    }
+//}
 
 @end

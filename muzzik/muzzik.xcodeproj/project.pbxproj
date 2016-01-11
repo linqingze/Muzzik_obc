@@ -179,7 +179,6 @@
 		F24568AB1C3CE09100DCE7A6 /* YYLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568911C3CE09100DCE7A6 /* YYLabel.m */; };
 		F24568AC1C3CE09100DCE7A6 /* YYTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568941C3CE09100DCE7A6 /* YYTextView.m */; };
 		F24568B11C3D133C00DCE7A6 /* ownerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */; };
-		F24568B21C3D133C00DCE7A6 /* ownerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F24568B01C3D133C00DCE7A6 /* ownerTableViewCell.xib */; };
 		F24568DF1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F24568DD1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodeld */; };
 		F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */; };
 		F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */; };
@@ -667,7 +666,6 @@
 		F24568941C3CE09100DCE7A6 /* YYTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextView.m; sourceTree = "<group>"; };
 		F24568AE1C3D133C00DCE7A6 /* ownerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ownerTableViewCell.h; sourceTree = "<group>"; };
 		F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ownerTableViewCell.m; sourceTree = "<group>"; };
-		F24568B01C3D133C00DCE7A6 /* ownerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ownerTableViewCell.xib; sourceTree = "<group>"; };
 		F24568DE1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Muzzik_coreModel.xcdatamodel; sourceTree = "<group>"; };
 		F24B8F541BCD1CB900FC2597 /* RDVTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBar.h; sourceTree = "<group>"; };
 		F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBar.m; sourceTree = "<group>"; };
@@ -1696,7 +1694,6 @@
 				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
 				F24568AE1C3D133C00DCE7A6 /* ownerTableViewCell.h */,
 				F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */,
-				F24568B01C3D133C00DCE7A6 /* ownerTableViewCell.xib */,
 			);
 			name = IM;
 			sourceTree = "<group>";
@@ -2078,7 +2075,6 @@
 				F20740291C096F74005D8FBE /* hot.muzziks in Resources */,
 				F2738ACB1C312CD100F7F2F6 /* RongCloud.bundle in Resources */,
 				F2F0FC8D1ADD8B7100668103 /* TeachViewController.xib in Resources */,
-				F24568B21C3D133C00DCE7A6 /* ownerTableViewCell.xib in Resources */,
 				F2F7EE401AEE23E400265596 /* unicode_to_hanyu_pinyin.txt in Resources */,
 				F2738AC71C312CD100F7F2F6 /* Emoji.plist in Resources */,
 				F2738AC81C312CD100F7F2F6 /* RongCloudKit.strings in Resources */,

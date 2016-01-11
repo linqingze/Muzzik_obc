@@ -99,91 +99,114 @@
     }
 }
 
--(Account *) getAccountByUserId:(NSString *) uid Token:(NSString *) token{
+-(Account *) getAccountByUserName:(NSString *)name userId:(NSString *) uid userToken:(NSString *)token{
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Account" inManagedObjectContext:self.managedObjectContext];
     Account *account;
     [fetchRequest setEntity:entity];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"user_id == %@",uid];
-        [fetchRequest setPredicate:predicate];
-        
-        
-        NSError *error = nil;
-        NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
-        if (fetchedObjects == nil) {
-            NSLog(@"无法打开");
-            return nil;
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"user_id == %@",uid];
+    [fetchRequest setPredicate:predicate];
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"无法打开");
+        return nil;
+    }else{
+        if ([fetchedObjects count] >0) {
+            return fetchedObjects[0];
         }else{
-            if ([fetchedObjects count] >0) {
-                return fetchedObjects[0];
-            }else{
-                 NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,uid]];
-                NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-                [request setHTTPMethod:@"GET"];
-                
-                //(2)超时时间
-                [request setTimeoutInterval:15];
-                [request setAllHTTPHeaderFields:[NSDictionary dictionaryWithObjectsAndKeys:@"application/json;encoding=utf-8",@"Content-Type",@"X-Auth-Token",token,nil]];
-                NSURLResponse *response = nil;
-                NSError *error = nil;
-                NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
-                if (!error && data) {
-                    NSDictionary * responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-                    if (!error && responseObject) {
-                        account = [[Account alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-                        
-                        if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
-                            account.name = [responseObject objectForKey:@"name"];
-                        }
-                        if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
-                            account.avatar = [responseObject objectForKey:@"avatar"];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
-                            account.school = [responseObject objectForKey:@"school"];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
-                            account.company = [responseObject objectForKey:@"company"];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"topicsTotal"] && [[responseObject objectForKey:@"topicsTotal"] length] >0) {
-                            account.topicsTotal = (int32_t)[[responseObject objectForKey:@"topicsTotal"] integerValue];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"musicsTotal"] && [[responseObject objectForKey:@"musicsTotal"] length] >0) {
-                            account.musicsTotal = (int32_t)[[responseObject objectForKey:@"musicsTotal"] integerValue];
-                        }
-                        if ([[responseObject allKeys] containsObject:@"muzzikTotal"] && [[responseObject objectForKey:@"muzzikTotal"] length] >0) {
-                            account.muzzikTotal = (int32_t)[[responseObject objectForKey:@"muzzikTotal"] integerValue];
-                        }
-                        if ([[responseObject allKeys] containsObject:@"followsCount"] && [[responseObject objectForKey:@"followsCount"] length] >0) {
-                            account.followsCount = (int32_t)[[responseObject objectForKey:@"followsCount"] integerValue];
-                        }
-                        if ([[responseObject allKeys] containsObject:@"fansCount"] && [[responseObject objectForKey:@"fansCount"] length] >0) {
-                            account.fansCount = (int32_t)[[responseObject objectForKey:@"fansCount"] integerValue];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
-                            account.gender = [responseObject objectForKey:@"gender"];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
-                            account.astro = [responseObject objectForKey:@"astro"];
-                        }
-                        
-                        if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
-                            account.descrip = [responseObject objectForKey:@"description"];
-                        }
-                        return account;
-
-                    }
-                }
-                
-            }
+            account = [[Account alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            account.user_id = uid;
+            account.token = token;
+            account.name = name;
+            [self.managedObjectContext save:nil];
+            return account;
+            
         }
+    }
     return nil;
 }
+-(Message *) getNewMessage{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+    Message *message = [[Message alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return message;
+}
+-(UserCore *) getNewUser{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+    UserCore *user = [[UserCore alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return user;
+}
+-(Conversation *) getNewConversation{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return con;
+}
 
+
+
+
+
+//NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,[responseObject objectForKey:@"_id"]]];
+//NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+//[request setHTTPMethod:@"GET"];
+//
+////(2)超时时间
+//[request setTimeoutInterval:15];
+//[request setAllHTTPHeaderFields:[NSDictionary dictionaryWithObjectsAndKeys:@"application/json;encoding=utf-8",@"Content-Type",@"X-Auth-Token",token,nil]];
+//NSURLResponse *response = nil;
+//NSError *error = nil;
+//NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+//if (!error && data) {
+//    NSDictionary * responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+//    if (!error && responseObject) {
+//        account = [[Account alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+//        
+//        if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
+//            account.name = [responseObject objectForKey:@"name"];
+//        }
+//        if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
+//            account.avatar = [responseObject objectForKey:@"avatar"];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
+//            account.school = [responseObject objectForKey:@"school"];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
+//            account.company = [responseObject objectForKey:@"company"];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"topicsTotal"] && [[responseObject objectForKey:@"topicsTotal"] length] >0) {
+//            account.topicsTotal = (int32_t)[[responseObject objectForKey:@"topicsTotal"] integerValue];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"musicsTotal"] && [[responseObject objectForKey:@"musicsTotal"] length] >0) {
+//            account.musicsTotal = (int32_t)[[responseObject objectForKey:@"musicsTotal"] integerValue];
+//        }
+//        if ([[responseObject allKeys] containsObject:@"muzzikTotal"] && [[responseObject objectForKey:@"muzzikTotal"] length] >0) {
+//            account.muzzikTotal = (int32_t)[[responseObject objectForKey:@"muzzikTotal"] integerValue];
+//        }
+//        if ([[responseObject allKeys] containsObject:@"followsCount"] && [[responseObject objectForKey:@"followsCount"] length] >0) {
+//            account.followsCount = (int32_t)[[responseObject objectForKey:@"followsCount"] integerValue];
+//        }
+//        if ([[responseObject allKeys] containsObject:@"fansCount"] && [[responseObject objectForKey:@"fansCount"] length] >0) {
+//            account.fansCount = (int32_t)[[responseObject objectForKey:@"fansCount"] integerValue];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
+//            account.gender = [responseObject objectForKey:@"gender"];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
+//            account.astro = [responseObject objectForKey:@"astro"];
+//        }
+//        
+//        if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
+//            account.descrip = [responseObject objectForKey:@"description"];
+//        }
+//        return account;
+//        
+//    }
+//}
 
 @end
