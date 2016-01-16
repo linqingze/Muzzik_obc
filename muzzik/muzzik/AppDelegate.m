@@ -26,13 +26,13 @@
 #import "LoginViewController.h"
 #import <RongIMLib/RongIMLib.h>
 #import "UMessage_Sdk_1.2.2/UMessage.h"
-
-#import "CoreStack.h"
-@interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate>{
+#import "IMConversationViewcontroller.h"
+#import "IMShareMessage.h"
+@interface AppDelegate ()<UIApplicationDelegate,GexinSdkDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate,RCIMClientReceiveMessageDelegate>{
     BOOL isLaunched;
     UIViewController *itemVC;
     BOOL needsReplay;
-
+    dispatch_queue_t _serialQueue;
 }
 
 @end
@@ -43,6 +43,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAudioSessionEvent:) name:AVAudioSessionInterruptionNotification object:nil];
     isLaunched = YES;
     userInfo *user = [userInfo shareClass];
+    _serialQueue = dispatch_queue_create("IMserialQueue", DISPATCH_QUEUE_SERIAL);
     [WXApi registerApp:ID_WeiChat_APP];
     [WeiboSDK enableDebugMode:NO];
     [WeiboSDK registerApp:Key_WeiBo];
@@ -64,9 +65,6 @@
         user.name = [dic objectForKey:@"name"];
         if ([user.token length]>0) {
             [self registerRongClound];
-        }
-        if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0) {
-            user.account = [[CoreStack sharedInstance] getAccountByUserName:user.name userId:user.uid userToken:user.token];
         }
     }
     if ([user.token length]==0) {
@@ -111,6 +109,8 @@
     self.topicVC = [[UINavigationController alloc] initWithRootViewController:topicVC];
     
     NotificationCenterViewController *notifyVC = [[NotificationCenterViewController alloc] init];
+    
+    
     self.notifyVC = [[UINavigationController alloc] initWithRootViewController:notifyVC];
     UserHomePage *userhomeVC = [[UserHomePage alloc] init];
     self.userhomeVC = [[UINavigationController alloc] initWithRootViewController:userhomeVC];
@@ -124,6 +124,10 @@
     //    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
     
     self.tabviewController.tabBar.translucent = YES;
+    
+    
+    RCIMClient *client = [RCIMClient sharedRCIMClient];
+    [client setReceiveMessageDelegate:self object:nil];
     
     [self customizeTabBarForController:tabBarController];
     [self.window setRootViewController:self.tabviewController];
@@ -143,7 +147,20 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
+    [[RCIMClient sharedRCIMClient] recordLaunchOptionsEvent:launchOptions];
     
+    /**
+     * 获取融云推送服务扩展字段1
+     */
+    NSDictionary *pushServiceData = [[RCIMClient sharedRCIMClient] getPushExtraFromLaunchOptions:launchOptions];
+    if (pushServiceData) {
+        NSLog(@"该启动事件包含来自融云的推送服务");
+        for (id key in [pushServiceData allKeys]) {
+            NSLog(@"%@", pushServiceData[key]);
+        }
+    } else {
+        NSLog(@"该启动事件不包含来自融云的推送服务");
+    }
     //[self configureUmengNotificationWithOptions:launchOptions];
     return YES;
 }
@@ -539,6 +556,7 @@
     [UMessage registerDeviceToken:deviceToken];
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
+    [[RCIMClient sharedRCIMClient] setDeviceToken:_deviceToken];
     NSLog(@"deviceToken:%@", _deviceToken);
     userInfo *user = [userInfo shareClass];
     user.deviceToken =_deviceToken;
@@ -579,6 +597,21 @@
     NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
     NSLog(@"receive:%@",record);
     
+    [[RCIMClient sharedRCIMClient] recordRemoteNotificationEvent:userInfo];
+    /**
+     * 获取融云推送服务扩展字段2
+     */
+    NSDictionary *pushServiceData = [[RCIMClient sharedRCIMClient] getPushExtraFromRemoteNotification:userInfo];
+    if (pushServiceData) {
+        NSLog(@"该远程推送包含来自融云的推送服务");
+        for (id key in [pushServiceData allKeys]) {
+            NSLog(@"key = %@, value = %@", key, pushServiceData[key]);
+        }
+    } else {
+        NSLog(@"该远程推送不包含来自融云的推送服务");
+    }
+    
+    
 }
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
     
@@ -590,7 +623,7 @@
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    [[CoreStack sharedInstance] saveContext];
+    [self saveContext];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
@@ -623,10 +656,21 @@
     [self startSdkWith:kAppId appKey:kAppKey appSecret:kAppSecret];
     [Globle shareGloble].isApplicationEnterBackground = NO;
 }
+- (void)application:(UIApplication *)application
+didReceiveLocalNotification:(UILocalNotification *)notification {
+    /**
+     * 统计推送打开率3
+     */
+    [[RCIMClient sharedRCIMClient] recordLocalNotificationEvent:notification];
+    
+    //震动
+    AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+    AudioServicesPlaySystemSound(1007);
+}
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     NSLog(@"end");
-    [[CoreStack sharedInstance] saveContext];
+    [self saveContext];
     [ASIHTTPRequest clearSession];
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
@@ -769,9 +813,6 @@
             if(responseObject){
                 if ([[responseObject allKeys] containsObject:@"token"]) {
                     user.token = [responseObject objectForKey:@"token"];
-                    if ([user.token length]>0) {
-                        [self registerRongClound];
-                    }
                 }
                 user.isSwitchUser = YES;
                 if ([[responseObject allKeys] containsObject:@"avatar"]) {
@@ -789,6 +830,7 @@
                 if ([[responseObject allKeys] containsObject:@"name"]) {
                     user.name = [responseObject objectForKey:@"name"];
                 }
+                 [self registerRongClound];
                 [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
                 if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
                     [nac popViewControllerAnimated:YES];
@@ -861,12 +903,7 @@
         AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
         [manager GET:URL_WeiChat_AUTH parameters:[NSDictionary dictionaryWithObjectsAndKeys:@"json",@"result",temp.code,@"code", nil] progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
             if(responseObject){
-                if ([[responseObject allKeys] containsObject:@"token"]) {
-                    user.token = [responseObject objectForKey:@"token"];
-                    if ([user.token length]>0) {
-                        [self registerRongClound];
-                    }
-                }
+                
                 user.isSwitchUser = YES;
                 if ([[responseObject allKeys] containsObject:@"avatar"]) {
                     user.avatar = [responseObject objectForKey:@"avatar"];
@@ -883,6 +920,11 @@
                 if ([[responseObject allKeys] containsObject:@"name"]) {
                     user.name = [responseObject objectForKey:@"name"];
                 }
+                if ([[responseObject allKeys] containsObject:@"token"]) {
+                    user.token = [responseObject objectForKey:@"token"];
+
+                }
+                 [self registerRongClound];
                 [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
                 if ([nac.viewControllers.lastObject isKindOfClass:[LoginViewController class]]) {
                     [nac popViewControllerAnimated:YES];
@@ -1392,28 +1434,36 @@
 -(void) registerRongClound{
 
     userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0) {
-        user.account = [[CoreStack sharedInstance] getAccountByUserName:user.name userId:user.uid userToken:user.token];
-    }
-    
-    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        if( responseObject){
-            [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
-                NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
-            } error:^(RCConnectErrorCode status) {
-                NSLog(@"登陆的错误码为:%d", status);
-            } tokenIncorrect:^{
-                //token过期或者不正确。
-                //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
-                //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
-                NSLog(@"token错误");
+    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
+        user.account = [self getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
+        if (user.account) {
+            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                if( responseObject){
+                    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
+                    [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
+                        NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
+                        RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
+                        [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
+                        [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
+                    } error:^(RCConnectErrorCode status) {
+                        NSLog(@"登陆的错误码为:%d", status);
+                    } tokenIncorrect:^{
+                        
+                        //token过期或者不正确。
+                        //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
+                        //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
+                        NSLog(@"token错误");
+                    }];
+                }
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"%@",error);
             }];
         }
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"%@",error);
-    }];
+    }
+    
+    
+    
 }
  
 
@@ -1464,70 +1514,378 @@
     [UMessage setLogEnabled:YES];
 }
 
-//
-//- (void)getUserInfoWithUserId:(NSString *)userId completion:(void (^)(RCUserInfo *))completion{
-//    __block NSMutableDictionary *dic = [[MuzzikItem getDictionaryFromLocalForKey:@"Im_UserInfo"] mutableCopy];
-//    RCUserInfo *user = [[RCUserInfo alloc]init];
-//    if (dic) {
-//        if ([[dic allKeys] containsObject:userId]) {
-//            
-//            user.userId = userId;
-//            user.name = [[dic objectForKey:userId] objectForKey:@"name"];
-//            user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[dic objectForKey:userId] objectForKey:@"avatar"]];
-//            return completion(user);
-//        }else{
-//            ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
-//            [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-//            __weak ASIHTTPRequest *weakrequest = rongRequest;
-//            [rongRequest setCompletionBlock :^{
-//                if ([weakrequest responseStatusCode] == 200) {
-//                    NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
-//                    if (reqDic) {
-//                        [dic setObject:reqDic forKey:userId];
-//                        [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
-//                        user.userId = userId;
-//                        user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
-//                        user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
-//                       // [[RCIM sharedRCIM] refreshUserInfoCache:user withUserId:userId];
-//                        return completion(user);
-//                        
-//                        
-//                    }
-//                }
-//                
-//                
-//            }];
-//            [rongRequest setFailedBlock:^{
-//                NSLog(@"%@",[weakrequest error]);
-//            }];
-//            [rongRequest startSynchronous];
-//        }
-//    }else{
-//        dic = [NSMutableDictionary dictionary];
-//        ASIHTTPRequest *rongRequest = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,userId]]];
-//        [rongRequest addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-//        __weak ASIHTTPRequest *weakrequest = rongRequest;
-//        [rongRequest setCompletionBlock :^{
-//            if ([weakrequest responseStatusCode] == 200) {
-//                NSDictionary *reqDic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData]  options:NSJSONReadingMutableContainers error:nil];
-//                if (reqDic) {
-//                    [dic setObject:reqDic forKey:userId];
-//                    [MuzzikItem addObjectToLocal:[dic copy] ForKey:@"Im_UserInfo"];
-//                    user.userId = userId;
-//                    user.name = [[reqDic objectForKey:userId] objectForKey:@"name"];
-//                    user.portraitUri = [NSString stringWithFormat:@"%@%@",BaseURL_image,[[reqDic objectForKey:userId] objectForKey:@"avatar"]];
-//                    return completion(user);
-//                    
-//                }
-//            }
-//            
-//            
-//        }];
-//        [rongRequest setFailedBlock:^{
-//            NSLog(@"%@",[weakrequest error]);
-//        }];
-//        [rongRequest startSynchronous];
-//    }
-//}
+
+- (void)onReceived:(RCMessage *)message
+              left:(int)nLeft
+            object:(id)object {
+    userInfo *user = [userInfo shareClass];
+    __block Message *newmessage;
+    dispatch_async(_serialQueue, ^{
+        NSLog(@"content:%@   class:%@   ",message.content,[message.content class]);
+        
+        if ([[RCIMClient sharedRCIMClient] clearMessagesUnreadStatus:ConversationType_PRIVATE targetId:message.targetId]) {
+            
+            BOOL usefulMessage = NO;   //是否需要识别的消息判断字段
+            
+            //添加支持的类型
+            if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+                usefulMessage = YES;
+                newmessage = [self addNewMessageWithType:NSStringFromClass([RCTextMessage class])  message:message];
+            }else if ([message.content isMemberOfClass:[IMShareMessage class]]){
+                usefulMessage = YES;
+                newmessage = [self addNewMessageWithType:NSStringFromClass([IMShareMessage class])  message:message];
+            }
+            if (usefulMessage) {
+                //判断当前的对话是否是第一条，如果是，不变位置，否则重排置顶
+                NSLog(@"%@",user.account.myConversation.firstObject.targetId);
+                if ([message.targetId isEqualToString:user.account.myConversation.firstObject.targetId]) {
+                     [self checkNewUserWithConversation:user.account.myConversation.firstObject toMessgae:newmessage];
+                }else{
+                    Conversation *newCon = [self checkNewConWithReceiveMessage:message ];
+                    [self checkNewUserWithConversation:newCon toMessgae:newmessage];
+                }
+            }
+        }
+    });
+    dispatch_async(_serialQueue, ^{
+        //self.isViewLoaded &&self.view.window
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
+            NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
+            [notifyvc newMessageArrive];
+        }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:message.targetId]) {
+                [vc inserCellWithMessage:newmessage];
+            }
+            
+        }else{
+            //设置红点
+        }
+    });
+   
+}
+-(void) checkNewUserWithConversation:(Conversation *)newCon toMessgae:(Message *) message {
+    userInfo *user = [userInfo shareClass];
+    newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
+    newCon.abstractString = message.abstractString;
+    [newCon addMessagesObject:message];
+    if (!newCon.sendTime) {
+        newCon.sendTime =[NSDate date];
+        message.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else if([self checkLimitedTime:message.sendTime oldDate:newCon.sendTime]){
+        newCon.sendTime = message.sendTime;
+        message.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else{
+        newCon.sendTime = message.sendTime;
+        message.needsToShowTime = [NSNumber numberWithBool:NO];
+    }
+
+    if ([newCon.targetUser.user_id length] == 0) {
+        BOOL containUser = NO;
+        
+        for (UserCore *tempUser in user.account.myUser) {
+            if ([tempUser.user_id isEqualToString:newCon.targetId]) {
+                newCon.targetUser = tempUser;
+                message.messageUser = newCon.targetUser;
+                if ([message.isOwner boolValue]) {
+                    message.messageUser = user.account.ownerUser;
+                }else{
+                    message.messageUser = tempUser;
+                }
+                [self.managedObjectContext save:nil];
+                containUser = YES;
+                break;
+            }
+        }
+        if (!containUser) {
+            
+            UserCore *newUser = [self getNewUser];
+            
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,newCon.targetId]];
+            
+            //第二步，通过URL创建网络请求
+            
+            NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+            
+            //第三步，连接服务器
+            
+            NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:received options:NSJSONReadingMutableContainers error:nil];
+            if (responseObject) {
+                NSLog(@"%@",responseObject);
+                newUser.user_id = newCon.targetId;
+                if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
+                    newUser.name = [responseObject objectForKey:@"name"];
+                }
+                if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
+                    newUser.avatar = [responseObject objectForKey:@"avatar"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
+                    newUser.school = [responseObject objectForKey:@"school"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
+                    newUser.company = [responseObject objectForKey:@"company"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"topicsTotal"]) {
+                    newUser.topicsTotal = [responseObject objectForKey:@"topicsTotal"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"musicsTotal"]) {
+                    newUser.musicsTotal = [responseObject objectForKey:@"musicsTotal"];
+                }
+                if ([[responseObject allKeys] containsObject:@"muzzikTotal"]) {
+                    newUser.muzzikTotal = [responseObject objectForKey:@"muzzikTotal"];
+                }
+                if ([[responseObject allKeys] containsObject:@"followsCount"]) {
+                    newUser.followsCount = [responseObject objectForKey:@"followsCount"];
+                }
+                if ([[responseObject allKeys] containsObject:@"fansCount"]) {
+                    newUser.fansCount = [responseObject objectForKey:@"fansCount"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
+                    newUser.gender = [responseObject objectForKey:@"gender"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
+                    newUser.astro = [responseObject objectForKey:@"astro"];
+                }
+                
+                if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
+                    newUser.descrip = [responseObject objectForKey:@"description"];
+                }
+                newCon.targetUser = newUser;
+                if ([message.isOwner boolValue]) {
+                    message.messageUser = user.account.ownerUser;
+                }else{
+                    message.messageUser = newUser;
+                }
+                [self.managedObjectContext save:nil];
+            }
+        }
+    }else{
+        if ([message.isOwner boolValue]) {
+            message.messageUser = user.account.ownerUser;
+        }else{
+            message.messageUser = newCon.targetUser;
+        }
+        [self.managedObjectContext save:nil];
+    }
+}
+-(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old{
+    NSTimeInterval newInterval = [new timeIntervalSinceReferenceDate];
+    NSTimeInterval oldInterval = [old timeIntervalSinceReferenceDate];
+    if (newInterval - oldInterval > 300) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
+
+
+-(Message *) addNewMessageWithType:(NSString *)messageClass message:(RCMessage *)receiveMessage{
+    userInfo *user = [userInfo shareClass];
+    Message *coreMessage;
+    coreMessage = [self getNewMessage];
+    coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
+    coreMessage.messageType = messageClass;
+    
+    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
+    if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
+        coreMessage.isOwner = [NSNumber numberWithBool:YES];
+    }else{
+        coreMessage.isOwner = [NSNumber numberWithBool:NO];
+    }
+    if ([messageClass isEqualToString:@"RCTextMessage"] ) {
+        RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
+        coreMessage.messageType = Type_IM_TextMessage;
+        coreMessage.messageContent = textMessage.content;
+        coreMessage.abstractString = textMessage.content;
+        coreMessage.sendStatue = @"ok";
+        
+    }else if ([messageClass isEqualToString:@"IMShareMessage"]){
+        IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
+        coreMessage.messageData = shareMessage.jsonData;
+        coreMessage.messageType = Type_IM_ShareMuzzik;
+        coreMessage.sendStatue = @"ok";
+        coreMessage.abstractString = @"分享了一条Muzzik";
+    }
+    return coreMessage;
+}
+
+-(Conversation *)checkNewConWithReceiveMessage:(RCMessage *) message{
+    userInfo*user = [userInfo shareClass];
+    for (Conversation *con in user.account.myConversation) {
+        if ([con.targetId isEqualToString:message.targetId]) {
+            
+            [user.account removeMyConversationObject:con];
+            [user.account insertObject:con inMyConversationAtIndex:0];
+            return con;
+        }
+    }
+    Conversation *newCon = [self getNewConversation];
+    newCon.targetId = message.targetId;
+    [user.account insertObject:newCon inMyConversationAtIndex:0];
+    return newCon;
+
+}
+#pragma mark - Core Data stack
+
+@synthesize managedObjectContext = _managedObjectContext;
+@synthesize managedObjectModel = _managedObjectModel;
+@synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
+
+
+
+
+- (NSURL *)applicationDocumentsDirectory {
+    // The directory the application uses to store the Core Data store file. This code uses a directory named "BlueOrbit._____" in the application's documents directory.
+    return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
+}
+
+- (NSManagedObjectModel *)managedObjectModel {
+    // The managed object model for the application. It is a fatal error for the application not to be able to find and load its model.
+    if (_managedObjectModel != nil) {
+        return _managedObjectModel;
+    }
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Muzzik_coreModel" withExtension:@"momd"];
+    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return _managedObjectModel;
+}
+
+- (NSPersistentStoreCoordinator *)persistentStoreCoordinator {
+    // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it.
+    if (_persistentStoreCoordinator != nil) {
+        return _persistentStoreCoordinator;
+    }
+    
+    // Create the coordinator and store
+    
+    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:@"Muzzik_coreModel.sqlite"];
+    NSError *error = nil;
+    NSString *failureReason = @"There was an error creating or loading the application's saved data.";
+    if (![_persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error]) {
+        // Report any error we got.
+        NSMutableDictionary *dict = [NSMutableDictionary dictionary];
+        dict[NSLocalizedDescriptionKey] = @"Failed to initialize the application's saved data";
+        dict[NSLocalizedFailureReasonErrorKey] = failureReason;
+        dict[NSUnderlyingErrorKey] = error;
+        error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
+        // Replace this with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+    
+    return _persistentStoreCoordinator;
+}
+
+
+- (NSManagedObjectContext *)managedObjectContext {
+    // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)
+    if (_managedObjectContext != nil) {
+        return _managedObjectContext;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+    if (!coordinator) {
+        return nil;
+    }
+    _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    return _managedObjectContext;
+}
+
+#pragma mark - Core Data Saving support
+
+- (void)saveContext {
+    NSManagedObjectContext *managedObjectContext = self.managedObjectContext;
+    if (managedObjectContext != nil) {
+        NSError *error = nil;
+        if ([managedObjectContext hasChanges] && ![managedObjectContext save:&error]) {
+            // Replace this implementation with code to handle the error appropriately.
+            // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+            NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+            abort();
+        }
+    }
+}
+
+-(Account *) getAccountByUserName:(NSString *)name userId:(NSString *) uid userToken:(NSString *)token Avatar:(NSString *) avatar{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Account" inManagedObjectContext:self.managedObjectContext];
+    Account *account;
+    [fetchRequest setEntity:entity];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"user_id == %@",uid];
+    [fetchRequest setPredicate:predicate];
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"无法打开");
+        return nil;
+    }else{
+        if ([fetchedObjects count] >0) {
+            return fetchedObjects[0];
+        }else{
+            account = [[Account alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            UserCore *newUser = [self getNewUser];
+            newUser.user_id = uid;
+            newUser.name = name;
+            newUser.avatar = avatar;
+            account.ownerUser = newUser;
+            account.user_id = uid;
+            account.token = token;
+            [self.managedObjectContext save:nil];
+            return account;
+            
+        }
+    }
+    return nil;
+}
+-(Message *) getNewMessage{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Message" inManagedObjectContext:self.managedObjectContext];
+    Message *message = [[Message alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return message;
+}
+-(UserCore *) getNewUser{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+    UserCore *user = [[UserCore alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return user;
+}
+-(Conversation *) getNewConversation{
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+    return con;
+}
+-(Conversation *)fetchConversationByUserid:(NSString *)user_id{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    // Specify criteria for filtering which objects to fetch
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", user_id];
+    [fetchRequest setPredicate:predicate];
+    // Specify how the fetched objects should be sorted
+    
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"%@",error.userInfo);
+    }else{
+        if ([fetchedObjects count] == 0 ) {
+            return [self getNewConversation];
+        }else{
+            return fetchedObjects[0];
+        }
+    }
+    return nil;
+}
 
 @end

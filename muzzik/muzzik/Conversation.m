@@ -13,5 +13,10 @@
 @implementation Conversation
 
 // Insert code here to add functionality to your managed object subclass
-
+- (void)addMessagesObject:(Message *)value{
+    NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
+    [tempSet addObjectsFromArray:[self.messages array]];
+    [tempSet addObject:value];
+    self.messages = tempSet;
+}
 @end

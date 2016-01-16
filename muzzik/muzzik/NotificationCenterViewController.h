@@ -10,4 +10,5 @@
 
 @interface NotificationCenterViewController : AMScrollingNavbarViewController
 -(void)checkNewNotification;
+-(void)newMessageArrive;
 @end

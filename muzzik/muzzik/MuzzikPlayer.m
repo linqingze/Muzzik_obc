@@ -98,7 +98,7 @@
         [_player playURL:musicUrl];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Muzzik_Player_PlayNewSong" object:nil userInfo:nil];
         muzzik *lastMuzzik = [self.MusicArray lastObject];
-        if ([lastMuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([lastMuzzik.muzzik_id length] == 0 && [lastMuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) {
+        if (([lastMuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([lastMuzzik.muzzik_id length] == 0 && [lastMuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) && _MusicArray.count >1) {
             MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
             [center requestToAddMoreMuzziks:self.MusicArray];
         }

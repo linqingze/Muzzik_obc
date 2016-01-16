@@ -538,7 +538,6 @@
                 return  cell;
             }
             
-            
         }
         else{if ([tempMuzzik.type isEqualToString:@"repost"] ){
             NormalCell *cell = [tableView dequeueReusableCellWithIdentifier:@"NormalCell" forIndexPath:indexPath];

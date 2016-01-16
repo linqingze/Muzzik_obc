@@ -176,6 +176,7 @@
 
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
     if (alertView == cleanAlert) {
         if (buttonIndex == 1) {
             [[SDImageCache sharedImageCache] clearDisk];

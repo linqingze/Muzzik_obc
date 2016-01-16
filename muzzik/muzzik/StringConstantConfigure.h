@@ -240,4 +240,10 @@
 #define At_From_detail                      @"1"
 #define At_from_Dialog                      @"2"
 #define At_From_Message                     @"3"
+
+
+
+
+#define Type_IM_TextMessage  @"text"
+#define Type_IM_ShareMuzzik  @"shareMuzzik"
 #endif

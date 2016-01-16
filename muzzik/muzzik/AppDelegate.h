@@ -13,6 +13,11 @@
 #import "WeiboSDK.h"
 #import "Reachability.h"
 #import "RDVTabBarController.h"
+#import <CoreData/CoreData.h>
+#import "Account.h"
+#import "Message.h"
+#import "Conversation.h"
+#import "UserCore.h"
 typedef enum {
     SdkStatusStoped,
     SdkStatusStarting,
@@ -22,6 +27,9 @@ typedef enum {
 @interface AppDelegate : UIResponder {
      NSString *_deviceToken;
 }
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) RDVTabBarController *tabviewController;
 @property (strong, nonatomic) UINavigationController *feedVC;
 @property (strong, nonatomic) UINavigationController *notifyVC;
@@ -56,5 +64,16 @@ typedef enum {
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
 - (void)sendAuthRequestByVC:(UIViewController *)vc;
 -(void)weCahtsendMusicContentByscen:(int)scene;
+
+- (void)saveContext;
+- (NSURL *)applicationDocumentsDirectory;
+-(Account *) getAccountByUserName:(NSString *)name userId:(NSString *) uid userToken:(NSString *)token Avatar:(NSString *) avatar;
+-(Message *) getNewMessage;
+-(UserCore *) getNewUser;
+-(Conversation *) getNewConversation;
+-(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
+-(Conversation *)fetchConversationByUserid:(NSString *)user_id;
+
+
 @end
 

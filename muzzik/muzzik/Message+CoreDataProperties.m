@@ -2,7 +2,7 @@
 //  Message+CoreDataProperties.m
 //  muzzik
 //
-//  Created by muzzik on 16/1/11.
+//  Created by muzzik on 16/1/16.
 //  Copyright © 2016年 muzziker. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,16 +13,18 @@
 
 @implementation Message (CoreDataProperties)
 
+@dynamic cellHeight;
+@dynamic isOwner;
 @dynamic messageContent;
 @dynamic messageId;
 @dynamic messageImage;
 @dynamic messageType;
-@dynamic messageVoice;
-@dynamic sendTime;
 @dynamic needsToShowTime;
-@dynamic isOwner;
-@dynamic cellHeight;
-@dynamic lastMessage;
+@dynamic sendTime;
+@dynamic sendStatue;
+@dynamic abstractString;
+@dynamic messageData;
 @dynamic messages;
+@dynamic messageUser;
 
 @end

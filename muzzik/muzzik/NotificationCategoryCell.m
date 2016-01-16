@@ -20,6 +20,7 @@
     return self;
 }
 -(void)setup{
+    [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _titleImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 14, 32, 32)];
     _timeLabel.layer.cornerRadius = 16;
     _timeLabel.layer.masksToBounds = YES;

@@ -175,19 +175,24 @@
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    IMConversationViewcontroller *conversationVC = [[IMConversationViewcontroller alloc] init];
-   // conversationVC.conversationType = ConversationType_PRIVATE;
     MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
+    userInfo *user = [userInfo shareClass];
+    IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+
     
-    //conversationVC.targetId = muzzikuser.user_id;
-   // conversationVC.title = [NSString stringWithFormat:@"与 %@ 的对话",muzzikuser.name];
-    [[RCIMClient sharedRCIMClient] getRemoteHistoryMessages:ConversationType_PRIVATE targetId:muzzikuser.user_id recordTime:42949670000 count:10 success:^(NSArray *messages) {
-        NSLog(@"%@",messages);
-    } error:^(RCErrorCode status) {
-        NSLog(@"%d",status);
-    }];
-    RCConversation *rcCon = [[RCIMClient sharedRCIMClient] getConversation:ConversationType_PRIVATE targetId:muzzikuser.user_id];
-    NSArray *array = [[RCIMClient sharedRCIMClient] getHistoryMessages:ConversationType_PRIVATE targetId:muzzikuser.user_id oldestMessageId:4294967303 count:20];
+    AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+    imVC.con = [app fetchConversationByUserid:muzzikuser.user_id];
+    if ([imVC.con.targetUser.user_id length] == 0) {
+        UserCore * coreUser = [app getNewUser];
+        coreUser.name = muzzikuser.name;
+        coreUser.user_id = muzzikuser.user_id;
+        coreUser.avatar = muzzikuser.avatar;
+        imVC.con.targetUser = coreUser;
+    }
+    imVC.con.unReadMessage = [NSNumber numberWithInt:0];
+    imVC.title = imVC.con.targetUser.name;
+    [app.managedObjectContext save:nil];
+    [self.navigationController pushViewController:imVC animated:YES];
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

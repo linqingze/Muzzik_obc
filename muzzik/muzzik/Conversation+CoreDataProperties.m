@@ -2,7 +2,7 @@
 //  Conversation+CoreDataProperties.m
 //  muzzik
 //
-//  Created by muzzik on 16/1/11.
+//  Created by muzzik on 16/1/16.
 //  Copyright © 2016年 muzziker. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -17,9 +17,9 @@
 @dynamic targetId;
 @dynamic type;
 @dynamic unReadMessage;
-@dynamic lastMessage;
+@dynamic abstractString;
+@dynamic accountForConversation;
 @dynamic messages;
 @dynamic targetUser;
-@dynamic accountForConversation;
 
 @end

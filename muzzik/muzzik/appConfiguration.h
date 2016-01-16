@@ -18,7 +18,7 @@
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
 
 //#define BaseURL                 @"http://117.121.26.174/"
-#define BaseURL                 @"http://117.121.26.191:4000/"
+#define BaseURL                 @"http://117.121.10.184:4000/"
 #define BaseURL_GUI             @"http://117.121.26.174:8000/"
 //#define BaseURL                 @"http://192.168.1.110:3000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"

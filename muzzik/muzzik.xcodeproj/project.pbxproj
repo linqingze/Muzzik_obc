@@ -94,7 +94,6 @@
 		F203733F1C40C475004E30D5 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = F20373301C40C475004E30D5 /* UIWebView+AFNetworking.m */; };
 		F20373441C41295D004E30D5 /* Account+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = F20373411C41295D004E30D5 /* Account+CoreDataProperties.m */; };
 		F20373451C41295D004E30D5 /* Account.m in Sources */ = {isa = PBXBuildFile; fileRef = F20373431C41295D004E30D5 /* Account.m */; };
-		F20373481C412D18004E30D5 /* CoreStack.m in Sources */ = {isa = PBXBuildFile; fileRef = F20373471C412D18004E30D5 /* CoreStack.m */; };
 		F205539C1B340C1A0093AE8A /* SelectionLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F205539B1B340C1A0093AE8A /* SelectionLabel.m */; };
 		F20553A21B36B7B70093AE8A /* ZJSwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A11B36B7B70093AE8A /* ZJSwitch.m */; };
 		F20553A51B375AD70093AE8A /* AtFriendSearchVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20553A41B375AD70093AE8A /* AtFriendSearchVC.m */; };
@@ -126,6 +125,7 @@
 		F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */; };
 		F20FDD751AF77ECE008A71C0 /* searchUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD741AF77ECE008A71C0 /* searchUserCell.m */; };
 		F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */; };
+		F211310F1C47CBD80041309A /* IMSshareMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F211310E1C47CBD80041309A /* IMSshareMessage.m */; };
 		F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A7681AF4D825005B14DD /* NormalNoCardCell.m */; };
 		F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76B1AF4E52E005B14DD /* showUserVC.m */; };
 		F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */; };
@@ -498,8 +498,6 @@
 		F20373411C41295D004E30D5 /* Account+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Account+CoreDataProperties.m"; sourceTree = "<group>"; };
 		F20373421C41295D004E30D5 /* Account.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Account.h; sourceTree = "<group>"; };
 		F20373431C41295D004E30D5 /* Account.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Account.m; sourceTree = "<group>"; };
-		F20373461C412D18004E30D5 /* CoreStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoreStack.h; sourceTree = "<group>"; };
-		F20373471C412D18004E30D5 /* CoreStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoreStack.m; sourceTree = "<group>"; };
 		F205539A1B340C1A0093AE8A /* SelectionLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionLabel.h; sourceTree = "<group>"; };
 		F205539B1B340C1A0093AE8A /* SelectionLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionLabel.m; sourceTree = "<group>"; };
 		F20553A01B36B7B70093AE8A /* ZJSwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZJSwitch.h; sourceTree = "<group>"; };
@@ -560,6 +558,8 @@
 		F20FDD741AF77ECE008A71C0 /* searchUserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchUserCell.m; sourceTree = "<group>"; };
 		F20FDD761AF7B243008A71C0 /* SearchtopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchtopicCell.h; sourceTree = "<group>"; };
 		F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchtopicCell.m; sourceTree = "<group>"; };
+		F211310D1C47CBD80041309A /* IMShareMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMShareMessage.h; sourceTree = "<group>"; };
+		F211310E1C47CBD80041309A /* IMSshareMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMSshareMessage.m; sourceTree = "<group>"; };
 		F212A7671AF4D825005B14DD /* NormalNoCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalNoCardCell.h; sourceTree = "<group>"; };
 		F212A7681AF4D825005B14DD /* NormalNoCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalNoCardCell.m; sourceTree = "<group>"; };
 		F212A76A1AF4E52E005B14DD /* showUserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = showUserVC.h; sourceTree = "<group>"; };
@@ -1311,8 +1311,6 @@
 			children = (
 				E16716231AAD77830068AE98 /* userInfo.h */,
 				E16716241AAD77830068AE98 /* userInfo.m */,
-				F20373461C412D18004E30D5 /* CoreStack.h */,
-				F20373471C412D18004E30D5 /* CoreStack.m */,
 				F2E37FFE1B790663008FF496 /* MuzzikRequestCenter.h */,
 				F2E37FFF1B790663008FF496 /* MuzzikRequestCenter.m */,
 				F2B81FEF1ADD6C6A00012ED6 /* MuzzikItem.h */,
@@ -1694,6 +1692,8 @@
 				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
 				F24568AE1C3D133C00DCE7A6 /* ownerTableViewCell.h */,
 				F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */,
+				F211310D1C47CBD80041309A /* IMShareMessage.h */,
+				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
 			);
 			name = IM;
 			sourceTree = "<group>";
@@ -2207,6 +2207,7 @@
 				F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */,
 				F20373391C40C475004E30D5 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
+				F211310F1C47CBD80041309A /* IMSshareMessage.m in Sources */,
 				F2641F201AD988CC003BECDD /* registerVC.m in Sources */,
 				F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */,
 				F2E558AE1B164D420080F9C9 /* UIView+MJExtension.m in Sources */,
@@ -2235,7 +2236,6 @@
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
 				F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
-				F20373481C412D18004E30D5 /* CoreStack.m in Sources */,
 				F24568971C3CE09100DCE7A6 /* YYTextEffectWindow.m in Sources */,
 				F2E558AB1B164D420080F9C9 /* MJRefreshHeaderView.m in Sources */,
 				F20553A21B36B7B70093AE8A /* ZJSwitch.m in Sources */,

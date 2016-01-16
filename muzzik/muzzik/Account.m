@@ -13,5 +13,23 @@
 @implementation Account
 
 // Insert code here to add functionality to your managed object subclass
+- (void)addMyConversationObject:(Conversation *)value{
+    NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
+    [tempSet addObjectsFromArray:[self.myConversation array]];
+    [tempSet addObject:value];
+    self.myConversation = tempSet;
+}
+- (void)insertObject:(Conversation *)value inMyConversationAtIndex:(NSUInteger)idx{
+    NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
+    [tempSet addObjectsFromArray:[self.myConversation array]];
+    [tempSet insertObject:value atIndex:idx];
+    self.myConversation = tempSet;
+}
 
+- (void)removeMyConversationObject:(Conversation *)value{
+    NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
+    [tempSet addObjectsFromArray:[self.myConversation array]];
+    [tempSet removeObject:value];
+    self.myConversation = tempSet;
+}
 @end
