@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		048914D51C4B85DC0024ECBB /* MuzzikShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 048914D41C4B85DC0024ECBB /* MuzzikShareView.m */; };
 		E11245F81AAAAE4B0014D461 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = E11245F71AAAAE4B0014D461 /* main.m */; };
 		E11245FB1AAAAE4B0014D461 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E11245FA1AAAAE4B0014D461 /* AppDelegate.m */; };
 		E11246031AAAAE4B0014D461 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E11246021AAAAE4B0014D461 /* Images.xcassets */; };
@@ -322,6 +323,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		048914D31C4B85DC0024ECBB /* MuzzikShareView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikShareView.h; sourceTree = "<group>"; };
+		048914D41C4B85DC0024ECBB /* MuzzikShareView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikShareView.m; sourceTree = "<group>"; };
 		E11245F21AAAAE4B0014D461 /* muzzik.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = muzzik.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E11245F61AAAAE4B0014D461 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E11245F71AAAAE4B0014D461 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -1225,6 +1228,8 @@
 				F2E8F11C1AE9121E0000509B /* 发po分享 */,
 				F200B7AD1B2AC7F6002A6F61 /* FeedViewController.h */,
 				F200B7AE1B2AC7F6002A6F61 /* FeedViewController.m */,
+				048914D31C4B85DC0024ECBB /* MuzzikShareView.h */,
+				048914D41C4B85DC0024ECBB /* MuzzikShareView.m */,
 			);
 			name = "首页";
 			sourceTree = "<group>";
@@ -2181,6 +2186,7 @@
 				F2EF736B1B4BBF6900E3A33A /* DialogVC.m in Sources */,
 				F245689B1C3CE09100DCE7A6 /* YYTextLine.m in Sources */,
 				F2FBE8FD1AFB56C50070831D /* CommentTableVC.m in Sources */,
+				048914D51C4B85DC0024ECBB /* MuzzikShareView.m in Sources */,
 				F2ED22D81B12AC0C001F7787 /* TTTAttributedLabel.m in Sources */,
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
 				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
