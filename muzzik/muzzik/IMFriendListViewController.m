@@ -23,6 +23,7 @@
     NSInteger page;
     UIButton *nextButton;
     NSMutableArray *allUsers;
+    NSMutableArray *localArray;
 }
 @property (nonatomic,retain)TransfromTime *transfrom;
 @end
@@ -32,7 +33,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    localArray = [NSMutableArray array];
+    allUsers = [NSMutableArray array];
     RefreshDic = [NSMutableDictionary dictionary];
     [self initNagationBar:@" @ 好友" leftBtn:Constant_backImage rightBtn:4];
     friendArray = [NSMutableArray array];
@@ -40,23 +42,35 @@
     MytableView.delegate = self;
     [self.view addSubview:MytableView];
     page = 1;
-    
-    NSData *data = [MuzzikItem getDataFromLocalKey:@"Muzzik_recent_Friend_Contact"];
-    recentContactArray = [NSMutableArray arrayWithArray:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
     [self requestForFriend];
-    
-    ASIHTTPRequest *requestRecent = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_RecentContact]]];
-    [requestRecent addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequestRecent = requestRecent;
-    [requestRecent setCompletionBlock:^{
-        NSLog(@"%@",[weakrequestRecent originalURL]);
-        NSLog(@"%@",[weakrequestRecent responseString]);
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestRecent responseData] options:NSJSONReadingMutableContainers error:nil];
-        recentContactArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-        
-    }];
-    [requestRecent startAsynchronous];
-    
+    NSData *friendData = [MuzzikItem getDataFromLocalKey:@"localFriend_Muzzik"];
+    NSArray *tempArray = [NSKeyedUnarchiver unarchiveObjectWithData:friendData];
+    if (tempArray) {
+        friendArray =[[MuzzikUser new] makeMuzziksByUserArray:[tempArray mutableCopy]];
+        if ([friendArray count]>0) {
+            NSMutableArray *arr = [NSMutableArray arrayWithArray:[self.transfrom firstCharactor:friendArray]];
+            arrCapital = [NSMutableArray array];
+            for (NSDictionary *dictionary in arr) {
+                if (![arrCapital containsObject:[dictionary objectForKey:@"firstcapital"]]) {
+                    [arrCapital addObject:[dictionary objectForKey:@"firstcapital"]];
+                }
+            }
+            NSMutableArray *uppercaseArr = [NSMutableArray array];
+            for (NSString *str in arrCapital) {
+                [uppercaseArr addObject:[str uppercaseString]];
+            }
+            
+            friendArray = [NSMutableArray arrayWithArray:[self.transfrom arrayFromString:arr  searchStr:uppercaseArr]];
+            if ([arrCapital count]>0 && [[arrCapital objectAtIndex:0] isEqualToString:@"#"]) {
+                [arrCapital addObject:[arrCapital objectAtIndex:0]];
+                [friendArray addObject:[friendArray objectAtIndex:0]];
+                [friendArray removeObjectAtIndex:0];
+                [arrCapital removeObjectAtIndex:0];
+                
+            }
+            [MytableView reloadData];
+        }
+    }
     
     // Do any additional setup after loading the view.
     self.transfrom = [[TransfromTime alloc] init];
@@ -74,20 +88,13 @@
         //        NSLog(@"%@",[weakrequest responseString]);
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
         NSMutableArray *tempArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-        for (int i = (int)tempArray.count -1; i>=0; i--) {
-            MuzzikUser *newUser = tempArray[i];
-            for (MuzzikUser *recentUser in recentContactArray) {
-                if ([recentUser.user_id isEqualToString:newUser.user_id]) {
-                    [tempArray removeObject:newUser];
-                    break;
-                }
-            }
-        }
-        [friendArray addObjectsFromArray:tempArray];
+        [localArray addObjectsFromArray:[dic objectForKey:@"users"]];
+        [allUsers addObjectsFromArray:tempArray];
         
         if ([[dic objectForKey:@"users"] count]<100) {
-            allUsers = [NSMutableArray arrayWithArray:recentContactArray];
-            [allUsers addObjectsFromArray:friendArray];
+            friendArray = allUsers;
+            [localArray addObjectsFromArray:[dic objectForKey:@"users"]];
+            [MuzzikItem addObjectToLocal:[NSKeyedArchiver archivedDataWithRootObject:localArray] ForKey:@"localFriend_Muzzik"];
             NSMutableArray *arr = [NSMutableArray arrayWithArray:[self.transfrom firstCharactor:friendArray]];
             arrCapital = [NSMutableArray array];
             for (NSDictionary *dictionary in arr) {
