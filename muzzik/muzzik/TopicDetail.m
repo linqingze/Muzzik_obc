@@ -80,6 +80,7 @@
     [self followScrollView:MytableView];
     [self loadTopicTittle];
     muzzikShareView = [[MuzzikShareView alloc] initMyShare];
+    muzzikShareView.ownerVC = self;
     [MytableView addHeaderWithTarget:self action:@selector(refreshHeader)];
     [MytableView addFooterWithTarget:self action:@selector(refreshFooter)];
     [self loadDataMessage];

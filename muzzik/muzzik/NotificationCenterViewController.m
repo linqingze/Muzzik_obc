@@ -261,6 +261,7 @@
     imVC.title = imVC.con.targetUser.name;
     AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
     [app.managedObjectContext save:nil];
+    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     [self.navigationController pushViewController:imVC animated:YES];
 }
 /**

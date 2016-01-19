@@ -17,7 +17,7 @@
 
 
 - (NSData *)encode{
-    NSDictionary *dict = @{@"jsonstr": self.jsonData};
+    NSDictionary *dict = @{@"jsonstr": self.jsonStr};
     NSError *__error = nil;
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:&__error];
     if (!__error) {
@@ -36,9 +36,16 @@
     }
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&__error];
     if (!__error && dict) {
-        self.jsonData = [dict[@"jsonstr"] dataUsingEncoding:NSUTF8StringEncoding];
+        self.jsonStr = dict[@"jsonstr"];
     } else {
         self.rawJSONData = data;
     }
+}
++ (RCMessagePersistent)persistentFlag{
+    return MessagePersistent_ISCOUNTED | MessagePersistent_ISPERSISTED;
+}
+
+-(NSString *)conversationDigest{
+    return @"分享了一条Muzzik";
 }
 @end

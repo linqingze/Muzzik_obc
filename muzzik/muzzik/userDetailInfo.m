@@ -69,6 +69,7 @@
     RefreshDic = [NSMutableDictionary dictionary];
     ReFreshPoImageDic = [NSMutableDictionary dictionary];
     muzzikShareView = [[MuzzikShareView alloc] initMyShare];
+    muzzikShareView.ownerVC = self;
     [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:11];
     MyTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     [self.view addSubview:MyTableView];

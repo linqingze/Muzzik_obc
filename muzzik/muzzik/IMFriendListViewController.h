@@ -9,5 +9,5 @@
 #import "AMScrollingNavbarViewController.h"
 
 @interface IMFriendListViewController : AMScrollingNavbarViewController
-
+@property (nonatomic,retain) muzzik *shareMuzzik;
 @end

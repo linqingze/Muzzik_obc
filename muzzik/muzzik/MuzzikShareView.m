@@ -8,6 +8,9 @@
 
 #import "MuzzikShareView.h"
 #import <TencentOpenAPI/TencentOAuth.h>
+#import <RongIMKit/RongIMKit.h>
+#import "IMShareMessage.h"
+#import "IMFriendListViewController.h"
 @interface MuzzikShareView (){
     UIView *shareView;
     UIButton *shareToTimeLineButton;
@@ -126,7 +129,7 @@
         }
         if (user.QQInstalled && user.WeChatInstalled) {
             scaleY = 0.39;
-            scaleX = 0.8;
+            scaleX = 0.72;
             
         }else if (!user.QQInstalled && !user.WeChatInstalled){
             scaleY = 0.08;
@@ -153,147 +156,6 @@
         [self addSubview:shareView];
     }
     return self;
-}
--(void)shareAction:(UIButton *) sender{
-    if (self.shareMuzzik && _shareImage) {
-        if (sender.tag == 2001) {
-            AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            [app sendMusicContentByMuzzik:_shareMuzzik scen:0 image:_shareImage];
-            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
-            
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-            
-            [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = request;
-            [request setCompletionBlock :^{
-                
-                _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
-            }];
-            [request setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [request startAsynchronous];
-
-        }else if (sender.tag == 2002) {
-            AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-            [app sendMusicContentByMuzzik:_shareMuzzik scen:1 image:_shareImage];
-            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
-            
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-            
-            [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = request;
-            [request setCompletionBlock :^{
-                
-                _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
-            }];
-            [request setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [request startAsynchronous];
-        }else if (sender.tag == 2003) {
-            AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-            
-            WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-            authRequest.redirectURI = URL_WeiBo_redirectURI;
-            authRequest.scope = @"all";
-            
-            WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
-            
-            //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
-            [WeiboSDK sendRequest:request];
-            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
-            
-            ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-            
-            [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = requestShare;
-            [requestShare setCompletionBlock :^{
-                
-                _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
-            }];
-            [requestShare setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [requestShare startAsynchronous];
-        }else if (sender.tag == 2004) {
-            TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                                                 andDelegate:nil];
-            NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,_shareMuzzik.muzzik_id];
-            //分享图预览图URL地址
-            NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
-            //音乐播放的网络流媒体地址
-            QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
-                                                                  title:_shareMuzzik.music.name description:_shareMuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
-            //设置播放流媒体地址
-            audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,_shareMuzzik.music.key]];
-            SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
-            //将内容分享到qq
-            
-            QQApiSendResultCode sent = [QQApiInterface sendReq:req];
-            [self handleSendResult:sent];
-            //将被容分享到qzone
-            //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-            
-            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
-            
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-            
-            [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = request;
-            [request setCompletionBlock :^{
-                
-                _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
-            }];
-            [request setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [request startAsynchronous];
-        }else if (sender.tag == 2005) {
-            TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                                                 andDelegate:nil];
-            //分享跳转URL
-            NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,_shareMuzzik.muzzik_id];
-            //分享图预览图URL地址
-            NSString *previewImageUrl = [NSString stringWithFormat:@"%@%@",BaseURL_image,_shareMuzzik.MuzzikUser.avatar];
-            //音乐播放的网络流媒体地址
-            NSString *flashURL = [NSString stringWithFormat:@"%@%@",BaseURL_audio,_shareMuzzik.music.key];
-            QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
-                                                                  title:@"我在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",_shareMuzzik.music.name,_shareMuzzik.music.artist] previewImageURL:[NSURL URLWithString:previewImageUrl]];
-            //设置播放流媒体地址
-            audioObj.flashURL = [NSURL URLWithString:flashURL] ;
-            SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
-            //将内容分享到qq
-            //QQApiSendResultCode sent = [QQApiInterface sendReq:req];
-            //将被容分享到qzone
-            QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-            
-            [self handleSendResult:sent];
-            
-            NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
-            
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-            
-            [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-            __weak ASIHTTPRequest *weakrequest = request;
-            [request setCompletionBlock :^{
-                
-                _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
-                [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
-            }];
-            [request setFailedBlock:^{
-                NSLog(@"%@",[weakrequest error]);
-            }];
-            [request startAsynchronous];
-        }else if (sender.tag == 2006) {
-            
-        }
-    }
-    
 }
 
 - (WBMessageObject *)messageToShare
@@ -374,9 +236,9 @@
 }
 
 -(void) showShareView{
-//    if (self.tabbarController) {
-//        [self.tabbarController setTabBarHidden:YES animated:YES];
-//    }
+    if (self.tabbarController) {
+        [self.tabbarController setTabBarHidden:YES animated:YES];
+    }
     AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
     [myDelegate.window addSubview:self];
     [UIView animateWithDuration:0.3 animations:^{
@@ -386,5 +248,156 @@
             [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT-SCREEN_WIDTH*maxScaleY, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
         } ];
     }];
+}
+
+-(void)shareAction:(UIButton *) sender{
+    [UIView animateWithDuration:0.3 animations:^{
+        [self setAlpha:0];
+        [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
+    } completion:^(BOOL finished) {
+        [self removeFromSuperview];
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        if (self.shareMuzzik && _shareImage) {
+            if (sender.tag == 2001) {
+                [app sendMusicContentByMuzzik:_shareMuzzik scen:0 image:_shareImage];
+                NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
+                
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                
+                [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    
+                    _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [request startAsynchronous];
+                
+            }else if (sender.tag == 2002) {
+                
+                [app sendMusicContentByMuzzik:_shareMuzzik scen:1 image:_shareImage];
+                NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
+                
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                
+                [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    
+                    _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [request startAsynchronous];
+            }else if (sender.tag == 2003) {
+                AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+                
+                WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
+                authRequest.redirectURI = URL_WeiBo_redirectURI;
+                authRequest.scope = @"all";
+                
+                WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
+                
+                //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
+                [WeiboSDK sendRequest:request];
+                NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
+                
+                ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                
+                [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = requestShare;
+                [requestShare setCompletionBlock :^{
+                    
+                    _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
+                }];
+                [requestShare setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [requestShare startAsynchronous];
+            }else if (sender.tag == 2004) {
+                TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                                     andDelegate:nil];
+                NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,_shareMuzzik.muzzik_id];
+                //分享图预览图URL地址
+                NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
+                //音乐播放的网络流媒体地址
+                QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                                      title:_shareMuzzik.music.name description:_shareMuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
+                //设置播放流媒体地址
+                audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,_shareMuzzik.music.key]];
+                SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+                //将内容分享到qq
+                
+                QQApiSendResultCode sent = [QQApiInterface sendReq:req];
+                [self handleSendResult:sent];
+                //将被容分享到qzone
+                //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+                
+                NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
+                
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                
+                [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    
+                    _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [request startAsynchronous];
+            }else if (sender.tag == 2005) {
+                TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
+                                                                     andDelegate:nil];
+                //分享跳转URL
+                NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,_shareMuzzik.muzzik_id];
+                //分享图预览图URL地址
+                NSString *previewImageUrl = [NSString stringWithFormat:@"%@%@",BaseURL_image,_shareMuzzik.MuzzikUser.avatar];
+                //音乐播放的网络流媒体地址
+                NSString *flashURL = [NSString stringWithFormat:@"%@%@",BaseURL_audio,_shareMuzzik.music.key];
+                QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
+                                                                      title:@"我在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",_shareMuzzik.music.name,_shareMuzzik.music.artist] previewImageURL:[NSURL URLWithString:previewImageUrl]];
+                //设置播放流媒体地址
+                audioObj.flashURL = [NSURL URLWithString:flashURL] ;
+                SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
+                //将内容分享到qq
+                //QQApiSendResultCode sent = [QQApiInterface sendReq:req];
+                //将被容分享到qzone
+                QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
+                
+                [self handleSendResult:sent];
+                
+                NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:_shareMuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
+                
+                ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
+                
+                [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
+                __weak ASIHTTPRequest *weakrequest = request;
+                [request setCompletionBlock :^{
+                    
+                    _shareMuzzik.shares = [NSString stringWithFormat:@"%d",[_shareMuzzik.shares intValue]+1];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:_shareMuzzik];
+                }];
+                [request setFailedBlock:^{
+                    NSLog(@"%@",[weakrequest error]);
+                }];
+                [request startAsynchronous];
+            }else if (sender.tag == 2006) {
+                IMFriendListViewController *imvc = [[IMFriendListViewController alloc] init];
+                imvc.shareMuzzik = self.shareMuzzik;
+                [self.ownerVC.navigationController pushViewController:imvc animated:YES];
+            }
+        }
+
+    }];
+    
 }
 @end

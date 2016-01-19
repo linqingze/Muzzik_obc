@@ -27,8 +27,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self initNagationBar:self.title leftBtn:Constant_backImage rightBtn:0];
     [self.view setBackgroundColor:[UIColor whiteColor]];
-    messageCount = 20>_con.messages.count ? _con.messages.count:20;
+    
     tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
     
     [self settingTableView];
@@ -58,6 +59,14 @@
     [IMTableView registerClass:[ownerTableViewCell class] forCellReuseIdentifier:@"ownerTableViewCell"];
     [self.view addSubview:IMTableView];
     tableOriginRect = IMTableView.frame;
+    if (_con.messages.count>15) {
+        [IMTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+        messageCount = 15;
+    }else{
+        messageCount = _con.messages.count;
+    }
+    messageCount = 15>_con.messages.count ? _con.messages.count:15;
+    
 }
 -(void) settingTalkView{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
@@ -85,6 +94,21 @@
     [commentView addSubview:comnentTextView];
     commentViewRect = commentView.frame;
 }
+-(void)refreshHeader{
+    messageCount +=15;
+    if (messageCount > _con.messages.count) {
+        [IMTableView removeHeader];
+        messageCount = _con.messages.count;
+    }
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [IMTableView reloadData];
+        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-15 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        [IMTableView headerEndRefreshing];
+    });
+}
+
+
+
 #pragma mark tableView_DelegateMethod
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -99,7 +123,6 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     Message *message;
-    NSLog(@"%d",_con.messages.count);
     if (messageCount >= _con.messages.count) {
         message = _con.messages[indexPath.row];
     }else{
@@ -163,55 +186,13 @@
 }
 -(BOOL)growingTextViewShouldReturn:(HPGrowingTextView *)growingTextView{
     if ([growingTextView.text length]>0) {
+        
            RCTextMessage *rctext = [[RCTextMessage alloc] init];
         [rctext setSenderUserInfo:[RCIMClient sharedRCIMClient].currentUserInfo];
         rctext.content = growingTextView.text;
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
-        __block Message *newMessgae = [app getNewMessage];
-        newMessgae.messageType = Type_IM_TextMessage;
-        newMessgae.sendTime = [NSDate date];
-        newMessgae.messageContent = growingTextView.text;
-        newMessgae.abstractString = growingTextView.text;;
-        newMessgae.messageUser = [userInfo shareClass].account.ownerUser;
-        newMessgae.isOwner = [NSNumber numberWithBool:YES];
-        NSLog(@"%@",_con.sendTime);
-
-        if ([app checkLimitedTime:newMessgae.sendTime oldDate:_con.sendTime]) {
-            newMessgae.needsToShowTime = [NSNumber numberWithBool:YES];
-        }else{
-            newMessgae.needsToShowTime = [NSNumber numberWithBool:NO];
-        }
-        _con.sendTime = [NSDate date];
-        [_con addMessagesObject:newMessgae];
-        _con.abstractString = growingTextView.text;
-        if (![[userInfo shareClass].account.myConversation containsObject:_con]) {
-            [[userInfo shareClass].account insertObject:_con inMyConversationAtIndex:0];
-        }else{
-            NSLog(@"contain");
-        }
-        messageCount++;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [IMTableView reloadData];
-            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            growingTextView.text = @"";
-        });
-        
-        [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE
-                                          targetId:_con.targetId
-                                           content:rctext
-                                       pushContent:nil
-                                          pushData:nil
-                                           success:^(long messageId) {
-                                               newMessgae.sendStatue = @"ok";
-                                               [app.managedObjectContext save:nil];
-                                           } error:^(RCErrorCode nErrorCode, long messageId) {
-                                               newMessgae.sendStatue = @"error";
-                                               NSLog(@"发送失败。消息ID：%@， 错误码：%d", messageId, nErrorCode);
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [IMTableView reloadData];
-                                               });
-                                               
-                                           }];
+        [app sendIMMessage:rctext targetCon:_con pushContent:[NSString stringWithFormat:@"%@: %@",[userInfo shareClass].name,growingTextView.text]];
+        growingTextView.text = @"";
     }
     return YES;
 }
@@ -240,7 +221,10 @@
     //
     CGRect newTableFrame = tableOriginRect;
     newTableFrame.size.height += -keyboardRect.size.height;
-    IMTableView.contentOffset = CGPointMake(0, IMTableView.contentOffset.y+keyboardRect.size.height);
+    if (messageCount > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height) {
+         IMTableView.contentOffset = CGPointMake(0, IMTableView.contentOffset.y+keyboardRect.size.height);
+    }
+   
     
     
     CGRect newInputFieldFrame = commentViewRect;

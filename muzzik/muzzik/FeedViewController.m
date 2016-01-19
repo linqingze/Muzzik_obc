@@ -161,7 +161,8 @@
     
     
     muzzikShareView = [[MuzzikShareView alloc] initMyShare];
-    
+    muzzikShareView.ownerVC = self;
+    muzzikShareView.tabbarController = self.rdv_tabBarController;
     userView = [[UIView alloc] initWithFrame:CGRectMake(0, -75, SCREEN_WIDTH, 75)];
     [userView setBackgroundColor:Color_line_2];
     [userView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(seeMoreUser)]];

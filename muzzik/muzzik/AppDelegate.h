@@ -18,6 +18,7 @@
 #import "Message.h"
 #import "Conversation.h"
 #import "UserCore.h"
+#import <RongIMLib/RongIMLib.h>
 typedef enum {
     SdkStatusStoped,
     SdkStatusStarting,
@@ -73,7 +74,7 @@ typedef enum {
 -(Conversation *) getNewConversation;
 -(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
 -(Conversation *)fetchConversationByUserid:(NSString *)user_id;
-
+-(void)sendIMMessage:(RCMessageContent *)contentMessage targetCon:(Conversation *)targetCon pushContent:(NSString *)pushContent;
 
 @end
 

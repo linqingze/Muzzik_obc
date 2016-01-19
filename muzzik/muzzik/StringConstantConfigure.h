@@ -246,4 +246,7 @@
 
 #define Type_IM_TextMessage  @"text"
 #define Type_IM_ShareMuzzik  @"shareMuzzik"
+
+#define Statue_OK           @"ok"
+#define Statue_Failed       @"failed"
 #endif

@@ -297,6 +297,7 @@
 		F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */; };
 		F2FD3B061B30617F001B2332 /* popWords.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2FD3B051B30617F001B2332 /* popWords.plist */; };
 		F2FD3B091B318DF1001B2332 /* myTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FD3B081B318DF1001B2332 /* myTopicCell.m */; };
+		F2FE8F751C4CA47F00251933 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FE8F741C4CA47F00251933 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		F2FF11001B0A138A0022A57D /* NotifyMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */; };
 /* End PBXBuildFile section */
 
@@ -891,6 +892,8 @@
 		F2FD3B051B30617F001B2332 /* popWords.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popWords.plist; sourceTree = "<group>"; };
 		F2FD3B071B318DF1001B2332 /* myTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myTopicCell.h; sourceTree = "<group>"; };
 		F2FD3B081B318DF1001B2332 /* myTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = myTopicCell.m; sourceTree = "<group>"; };
+		F2FE8F731C4CA47F00251933 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
+		F2FE8F741C4CA47F00251933 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
 		F2FF10FE1B0A138A0022A57D /* NotifyMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyMuzzikCell.h; sourceTree = "<group>"; };
 		F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyMuzzikCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1078,6 +1081,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2FE8F721C4CA47100251933 /* JsonKit */,
 				F203730E1C40C475004E30D5 /* AFNetworking */,
 				F203731C1C40C475004E30D5 /* UIKit+AFNetworking */,
 				F24568601C3CE09100DCE7A6 /* YYText */,
@@ -1987,6 +1991,15 @@
 			name = timePicker;
 			sourceTree = "<group>";
 		};
+		F2FE8F721C4CA47100251933 /* JsonKit */ = {
+			isa = PBXGroup;
+			children = (
+				F2FE8F731C4CA47F00251933 /* JSONKit.h */,
+				F2FE8F741C4CA47F00251933 /* JSONKit.m */,
+			);
+			name = JsonKit;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2201,6 +2214,7 @@
 				F2190DBC1BBA86CA00588A7D /* NLImageCropperView.m in Sources */,
 				E11246481AAAB1F20014D461 /* ASIInputStream.m in Sources */,
 				F24568981C3CE09100DCE7A6 /* YYTextInput.m in Sources */,
+				F2FE8F751C4CA47F00251933 /* JSONKit.m in Sources */,
 				F2F68F641B25C9C1005F19E6 /* PhotoImageView.m in Sources */,
 				F2F7EE431AEE241A00265596 /* FriendVC.m in Sources */,
 				F2F7EE141AED60A400265596 /* shareBaseController.m in Sources */,

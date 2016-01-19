@@ -11,8 +11,9 @@
 @interface MuzzikShareView : UIView
 @property(nonatomic,weak) muzzik *shareMuzzik;
 @property(nonatomic,weak) UIImage *shareImage;
-//@property(nonatomic,weak) RDVTabBarController *tabbarController;
+@property(nonatomic,weak) RDVTabBarController *tabbarController;
 @property(nonatomic,weak) UIView *cell;
+@property (nonatomic,weak) UIViewController *ownerVC;
 -(void) showShareView;
 -(instancetype)initMyShare;
 @end

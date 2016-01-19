@@ -8,7 +8,7 @@
 
 #import <RongIMLib/RongIMLib.h>
 
-@interface IMShareMessage : RCMessageContent
-@property(nonatomic,retain) NSData *jsonData;
+@interface IMShareMessage : RCMessageContent<RCMessagePersistentCompatible,RCMessageContentView>
+@property(nonatomic,retain) NSString *jsonStr;
 
 @end

@@ -24,7 +24,7 @@
 #import "DetaiMuzzikVC.h"
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
-#import <RongIMLib/RongIMLib.h>
+
 #import "UMessage_Sdk_1.2.2/UMessage.h"
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
@@ -1515,227 +1515,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 }
 
 
-- (void)onReceived:(RCMessage *)message
-              left:(int)nLeft
-            object:(id)object {
-    userInfo *user = [userInfo shareClass];
-    __block Message *newmessage;
-    dispatch_async(_serialQueue, ^{
-        NSLog(@"content:%@   class:%@   ",message.content,[message.content class]);
-        
-        if ([[RCIMClient sharedRCIMClient] clearMessagesUnreadStatus:ConversationType_PRIVATE targetId:message.targetId]) {
-            
-            BOOL usefulMessage = NO;   //是否需要识别的消息判断字段
-            
-            //添加支持的类型
-            if ([message.content isMemberOfClass:[RCTextMessage class]]) {
-                usefulMessage = YES;
-                newmessage = [self addNewMessageWithType:NSStringFromClass([RCTextMessage class])  message:message];
-            }else if ([message.content isMemberOfClass:[IMShareMessage class]]){
-                usefulMessage = YES;
-                newmessage = [self addNewMessageWithType:NSStringFromClass([IMShareMessage class])  message:message];
-            }
-            if (usefulMessage) {
-                //判断当前的对话是否是第一条，如果是，不变位置，否则重排置顶
-                NSLog(@"%@",user.account.myConversation.firstObject.targetId);
-                if ([message.targetId isEqualToString:user.account.myConversation.firstObject.targetId]) {
-                     [self checkNewUserWithConversation:user.account.myConversation.firstObject toMessgae:newmessage];
-                }else{
-                    Conversation *newCon = [self checkNewConWithReceiveMessage:message ];
-                    [self checkNewUserWithConversation:newCon toMessgae:newmessage];
-                }
-            }
-        }
-    });
-    dispatch_async(_serialQueue, ^{
-        //self.isViewLoaded &&self.view.window
-        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-        if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
-            NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
-            [notifyvc newMessageArrive];
-        }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-            //handle message
-            NSLog(@"2121");
-            
-            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
-            if ([vc.con.targetId isEqualToString:message.targetId]) {
-                [vc inserCellWithMessage:newmessage];
-            }
-            
-        }else{
-            //设置红点
-        }
-    });
-   
-}
--(void) checkNewUserWithConversation:(Conversation *)newCon toMessgae:(Message *) message {
-    userInfo *user = [userInfo shareClass];
-    newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
-    newCon.abstractString = message.abstractString;
-    [newCon addMessagesObject:message];
-    if (!newCon.sendTime) {
-        newCon.sendTime =[NSDate date];
-        message.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else if([self checkLimitedTime:message.sendTime oldDate:newCon.sendTime]){
-        newCon.sendTime = message.sendTime;
-        message.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else{
-        newCon.sendTime = message.sendTime;
-        message.needsToShowTime = [NSNumber numberWithBool:NO];
-    }
-
-    if ([newCon.targetUser.user_id length] == 0) {
-        BOOL containUser = NO;
-        
-        for (UserCore *tempUser in user.account.myUser) {
-            if ([tempUser.user_id isEqualToString:newCon.targetId]) {
-                newCon.targetUser = tempUser;
-                message.messageUser = newCon.targetUser;
-                if ([message.isOwner boolValue]) {
-                    message.messageUser = user.account.ownerUser;
-                }else{
-                    message.messageUser = tempUser;
-                }
-                [self.managedObjectContext save:nil];
-                containUser = YES;
-                break;
-            }
-        }
-        if (!containUser) {
-            
-            UserCore *newUser = [self getNewUser];
-            
-            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,newCon.targetId]];
-            
-            //第二步，通过URL创建网络请求
-            
-            NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
-            
-            //第三步，连接服务器
-            
-            NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-            NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:received options:NSJSONReadingMutableContainers error:nil];
-            if (responseObject) {
-                NSLog(@"%@",responseObject);
-                newUser.user_id = newCon.targetId;
-                if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
-                    newUser.name = [responseObject objectForKey:@"name"];
-                }
-                if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
-                    newUser.avatar = [responseObject objectForKey:@"avatar"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
-                    newUser.school = [responseObject objectForKey:@"school"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
-                    newUser.company = [responseObject objectForKey:@"company"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"topicsTotal"]) {
-                    newUser.topicsTotal = [responseObject objectForKey:@"topicsTotal"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"musicsTotal"]) {
-                    newUser.musicsTotal = [responseObject objectForKey:@"musicsTotal"];
-                }
-                if ([[responseObject allKeys] containsObject:@"muzzikTotal"]) {
-                    newUser.muzzikTotal = [responseObject objectForKey:@"muzzikTotal"];
-                }
-                if ([[responseObject allKeys] containsObject:@"followsCount"]) {
-                    newUser.followsCount = [responseObject objectForKey:@"followsCount"];
-                }
-                if ([[responseObject allKeys] containsObject:@"fansCount"]) {
-                    newUser.fansCount = [responseObject objectForKey:@"fansCount"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
-                    newUser.gender = [responseObject objectForKey:@"gender"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
-                    newUser.astro = [responseObject objectForKey:@"astro"];
-                }
-                
-                if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
-                    newUser.descrip = [responseObject objectForKey:@"description"];
-                }
-                newCon.targetUser = newUser;
-                if ([message.isOwner boolValue]) {
-                    message.messageUser = user.account.ownerUser;
-                }else{
-                    message.messageUser = newUser;
-                }
-                [self.managedObjectContext save:nil];
-            }
-        }
-    }else{
-        if ([message.isOwner boolValue]) {
-            message.messageUser = user.account.ownerUser;
-        }else{
-            message.messageUser = newCon.targetUser;
-        }
-        [self.managedObjectContext save:nil];
-    }
-}
--(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old{
-    NSTimeInterval newInterval = [new timeIntervalSinceReferenceDate];
-    NSTimeInterval oldInterval = [old timeIntervalSinceReferenceDate];
-    if (newInterval - oldInterval > 300) {
-        return YES;
-    }else{
-        return NO;
-    }
-}
-
-
--(Message *) addNewMessageWithType:(NSString *)messageClass message:(RCMessage *)receiveMessage{
-    userInfo *user = [userInfo shareClass];
-    Message *coreMessage;
-    coreMessage = [self getNewMessage];
-    coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
-    coreMessage.messageType = messageClass;
-    
-    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
-    if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
-        coreMessage.isOwner = [NSNumber numberWithBool:YES];
-    }else{
-        coreMessage.isOwner = [NSNumber numberWithBool:NO];
-    }
-    if ([messageClass isEqualToString:@"RCTextMessage"] ) {
-        RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
-        coreMessage.messageType = Type_IM_TextMessage;
-        coreMessage.messageContent = textMessage.content;
-        coreMessage.abstractString = textMessage.content;
-        coreMessage.sendStatue = @"ok";
-        
-    }else if ([messageClass isEqualToString:@"IMShareMessage"]){
-        IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
-        coreMessage.messageData = shareMessage.jsonData;
-        coreMessage.messageType = Type_IM_ShareMuzzik;
-        coreMessage.sendStatue = @"ok";
-        coreMessage.abstractString = @"分享了一条Muzzik";
-    }
-    return coreMessage;
-}
-
--(Conversation *)checkNewConWithReceiveMessage:(RCMessage *) message{
-    userInfo*user = [userInfo shareClass];
-    for (Conversation *con in user.account.myConversation) {
-        if ([con.targetId isEqualToString:message.targetId]) {
-            
-            [user.account removeMyConversationObject:con];
-            [user.account insertObject:con inMyConversationAtIndex:0];
-            return con;
-        }
-    }
-    Conversation *newCon = [self getNewConversation];
-    newCon.targetId = message.targetId;
-    [user.account insertObject:newCon inMyConversationAtIndex:0];
-    return newCon;
-
-}
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -1880,12 +1659,395 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         NSLog(@"%@",error.userInfo);
     }else{
         if ([fetchedObjects count] == 0 ) {
-            return [self getNewConversation];
+            Conversation *newcon = [self getNewConversation];
+            newcon.targetId = user_id;
+            return newcon;
         }else{
             return fetchedObjects[0];
         }
     }
     return nil;
 }
+- (void)onReceived:(RCMessage *)message
+              left:(int)nLeft
+            object:(id)object {
+    userInfo *user = [userInfo shareClass];
+    __block Message *newmessage = [self getNewMessage];
+    dispatch_async(_serialQueue, ^{
+        NSLog(@"content:%@   class:%@   ",message.content,[message.content class]);
+        
+        if ([[RCIMClient sharedRCIMClient] clearMessagesUnreadStatus:ConversationType_PRIVATE targetId:message.targetId]) {
+            
+            BOOL usefulMessage = NO;   //是否需要识别的消息判断字段
+            
+            //添加支持的类型
+            if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+                usefulMessage = YES;
+                [self configureMessage:newmessage type:NSStringFromClass([RCTextMessage class]) rawmessage:message];
+            }else if ([message.content isMemberOfClass:[IMShareMessage class]]){
+                usefulMessage = YES;
+                [self configureMessage:newmessage type:NSStringFromClass([IMShareMessage class]) rawmessage:message];
+            }
+            if (usefulMessage) {
+                //判断当前的对话是否是第一条，如果是，不变位置，否则重排置顶
+                NSLog(@"%@",user.account.myConversation.firstObject.targetId);
+                
+                Conversation *newCon;
+                if ([message.targetId isEqualToString:user.account.myConversation.firstObject.targetId]) {
+                    newCon = user.account.myConversation.firstObject;
+                }else{
+                    newCon = [self checkNewConWithReceiveMessage:message ];
+                }
+                [self checkNewUserWithConversation:newCon toMessgae:newmessage];
+            }
+        }
+    });
+    dispatch_async(_serialQueue, ^{
+        //self.isViewLoaded &&self.view.window
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
+            NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
+            [notifyvc newMessageArrive];
+        }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:message.targetId]) {
+                [vc inserCellWithMessage:newmessage];
+            }
+            
+        }else{
+            //设置红点
+        }
+    });
+    
+}
+//-(void) sendImMessage:(RCMessage *)message{
+//    Message *newMessage = [self getNewMessage];
+//    userInfo *user = [userInfo shareClass];
+//    if ([message.content isMemberOfClass:[RCTextMessage class]]) {
+//        newMessage = [self addNewMessageWithType:NSStringFromClass([RCTextMessage class])  message:message];
+//    }else if ([message.content isMemberOfClass:[IMShareMessage class]]){
+//        newMessage = [self addNewMessageWithType:NSStringFromClass([IMShareMessage class])  message:message];
+//    }
+//    if ([message.targetId isEqualToString:user.account.myConversation.firstObject.targetId]) {
+//        [self checkNewUserWithConversation:user.account.myConversation.firstObject toMessgae:newMessage];
+//    }else{
+//        Conversation *newCon = [self checkNewConWithReceiveMessage:message ];
+//        [self checkNewUserWithConversation:newCon toMessgae:newMessage];
+//    }
+//
+//}
+-(void) checkNewUserWithConversation:(Conversation *)newCon toMessgae:(Message *) message {
+    userInfo *user = [userInfo shareClass];
+    newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
+    newCon.abstractString = message.abstractString;
+    [newCon addMessagesObject:message];
+    if (!newCon.sendTime) {
+        newCon.sendTime =[NSDate date];
+        message.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else if([self checkLimitedTime:message.sendTime oldDate:newCon.sendTime]){
+        newCon.sendTime = message.sendTime;
+        message.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else{
+        newCon.sendTime = message.sendTime;
+        message.needsToShowTime = [NSNumber numberWithBool:NO];
+    }
+    
+    if ([newCon.targetUser.user_id length] == 0) {
+        BOOL containUser = NO;
+        
+        for (UserCore *tempUser in user.account.myUser) {
+            if ([tempUser.user_id isEqualToString:newCon.targetId]) {
+                newCon.targetUser = tempUser;
+                if ([message.isOwner boolValue]) {
+                    message.messageUser = user.account.ownerUser;
+                }else{
+                    message.messageUser = tempUser;
+                }
+                [self.managedObjectContext save:nil];
+                containUser = YES;
+                break;
+            }
+        }
+        if (!containUser) {
+            
+            UserCore *newUser = [self getNewUser];
+            
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,newCon.targetId]];
+            
+            //第二步，通过URL创建网络请求
+            
+            NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+            
+            //第三步，连接服务器
+            
+            NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+            if (received) {
+                NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:received options:NSJSONReadingMutableContainers error:nil];
+                if (responseObject) {
+                    NSLog(@"%@",responseObject);
+                    newUser.user_id = newCon.targetId;
+                    if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
+                        newUser.name = [responseObject objectForKey:@"name"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
+                        newUser.avatar = [responseObject objectForKey:@"avatar"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
+                        newUser.school = [responseObject objectForKey:@"school"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
+                        newUser.company = [responseObject objectForKey:@"company"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"topicsTotal"]) {
+                        newUser.topicsTotal = [responseObject objectForKey:@"topicsTotal"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"musicsTotal"]) {
+                        newUser.musicsTotal = [responseObject objectForKey:@"musicsTotal"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"muzzikTotal"]) {
+                        newUser.muzzikTotal = [responseObject objectForKey:@"muzzikTotal"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"followsCount"]) {
+                        newUser.followsCount = [responseObject objectForKey:@"followsCount"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"fansCount"]) {
+                        newUser.fansCount = [responseObject objectForKey:@"fansCount"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
+                        newUser.gender = [responseObject objectForKey:@"gender"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
+                        newUser.astro = [responseObject objectForKey:@"astro"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
+                        newUser.descrip = [responseObject objectForKey:@"description"];
+                    }
+                    newCon.targetUser = newUser;
+                    if ([message.isOwner boolValue]) {
+                        message.messageUser = user.account.ownerUser;
+                    }else{
+                        message.messageUser = newUser;
+                    }
+                    [self.managedObjectContext save:nil];
+                }
+            }
+            
+            
+        }
+    }else{
+        if ([message.isOwner boolValue]) {
+            message.messageUser = user.account.ownerUser;
+        }else{
+            message.messageUser = newCon.targetUser;
+        }
+        [self.managedObjectContext save:nil];
+    }
+}
+-(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old{
+    NSTimeInterval newInterval = [new timeIntervalSinceReferenceDate];
+    NSTimeInterval oldInterval = [old timeIntervalSinceReferenceDate];
+    if (newInterval - oldInterval > 300) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
 
+
+-(Message *) configureMessage:(Message*)coreMessage type:(NSString *)messageClass rawmessage:(RCMessage *)receiveMessage{
+    userInfo *user = [userInfo shareClass];
+    
+    coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
+    coreMessage.messageType = messageClass;
+    
+    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
+    if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
+        coreMessage.isOwner = [NSNumber numberWithBool:YES];
+    }else{
+        coreMessage.isOwner = [NSNumber numberWithBool:NO];
+    }
+    if ([messageClass isEqualToString:@"RCTextMessage"] ) {
+        RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
+        coreMessage.messageType = Type_IM_TextMessage;
+        coreMessage.messageContent = textMessage.content;
+        coreMessage.abstractString = textMessage.content;
+        coreMessage.sendStatue = @"ok";
+        
+    }else if ([messageClass isEqualToString:@"IMShareMessage"]){
+        IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
+        coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
+        coreMessage.messageType = Type_IM_ShareMuzzik;
+        coreMessage.sendStatue = @"ok";
+        coreMessage.abstractString = @"分享了一条Muzzik";
+    }
+    return coreMessage;
+}
+
+-(Conversation *)checkNewConWithReceiveMessage:(RCMessage *) message{
+    userInfo*user = [userInfo shareClass];
+    for (Conversation *con in user.account.myConversation) {
+        if ([con.targetId isEqualToString:message.targetId]) {
+            
+            [user.account removeMyConversationObject:con];
+            [user.account insertObject:con inMyConversationAtIndex:0];
+            return con;
+        }
+    }
+    Conversation *newCon = [self getNewConversation];
+    newCon.targetId = message.targetId;
+    [user.account insertObject:newCon inMyConversationAtIndex:0];
+    return newCon;
+    
+}
+
+-(void)sendIMMessage:(RCMessageContent *)contentMessage targetCon:(Conversation *)targetCon pushContent:(NSString *)pushContent{
+    __block Message *newmessage = [self getNewMessage];
+    
+    userInfo *user = [userInfo shareClass];
+    RCMessage *rongMessage = [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:targetCon.targetId content:contentMessage pushContent:pushContent success:^(long messageId) {
+        newmessage.sendStatue = Statue_OK;
+    } error:^(RCErrorCode nErrorCode, long messageId) {
+        newmessage.sendStatue = Statue_Failed;
+    }];
+    newmessage = [self configureMessage:newmessage type:NSStringFromClass([contentMessage class]) rawmessage:rongMessage];
+    NSLog(@"%@ ",newmessage);
+
+    targetCon.abstractString = newmessage.abstractString;
+    [targetCon addMessagesObject:newmessage];
+    if (!targetCon.sendTime) {
+        targetCon.sendTime =[NSDate date];
+        newmessage.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else if([self checkLimitedTime:newmessage.sendTime oldDate:targetCon.sendTime]){
+        targetCon.sendTime = newmessage.sendTime;
+        newmessage.needsToShowTime = [NSNumber numberWithBool:YES];
+    }else{
+        targetCon.sendTime = newmessage.sendTime;
+        newmessage.needsToShowTime = [NSNumber numberWithBool:NO];
+    }
+    if ([targetCon.targetUser.user_id length] == 0) {
+        BOOL containUser = NO;
+        
+        for (UserCore *tempUser in user.account.myUser) {
+            if ([tempUser.user_id isEqualToString:targetCon.targetId]) {
+                targetCon.targetUser = tempUser;
+                newmessage.messageUser = tempUser;
+                [self.managedObjectContext save:nil];
+                UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+                if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+                    //handle message
+                    NSLog(@"2121");
+                    
+                    IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+                    if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+                        [vc inserCellWithMessage:newmessage];
+                    }
+                }
+                containUser = YES;
+                break;
+            }
+        }
+        if (!containUser) {
+            
+            UserCore *newUser = [self getNewUser];
+            
+            NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"%@api/user/%@",BaseURL,targetCon.targetId]];
+            
+            //第二步，通过URL创建网络请求
+            
+            NSURLRequest *request = [[NSURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:10];
+            
+            //第三步，连接服务器
+            
+            NSData *received = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+            if (received) {
+                NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:received options:NSJSONReadingMutableContainers error:nil];
+                if (responseObject) {
+                    NSLog(@"%@",responseObject);
+                    newUser.user_id = targetCon.targetId;
+                    if ([[responseObject allKeys] containsObject:@"name"] && [[responseObject objectForKey:@"name"] length] >0) {
+                        newUser.name = [responseObject objectForKey:@"name"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"avatar"] && [[responseObject objectForKey:@"avatar"] length] >0) {
+                        newUser.avatar = [responseObject objectForKey:@"avatar"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"school"] && [[responseObject objectForKey:@"school"] length] >0) {
+                        newUser.school = [responseObject objectForKey:@"school"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"company"] && [[responseObject objectForKey:@"company"] length] >0) {
+                        newUser.company = [responseObject objectForKey:@"company"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"topicsTotal"]) {
+                        newUser.topicsTotal = [responseObject objectForKey:@"topicsTotal"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"musicsTotal"]) {
+                        newUser.musicsTotal = [responseObject objectForKey:@"musicsTotal"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"muzzikTotal"]) {
+                        newUser.muzzikTotal = [responseObject objectForKey:@"muzzikTotal"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"followsCount"]) {
+                        newUser.followsCount = [responseObject objectForKey:@"followsCount"];
+                    }
+                    if ([[responseObject allKeys] containsObject:@"fansCount"]) {
+                        newUser.fansCount = [responseObject objectForKey:@"fansCount"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"gender"] && [[responseObject objectForKey:@"gender"] length] >0) {
+                        newUser.gender = [responseObject objectForKey:@"gender"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"astro"] && [[responseObject objectForKey:@"astro"] length] >0) {
+                        newUser.astro = [responseObject objectForKey:@"astro"];
+                    }
+                    
+                    if ([[responseObject allKeys] containsObject:@"description"] && [[responseObject objectForKey:@"description"] length] >0) {
+                        newUser.descrip = [responseObject objectForKey:@"description"];
+                    }
+                    targetCon.targetUser = newUser;
+                    newmessage.messageUser = newUser;
+                    [self.managedObjectContext save:nil];
+                    UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+                    if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+                        //handle message
+                        NSLog(@"2121");
+                        
+                        IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+                        if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+                            [vc inserCellWithMessage:newmessage];
+                        }
+                    }
+                }
+            }
+            
+        }
+    }else{
+        newmessage.messageUser = targetCon.targetUser;
+        [self.managedObjectContext save:nil];
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+                [vc inserCellWithMessage:newmessage];
+            }
+        }
+    }
+    
+}
 @end

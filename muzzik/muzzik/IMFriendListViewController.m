@@ -12,6 +12,7 @@
 #import "UIImageView+WebCache.h"
 #import <RongIMLib/RongIMLib.h>
 #import "IMConversationViewcontroller.h"
+#import "IMShareMessage.h"
 @interface IMFriendListViewController ()<BATableViewDelegate,UITableViewDataSource,UITableViewDelegate>{
     NSMutableDictionary *RefreshDic;
     BATableView *MytableView;
@@ -177,7 +178,9 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
     userInfo *user = [userInfo shareClass];
-    IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+    
+    
+    __block IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
 
     
     AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
@@ -192,6 +195,13 @@
     imVC.con.unReadMessage = [NSNumber numberWithInt:0];
     imVC.title = imVC.con.targetUser.name;
     [app.managedObjectContext save:nil];
+    
+    if (self.shareMuzzik) {
+        IMShareMessage *imshare = [[IMShareMessage alloc] init];
+        imshare.jsonStr = [self DataTOjsonString:self.shareMuzzik.rawDic];
+        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",user.name]];
+    }
+    
     [self.navigationController pushViewController:imVC animated:YES];
     
 }
@@ -203,7 +213,20 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+-(NSString*)DataTOjsonString:(id)object
+{
+    NSString *jsonString = nil;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    if (! jsonData) {
+        NSLog(@"Got an error: %@", error);
+    } else {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    return jsonString;
+}
 /*
 #pragma mark - Navigation
 

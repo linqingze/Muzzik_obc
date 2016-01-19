@@ -60,6 +60,7 @@
     [self.view addSubview:_suggestCollectionView];
     [self followScrollView:_suggestCollectionView];
     muzzikShareView = [[MuzzikShareView alloc] initMyShare];
+    muzzikShareView.ownerVC = self;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
