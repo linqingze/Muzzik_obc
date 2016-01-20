@@ -2,7 +2,7 @@
 //  Account+CoreDataProperties.h
 //  muzzik
 //
-//  Created by muzzik on 16/1/16.
+//  Created by muzzik on 16/1/19.
 //  Copyright © 2016年 muzziker. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu

@@ -14,7 +14,7 @@
 #import "registerVC.h"
 #import "NSString+MD5.h"
 #import "phoneForResetVC.h"
-
+#import "IMShareMessage.h"
 #import <RongIMLib/RongIMLib.h>
 @interface LoginViewController ()<TencentSessionDelegate,TencentLoginDelegate,UITextFieldDelegate>{
     CGFloat scaleHeight;
@@ -328,14 +328,17 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
+            [self registerRongClound];
             [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         else if ([weakrequestsquare responseStatusCode] == 400)
         {
             [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+            loginButton.userInteractionEnabled = YES;
         }
         else{
             [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+            loginButton.userInteractionEnabled = YES;
         }
         
         if ([user.token length]>0) {
@@ -411,6 +414,7 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
+            [self registerRongClound];
            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         if ([user.token length]>0) {
@@ -493,14 +497,17 @@
                 if ([[responseObject allKeys] containsObject:@"name"]) {
                     user.name = [responseObject objectForKey:@"name"];
                 }
+                [self registerRongClound];
                 [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
             }
             else if ([weakrequestsquare responseStatusCode] == 400)
             {
                 [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+                loginButton.userInteractionEnabled = YES;
             }
             else{
                 [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+                loginButton.userInteractionEnabled = YES;
             }
             
             if ([user.token length]>0) {
@@ -520,29 +527,33 @@
         [requestsquare setFailedBlock:^{
             NSLog(@"%@",[weakrequestsquare error]);
             [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败"];
-            loginButton.userInteractionEnabled = NO;
+            loginButton.userInteractionEnabled = YES;
         }];
         [requestsquare startAsynchronous];
     }
     [textField resignFirstResponder];
     return YES;
 }
+
 -(void) registerRongClound{
     
     userInfo *user = [userInfo shareClass];
-    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 &&[ user.avatar length]>0) {
+    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
         AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
         user.account = [app getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
         if (user.account) {
             AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
             [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if( responseObject){
-                    [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
                     [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
                         NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
+                        RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
+                        [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
+                        [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
                     } error:^(RCConnectErrorCode status) {
                         NSLog(@"登陆的错误码为:%d", status);
                     } tokenIncorrect:^{
+                        
                         //token过期或者不正确。
                         //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
                         //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
@@ -552,11 +563,17 @@
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"%@",error);
             }];
+        }else{
+            if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
+                 [self registerRongClound];
+            }
+           
         }
     }
     
     
-   
+    
 }
+
 
 @end

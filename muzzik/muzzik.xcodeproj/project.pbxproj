@@ -46,7 +46,6 @@
 		E112469A1AAAC02A0014D461 /* AMScrollingNavbarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246951AAAC02A0014D461 /* AMScrollingNavbarViewController.m */; };
 		E112469B1AAAC02A0014D461 /* BaseNagationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E11246971AAAC02A0014D461 /* BaseNagationViewController.m */; };
 		E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E112469E1AAACE3C0014D461 /* topicCardCell.m */; };
-		E142A31A1AB834F3002BBCB0 /* libGexinSdk-1.1.1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E142A3191AB834F3002BBCB0 /* libGexinSdk-1.1.1.a */; };
 		E14F4A4E1ACD2B9800270903 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E14F4A4D1ACD2B9800270903 /* LoginViewController.m */; };
 		E14F4A511ACD496E00270903 /* UIColor+HexColor.m in Sources */ = {isa = PBXBuildFile; fileRef = E14F4A501ACD496E00270903 /* UIColor+HexColor.m */; };
 		E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E162BD7C1AB4442B0001A61C /* CoreTelephony.framework */; };
@@ -297,6 +296,8 @@
 		F2FBE9031AFBBE6B0070831D /* ClassifySelectionVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FBE9021AFBBE6B0070831D /* ClassifySelectionVC.m */; };
 		F2FD3B061B30617F001B2332 /* popWords.plist in Resources */ = {isa = PBXBuildFile; fileRef = F2FD3B051B30617F001B2332 /* popWords.plist */; };
 		F2FD3B091B318DF1001B2332 /* myTopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FD3B081B318DF1001B2332 /* myTopicCell.m */; };
+		F2FE8F791C4DE53100251933 /* libGeTuiSdk-1.3.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2FE8F781C4DE53100251933 /* libGeTuiSdk-1.3.2.a */; };
+		F2FE8F7B1C4DE5DA00251933 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2FE8F7A1C4DE5DA00251933 /* CoreBluetooth.framework */; };
 		F2FF11001B0A138A0022A57D /* NotifyMuzzikCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */; };
 /* End PBXBuildFile section */
 
@@ -403,9 +404,6 @@
 		E11246971AAAC02A0014D461 /* BaseNagationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseNagationViewController.m; sourceTree = "<group>"; };
 		E112469D1AAACE3C0014D461 /* topicCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = topicCardCell.h; sourceTree = "<group>"; };
 		E112469E1AAACE3C0014D461 /* topicCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = topicCardCell.m; sourceTree = "<group>"; };
-		E142A3171AB834F3002BBCB0 /* GexinSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GexinSdk.h; sourceTree = "<group>"; };
-		E142A3181AB834F3002BBCB0 /* GXSdkError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GXSdkError.h; sourceTree = "<group>"; };
-		E142A3191AB834F3002BBCB0 /* libGexinSdk-1.1.1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libGexinSdk-1.1.1.a"; sourceTree = "<group>"; };
 		E14F4A4C1ACD2B9800270903 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		E14F4A4D1ACD2B9800270903 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		E14F4A4F1ACD496E00270903 /* UIColor+HexColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HexColor.h"; sourceTree = "<group>"; };
@@ -891,6 +889,9 @@
 		F2FD3B051B30617F001B2332 /* popWords.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = popWords.plist; sourceTree = "<group>"; };
 		F2FD3B071B318DF1001B2332 /* myTopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = myTopicCell.h; sourceTree = "<group>"; };
 		F2FD3B081B318DF1001B2332 /* myTopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = myTopicCell.m; sourceTree = "<group>"; };
+		F2FE8F771C4DE53100251933 /* GeTuiSdk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeTuiSdk.h; sourceTree = "<group>"; };
+		F2FE8F781C4DE53100251933 /* libGeTuiSdk-1.3.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libGeTuiSdk-1.3.2.a"; sourceTree = "<group>"; };
+		F2FE8F7A1C4DE5DA00251933 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		F2FF10FE1B0A138A0022A57D /* NotifyMuzzikCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyMuzzikCell.h; sourceTree = "<group>"; };
 		F2FF10FF1B0A138A0022A57D /* NotifyMuzzikCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NotifyMuzzikCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -900,6 +901,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2FE8F7B1C4DE5DA00251933 /* CoreBluetooth.framework in Frameworks */,
 				F2738AEB1C3130CA00F7F2F6 /* libiconv.tbd in Frameworks */,
 				E1FA13341AB18D9B005EDA1D /* UIKit.framework in Frameworks */,
 				E1FA12B31AB1495B005EDA1D /* QuartzCore.framework in Frameworks */,
@@ -916,6 +918,7 @@
 				E162BD7D1AB4442B0001A61C /* CoreTelephony.framework in Frameworks */,
 				F2738AD51C31301F00F7F2F6 /* CoreMedia.framework in Frameworks */,
 				F2738AD31C31301700F7F2F6 /* CoreLocation.framework in Frameworks */,
+				F2FE8F791C4DE53100251933 /* libGeTuiSdk-1.3.2.a in Frameworks */,
 				E112467F1AAAB23D0014D461 /* CoreGraphics.framework in Frameworks */,
 				F2738AD11C31300200F7F2F6 /* CoreAudio.framework in Frameworks */,
 				E1FA12AD1AB14922005EDA1D /* AVFoundation.framework in Frameworks */,
@@ -927,7 +930,6 @@
 				F2094EF71C323FB400E90272 /* libUMessage_Sdk_1.2.2.a in Frameworks */,
 				F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */,
 				F2738ACC1C312CD100F7F2F6 /* RongIMKit.framework in Frameworks */,
-				E142A31A1AB834F3002BBCB0 /* libGexinSdk-1.1.1.a in Frameworks */,
 				F2738AC91C312CD100F7F2F6 /* libopencore-amrnb.a in Frameworks */,
 				E1FA12B11AB1494A005EDA1D /* Security.framework in Frameworks */,
 				F2A7F97D1AEF75B3000FCC57 /* libWeChatSDK.a in Frameworks */,
@@ -952,6 +954,7 @@
 		E11245E91AAAAE4B0014D461 = {
 			isa = PBXGroup;
 			children = (
+				F2FE8F7A1C4DE5DA00251933 /* CoreBluetooth.framework */,
 				E112461C1AAAB0D10014D461 /* Framework */,
 				E11245F41AAAAE4B0014D461 /* muzzik */,
 				E112460E1AAAAE4B0014D461 /* muzzikTests */,
@@ -1078,6 +1081,7 @@
 		E112461E1AAAB0F60014D461 /* 3plus-in */ = {
 			isa = PBXGroup;
 			children = (
+				F2FE8F761C4DE53100251933 /* GtSdkLib */,
 				F203730E1C40C475004E30D5 /* AFNetworking */,
 				F203731C1C40C475004E30D5 /* UIKit+AFNetworking */,
 				F24568601C3CE09100DCE7A6 /* YYText */,
@@ -1103,7 +1107,6 @@
 				F2F7EE071AEC998800265596 /* Refresh */,
 				F26131251ADE23CE0042F1D4 /* shaker */,
 				E1E857A41ABD6EC2006B1BA6 /* libWeiboSDK */,
-				E142A3151AB834F3002BBCB0 /* dist */,
 				E11246221AAAB1620014D461 /* SDImage */,
 				E11246211AAAB1580014D461 /* ASiHttp */,
 				E112461F1AAAB10A0014D461 /* RTLabel */,
@@ -1243,24 +1246,6 @@
 				E11246971AAAC02A0014D461 /* BaseNagationViewController.m */,
 			);
 			name = NavBar;
-			sourceTree = "<group>";
-		};
-		E142A3151AB834F3002BBCB0 /* dist */ = {
-			isa = PBXGroup;
-			children = (
-				E142A3161AB834F3002BBCB0 /* include */,
-				E142A3191AB834F3002BBCB0 /* libGexinSdk-1.1.1.a */,
-			);
-			path = dist;
-			sourceTree = "<group>";
-		};
-		E142A3161AB834F3002BBCB0 /* include */ = {
-			isa = PBXGroup;
-			children = (
-				E142A3171AB834F3002BBCB0 /* GexinSdk.h */,
-				E142A3181AB834F3002BBCB0 /* GXSdkError.h */,
-			);
-			path = include;
 			sourceTree = "<group>";
 		};
 		E14F4A4B1ACD2B3700270903 /* 登录 */ = {
@@ -1987,6 +1972,15 @@
 			name = timePicker;
 			sourceTree = "<group>";
 		};
+		F2FE8F761C4DE53100251933 /* GtSdkLib */ = {
+			isa = PBXGroup;
+			children = (
+				F2FE8F771C4DE53100251933 /* GeTuiSdk.h */,
+				F2FE8F781C4DE53100251933 /* libGeTuiSdk-1.3.2.a */,
+			);
+			path = GtSdkLib;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -2498,6 +2492,7 @@
 					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 					"$(PROJECT_DIR)/muzzik/Rong_Cloud_iOS_SDK_v2_4_2_stable",
 					"$(PROJECT_DIR)/muzzik/UMessage_Sdk_1.2.2",
+					"$(PROJECT_DIR)/muzzik/GtSdkLib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_NAME:rfc1034identifier)";
@@ -2540,6 +2535,7 @@
 					"$(PROJECT_DIR)/muzzik/UMAnalytics_Sdk_3.5.9",
 					"$(PROJECT_DIR)/muzzik/Rong_Cloud_iOS_SDK_v2_4_2_stable",
 					"$(PROJECT_DIR)/muzzik/UMessage_Sdk_1.2.2",
+					"$(PROJECT_DIR)/muzzik/GtSdkLib",
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(PRODUCT_NAME:rfc1034identifier)";

@@ -22,8 +22,8 @@
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _titleImage = [[UIImageView alloc] initWithFrame:CGRectMake(16, 14, 32, 32)];
-    _timeLabel.layer.cornerRadius = 16;
-    _timeLabel.layer.masksToBounds = YES;
+    _titleImage.layer.cornerRadius = 16;
+    _titleImage.layer.masksToBounds = YES;
     [self addSubview:_titleImage];
     _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(64, 14, SCREEN_WIDTH-180, 17)];
     [_nameLabel setTextColor:Color_Text_1];

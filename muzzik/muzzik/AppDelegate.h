@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 #import "WXApi.h"
-#import "GexinSdk.h"
+#import "GeTuiSdk.h"
 #import "WeiboSDK.h"
 #import "Reachability.h"
 #import "RDVTabBarController.h"
@@ -19,11 +19,6 @@
 #import "Conversation.h"
 #import "UserCore.h"
 #import <RongIMLib/RongIMLib.h>
-typedef enum {
-    SdkStatusStoped,
-    SdkStatusStarting,
-    SdkStatusStarted
-} SdkStatus;
 
 @interface AppDelegate : UIResponder {
      NSString *_deviceToken;
@@ -37,7 +32,6 @@ typedef enum {
 @property (strong, nonatomic) UINavigationController *userhomeVC;
 @property (strong, nonatomic) UINavigationController *topicVC;
 @property (strong, nonatomic) UIWindow *window;
-@property (strong, nonatomic) GexinSdk *gexinPusher;
 @property (copy, nonatomic) NSString *wbtoken;
 @property (copy, nonatomic) NSString *wbCurrentUserID;
 @property (copy, nonatomic) NSString *appKey;
@@ -50,16 +44,6 @@ typedef enum {
 @property (retain, nonatomic) NSString *payloadId;
 
 
-
-- (void)startSdkWith:(NSString *)appID appKey:(NSString *)appKey appSecret:(NSString *)appSecret;
-- (void)stopSdk;
-
-- (void)setDeviceToken:(NSString *)aToken;
-- (BOOL)setTags:(NSArray *)aTag error:(NSError **)error;
-- (NSString *)sendMessage:(NSData *)body error:(NSError **)error;
-
-- (void)bindAlias:(NSString *)aAlias;
-- (void)unbindAlias:(NSString *)aAlias;
 //-(void) downLoadLyricByMusic:(music *)music;
 - (void) sendImageContent:(UIImage *)image;
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
@@ -73,8 +57,8 @@ typedef enum {
 -(UserCore *) getNewUser;
 -(Conversation *) getNewConversation;
 -(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
--(Conversation *)fetchConversationByUserid:(NSString *)user_id;
+-(Conversation *)getConversationByUserInfo:(RCUserInfo *)userinfo;
 -(void)sendIMMessage:(RCMessageContent *)contentMessage targetCon:(Conversation *)targetCon pushContent:(NSString *)pushContent;
-
+-(UserCore *)getNewUserWithuserinfo:(RCUserInfo *)userinfo;
 @end
 

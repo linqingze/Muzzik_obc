@@ -27,6 +27,7 @@
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     _headImage.layer.cornerRadius = 20;
     _headImage.layer.masksToBounds = YES;
+    [_headImage addTarget:self action:@selector(seeUserImage) forControlEvents:UIControlEventTouchUpInside];
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
     _timeLabel.textAlignment = NSTextAlignmentCenter;
@@ -76,7 +77,7 @@
         _timeLabel.text = [Utils_IM getStringFromIMDate:message.sendTime];
         [_timeLabel sizeToFit];
         [_timeLabel setFrame:CGRectMake(SCREEN_WIDTH/2 - _timeLabel.frame.size.width/2-5, 16, _timeLabel.frame.size.width+10, 8)];
-        height += 32;
+        height += 40;
     }else{
         [_timeLabel setHidden:YES];
         [_timelineImage setHidden:YES];
@@ -91,7 +92,7 @@
         [_songName setHidden:YES];
         [_messageLabel setHidden:NO];
         _messageView.layer.borderWidth = 0;
-        [_messageLabel setFrame:CGRectMake(0, 0, SCREEN_WIDTH-141, 1000)];
+        [_messageLabel setFrame:CGRectMake(0, 0, SCREEN_WIDTH-151, 1000)];
         _messageLabel.text = message.messageContent;
         [_messageLabel sizeToFit];
         
@@ -102,7 +103,7 @@
             [_messageLabel setFrame:CGRectMake(10, 10, _messageLabel.frame.size.width, _messageLabel.frame.size.height)];
             
             [_messageView setBackgroundColor:Color_Active_Button_2];
-            [_messageView setFrame:CGRectMake(SCREEN_WIDTH-73-_messageLabel.frame.size.width, height, _messageLabel.frame.size.width+20,  _messageLabel.frame.size.height+22)];
+            [_messageView setFrame:CGRectMake(SCREEN_WIDTH-83-_messageLabel.frame.size.width, height, _messageLabel.frame.size.width+20,  _messageLabel.frame.size.height+22)];
             
         }else{
             [_headImage setFrame:CGRectMake(13, height, 40, 40)];
@@ -153,7 +154,7 @@
     }else{
         
     }
-    
+    NSLog(@"name:%@   avatar:%@,",message.messageUser.name,message.messageUser.avatar);
     [_headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,message.messageUser.avatar]] forState:UIControlStateNormal];
     return height+_messageLabel.frame.size.height;
 }
@@ -191,5 +192,10 @@
 
     }
     
+}
+-(void)seeUserImage{
+    CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
+    
+    [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
 }
 @end

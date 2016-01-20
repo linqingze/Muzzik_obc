@@ -191,14 +191,8 @@
 
     
     AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
-    imVC.con = [app fetchConversationByUserid:muzzikuser.user_id];
-    if ([imVC.con.targetUser.user_id length] == 0) {
-        UserCore * coreUser = [app getNewUser];
-        coreUser.name = muzzikuser.name;
-        coreUser.user_id = muzzikuser.user_id;
-        coreUser.avatar = muzzikuser.avatar;
-        imVC.con.targetUser = coreUser;
-    }
+    RCUserInfo *targetUserinfo = [[RCUserInfo alloc] initWithUserId:muzzikuser.user_id name:muzzikuser.name portrait:muzzikuser.avatar];
+    imVC.con = [app getConversationByUserInfo:targetUserinfo];
     imVC.con.unReadMessage = [NSNumber numberWithInt:0];
     imVC.title = imVC.con.targetUser.name;
     [app.managedObjectContext save:nil];
@@ -206,7 +200,8 @@
     if (self.shareMuzzik) {
         IMShareMessage *imshare = [[IMShareMessage alloc] init];
         imshare.jsonStr = [self DataTOjsonString:self.shareMuzzik.rawDic];
-        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",user.name]];
+        imshare.extra = [self DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:muzzikuser.name,@"name",muzzikuser.avatar,@"avatar",muzzikuser.user_id,@"_id", nil]];
+        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",user.name] ];
     }
     
     [self.navigationController pushViewController:imVC animated:YES];

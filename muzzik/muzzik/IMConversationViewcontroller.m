@@ -9,6 +9,7 @@
 #import "IMConversationViewcontroller.h"
 #import "ownerTableViewCell.h"
 #import "HPGrowingTextView.h"
+#import "UIImageView+WebCache.h"
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
@@ -19,6 +20,10 @@
     CGRect commentViewRect;
     
     UITapGestureRecognizer *tapOnview;
+    UIView *userHeadImage;
+    UIImageView *cellUserheadImage;
+    BOOL hideStatus;
+    UILabel *statueLabel;
 }
 
 @end
@@ -27,6 +32,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    userHeadImage = [[UIView alloc] init];
+    [userHeadImage setBackgroundColor:[UIColor blackColor]];
+    statueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
+    statueLabel.textAlignment = NSTextAlignmentCenter;
+
+    cellUserheadImage = [[UIImageView alloc] init];
+    cellUserheadImage.contentMode = UIViewContentModeScaleAspectFit;
+    [userHeadImage addSubview:cellUserheadImage];
+    [userHeadImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedWithImage)]];
     [self initNagationBar:self.title leftBtn:Constant_backImage rightBtn:0];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
@@ -42,7 +56,8 @@
         NSLog(@"contain");
     }
     [super viewWillAppear:animated];
-    if (messageCount > 0) {
+    if (messageCount > 0 ) {
+        messageCount = messageCount>_con.messages.count ? _con.messages.count :messageCount;
         [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
    
@@ -61,6 +76,10 @@
     tableOriginRect = IMTableView.frame;
     if (_con.messages.count>15) {
         [IMTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
+        [IMTableView setHeaderRefreshingText:@"稍等..."];
+        [IMTableView setHeaderPullToRefreshText:@"下拉查看历史"];
+        [IMTableView setHeaderReleaseToRefreshText:@"松开查看"];
+        [IMTableView hideTimeLabel];
         messageCount = 15;
     }else{
         messageCount = _con.messages.count;
@@ -96,18 +115,34 @@
 }
 -(void)refreshHeader{
     messageCount +=15;
-    if (messageCount > _con.messages.count) {
-        [IMTableView removeHeader];
-        messageCount = _con.messages.count;
-    }
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        if (messageCount > _con.messages.count) {
+            [IMTableView setHeaderHidden:YES];
+            [IMTableView headerEndRefreshing];
+            [IMTableView removeHeader];
+            messageCount = _con.messages.count;
+        }else{
+           [IMTableView headerEndRefreshing];
+        }
         [IMTableView reloadData];
         [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-15 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-        [IMTableView headerEndRefreshing];
     });
 }
 
-
+-(void)connectionChanged:(RCConnectionStatus)status{
+    [statueLabel setAlpha:1];
+    if (status == ConnectionStatus_Connected) {
+        statueLabel.text = @"成功连接至服务器";
+        [statueLabel setBackgroundColor:[UIColor greenColor]];
+    }
+    [self.view addSubview:statueLabel];
+    [UIView animateWithDuration:2 animations:^{
+        [statueLabel setAlpha:0];
+    } completion:^(BOOL finished) {
+        [statueLabel removeFromSuperview];
+    }];
+}
 
 #pragma mark tableView_DelegateMethod
 
@@ -191,6 +226,7 @@
         [rctext setSenderUserInfo:[RCIMClient sharedRCIMClient].currentUserInfo];
         rctext.content = growingTextView.text;
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+        NSLog(@"%@",_con.targetUser.name);
         [app sendIMMessage:rctext targetCon:_con pushContent:[NSString stringWithFormat:@"%@: %@",[userInfo shareClass].name,growingTextView.text]];
         growingTextView.text = @"";
     }
@@ -302,6 +338,32 @@
 
 -(void)playnextMuzzikUpdate{
     [IMTableView reloadData];
+}
+
+-(void) showUserImageWithimageKey:(NSString *)imageKey holdImage:(UIImage *) holdImage orginalRect:(CGRect) rect{
+    [userHeadImage setFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 1, 1)];
+    [cellUserheadImage setFrame:CGRectMake(0, 0, 1, 1)];
+    [cellUserheadImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,imageKey,Image_Size_Big]] placeholderImage:holdImage completed:NULL];
+    [self.navigationController.view addSubview:userHeadImage];
+    hideStatus = YES;
+    [self setNeedsStatusBarAppearanceUpdate];
+    [UIView animateWithDuration:0.3 animations:^{
+        [userHeadImage setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        [cellUserheadImage setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+    }];
+}
+-(void)tappedWithImage{
+    hideStatus = NO;
+    [self setNeedsStatusBarAppearanceUpdate];
+    [UIView animateWithDuration:0.3 animations:^{
+        [userHeadImage setFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 1, 1)];
+        [cellUserheadImage setFrame:CGRectMake(0, 0, 1, 1)];
+    } completion:^(BOOL finished) {
+        [userHeadImage removeFromSuperview];
+    }];
+}
+-(BOOL)prefersStatusBarHidden{
+    return hideStatus;
 }
 /*
 #pragma mark - Navigation

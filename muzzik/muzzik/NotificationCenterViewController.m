@@ -204,7 +204,12 @@
     userInfo *user = [userInfo shareClass];
     
     Conversation *con = [user.account.myConversation objectAtIndex:indexPath.row];
-    [cell.titleImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_image,con.targetUser.avatar]]];
+//    if ([con.targetUser.user_id length] == 0) {
+//        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+//        con.targetUser = [app getNewUserWithId:con.targetId];
+//    }
+    NSLog(@"%@,%@",con.targetUser.name,con.targetUser.avatar);
+    [cell.titleImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,con.targetUser.avatar,Image_Size_Small]]];
     NSLog(@"%@",con.unReadMessage);
     cell.nameLabel.text = con.targetUser.name;
     cell.messageLabel.text = con.abstractString;

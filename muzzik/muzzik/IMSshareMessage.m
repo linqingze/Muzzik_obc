@@ -12,14 +12,34 @@
 
 
 + (NSString *)getObjectName {
-    return @"app:sharemuzzik";
+    return @"Muzzik:sharemuzzik";
 }
 
 
 - (NSData *)encode{
-    NSDictionary *dict = @{@"jsonstr": self.jsonStr};
+    NSMutableDictionary *dataDict = [NSMutableDictionary dictionary];
+    if (self.jsonStr) {
+        [dataDict setObject:self.jsonStr forKey:@"jsonstr"];
+    }
+    if (self.senderUserInfo) {
+        NSMutableDictionary *__dic = [[NSMutableDictionary alloc] init];
+        if (self.senderUserInfo.name) {
+            [__dic setObject:self.senderUserInfo.name forKeyedSubscript:@"name"];
+        }
+        if (self.senderUserInfo.portraitUri) {
+            [__dic setObject:self.senderUserInfo.portraitUri forKeyedSubscript:@"portrait"];
+        }
+        if (self.senderUserInfo.userId) {
+            [__dic setObject:self.senderUserInfo.userId forKeyedSubscript:@"id"];
+        }
+        [dataDict setObject:__dic forKey:@"user"];
+    }
+    if (self.extra) {
+        [dataDict setObject:self.extra forKey:@"extra"];
+    }
+
     NSError *__error = nil;
-    NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:kNilOptions error:&__error];
+    NSData *data = [NSJSONSerialization dataWithJSONObject:dataDict options:kNilOptions error:&__error];
     if (!__error) {
         return data;
     } else {
@@ -37,6 +57,11 @@
     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&__error];
     if (!__error && dict) {
         self.jsonStr = dict[@"jsonstr"];
+        
+        self.extra = [dict objectForKey:@"extra"];
+        
+        NSDictionary *userinfoDic = [dict objectForKey:@"user"];
+        [self decodeUserInfo:userinfoDic];
     } else {
         self.rawJSONData = data;
     }

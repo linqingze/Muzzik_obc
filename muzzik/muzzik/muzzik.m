@@ -78,6 +78,7 @@
     }
     for (NSDictionary *dic in array) {
         muzzik *newmuzzik = [muzzik new];
+        newmuzzik.rawDic = dic;
         newmuzzik.muzzik_id = [dic objectForKey:@"_id"];
         newmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
         newmuzzik.date = [dic objectForKey:@"date"];

@@ -208,6 +208,8 @@
                     user.name = @"";
                     user.gender = @"";
                     user.isSwitchUser = YES;
+                    user.account = nil;
+                    [[RCIMClient sharedRCIMClient] logout];
                     [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
                     
                     [settingTable reloadData];

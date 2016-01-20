@@ -10,5 +10,6 @@
 
 @interface IMShareMessage : RCMessageContent<RCMessagePersistentCompatible,RCMessageContentView>
 @property(nonatomic,retain) NSString *jsonStr;
+@property(nonatomic,retain) NSString *extra;
 
 @end

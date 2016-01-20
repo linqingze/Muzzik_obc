@@ -41,22 +41,8 @@
         <relationship name="messageUser" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="UserCore" inverseName="messageOwner" inverseEntity="UserCore" syncable="YES"/>
     </entity>
     <entity name="UserCore" representedClassName="UserCore" syncable="YES">
-        <attribute name="astro" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="avatar" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="birthday" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="company" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="descrip" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="fansCount" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="followsCount" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
-        <attribute name="gender" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="genres" optional="YES" attributeType="Binary" syncable="YES"/>
-        <attribute name="isFans" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="isFollow" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="musicsTotal" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
-        <attribute name="muzzikTotal" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="school" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="topicsTotal" optional="YES" attributeType="Integer 64" defaultValueString="0.0" syncable="YES"/>
         <attribute name="user_id" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="accountOwner" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Account" inverseName="ownerUser" inverseEntity="Account" syncable="YES"/>
         <relationship name="conversation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Conversation" inverseName="targetUser" inverseEntity="Conversation" syncable="YES"/>
@@ -67,6 +53,6 @@
         <element name="Account" positionX="-648" positionY="-99" width="128" height="240"/>
         <element name="Conversation" positionX="-54" positionY="-9" width="128" height="165"/>
         <element name="Message" positionX="169" positionY="-21" width="128" height="240"/>
-        <element name="UserCore" positionX="-72" positionY="189" width="128" height="360"/>
+        <element name="UserCore" positionX="-72" positionY="189" width="128" height="150"/>
     </elements>
 </model>

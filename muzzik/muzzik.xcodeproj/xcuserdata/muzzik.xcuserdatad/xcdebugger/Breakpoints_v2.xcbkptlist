@@ -16,16 +16,173 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/IMConversationViewcontroller.m"
-            timestampString = "474816143.75295"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
-            landmarkName = "-inserCellWithMessage:"
+            startingLineNumber = "1769"
+            endingLineNumber = "1769"
+            landmarkName = "-configureMessagetype:rawmessage:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1620"
+            endingLineNumber = "1620"
+            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[AppDelegate sendIMMessage:targetCon:pushContent:]"
+                  moduleName = "muzzik"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/muzzik/ios/muzzik_ios%E5%89%AF%E6%9C%AC%202/muzzik/muzzik/AppDelegate.m"
+                  timestampString = "474987886.086691"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1621"
+                  endingLineNumber = "1621"
+                  offsetFromSymbolStart = "3624">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__51-[AppDelegate sendIMMessage:targetCon:pushContent:]_block_invoke"
+                  moduleName = "muzzik"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/muzzik/ios/muzzik_ios%E5%89%AF%E6%9C%AC%202/muzzik/muzzik/AppDelegate.m"
+                  timestampString = "474987886.086816"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1621"
+                  endingLineNumber = "1621"
+                  offsetFromSymbolStart = "272">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__copy_helper_block_1292"
+                  moduleName = "muzzik"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/muzzik/ios/muzzik_ios%E5%89%AF%E6%9C%AC%202/muzzik/muzzik/AppDelegate.m"
+                  timestampString = "474987886.086926"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "24">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__destroy_helper_block_1293"
+                  moduleName = "muzzik"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/muzzik/ios/muzzik_ios%E5%89%AF%E6%9C%AC%202/muzzik/muzzik/AppDelegate.m"
+                  timestampString = "474987886.087016"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "0"
+                  endingLineNumber = "0"
+                  offsetFromSymbolStart = "20">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "__51-[AppDelegate sendIMMessage:targetCon:pushContent:]_block_invoke1295"
+                  moduleName = "muzzik"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/muzzik/ios/muzzik_ios%E5%89%AF%E6%9C%AC%202/muzzik/muzzik/AppDelegate.m"
+                  timestampString = "474987886.087105"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "1621"
+                  endingLineNumber = "1621"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1624"
+            endingLineNumber = "1624"
+            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1575"
+            endingLineNumber = "1575"
+            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1553"
+            endingLineNumber = "1553"
+            landmarkName = "-onReceived:left:object:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "474987885.982139"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1761"
+            endingLineNumber = "1761"
+            landmarkName = "-configureMessagetype:rawmessage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -36,60 +193,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/ownerTableViewCell.m"
-            timestampString = "474634416.74122"
+            timestampString = "474979512.980175"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "182"
-            endingLineNumber = "182"
-            landmarkName = "-longPress:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "474812644.347667"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1918"
-            endingLineNumber = "1918"
-            landmarkName = "-sendIMMessage:targetCon:pushContent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "474812644.347667"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1920"
-            endingLineNumber = "1920"
-            landmarkName = "-sendIMMessage:targetCon:pushContent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "474812644.347667"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1915"
-            endingLineNumber = "1915"
-            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
+            landmarkName = "-seeUserImage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -100,12 +209,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/IMConversationViewcontroller.m"
-            timestampString = "474816143.75295"
+            timestampString = "474988355.987951"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
-            landmarkName = "-growingTextViewShouldReturn:"
+            startingLineNumber = "342"
+            endingLineNumber = "342"
+            landmarkName = "-showUserImageWithimageKey:holdImage:orginalRect:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "muzzik/NotificationCenterViewController.m"
+            timestampString = "474985210.219613"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -116,12 +241,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/IMConversationViewcontroller.m"
-            timestampString = "474816143.75295"
+            timestampString = "474988355.987951"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "217"
-            endingLineNumber = "217"
-            landmarkName = "-keyboardWillShow:"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
+            landmarkName = "-connectionChanged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
