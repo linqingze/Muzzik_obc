@@ -7,9 +7,11 @@
 //
 
 #import "IMConversationViewcontroller.h"
-#import "ownerTableViewCell.h"
+#import "IMTextCell.h"
+#import "IMshareCell.h"
 #import "HPGrowingTextView.h"
 #import "UIImageView+WebCache.h"
+#import "YYTextView.h"
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
@@ -71,7 +73,8 @@
     IMTableView.delegate = self;
     IMTableView.dataSource = self;
     IMTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    [IMTableView registerClass:[ownerTableViewCell class] forCellReuseIdentifier:@"ownerTableViewCell"];
+    [IMTableView registerClass:[IMTextCell class] forCellReuseIdentifier:@"IMTextCell"];
+    [IMTableView registerClass:[IMshareCell class] forCellReuseIdentifier:@"IMshareCell"];
     [self.view addSubview:IMTableView];
     tableOriginRect = IMTableView.frame;
     if (_con.messages.count>15) {
@@ -173,13 +176,12 @@
             height+=16;
         }
         if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
-            UILabel *_messageLabel = [[UILabel alloc] init];
-            _messageLabel.numberOfLines = 0;
+            YYTextView *_messageLabel = [[YYTextView alloc] init];
             [_messageLabel setFont:[UIFont fontWithName:Font_Next_Regular size:15]];
             [_messageLabel setFrame:CGRectMake(0, 0, SCREEN_WIDTH-126, 1000)];
             _messageLabel.text = message.messageContent;
             [_messageLabel sizeToFit];
-            message.cellHeight = [NSNumber numberWithDouble:height+ _messageLabel.frame.size.height+22];
+            message.cellHeight = [NSNumber numberWithDouble:height+ _messageLabel.frame.size.height+17];
         }else if ([message.messageType isEqualToString:Type_IM_ShareMuzzik]){
             message.cellHeight = [NSNumber numberWithDouble:height+78];
         }
@@ -190,16 +192,37 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-     ownerTableViewCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"ownerTableViewCell" forIndexPath:indexPath];
+    
     Message *message;
-    cell.imvc = self;
     if (messageCount >= _con.messages.count) {
         message = _con.messages[indexPath.row];
     }else{
         message = _con.messages[indexPath.row+_con.messages.count-messageCount];
     }
-    [cell configureCellWithMessage:message];
-    return cell;
+    if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
+        IMTextCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMTextCell" forIndexPath:indexPath];
+        cell.imvc = self;
+        if (messageCount >= _con.messages.count) {
+            message = _con.messages[indexPath.row];
+        }else{
+            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
+        }
+        [cell configureCellWithMessage:message];
+        return cell;
+        
+    }
+    else if ([message.messageType isEqualToString:Type_IM_ShareMuzzik]){
+        IMshareCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMshareCell" forIndexPath:indexPath];
+        cell.imvc = self;
+        if (messageCount >= _con.messages.count) {
+            message = _con.messages[indexPath.row];
+        }else{
+            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
+        }
+        [cell configureCellWithMessage:message];
+        return cell;
+    }
+    return nil;
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -364,6 +387,24 @@
 }
 -(BOOL)prefersStatusBarHidden{
     return hideStatus;
+}
+
+-(void)resetCellByMessage:(Message *)changedMessage{
+    if ([_con.messages containsObject:changedMessage]) {
+        NSInteger index = [_con.messages indexOfObject:changedMessage];
+        if (messageCount >= _con.messages.count) {
+            [IMTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }else{
+            [IMTableView reloadRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+
+    }
+    
+    for (Message *newmessage in _con.messages) {
+        if (newmessage  == changedMessage) {
+            NSLog(@"-------------yes---------------");
+        }
+    }
 }
 /*
 #pragma mark - Navigation

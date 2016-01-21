@@ -1576,6 +1576,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     userInfo *user = [userInfo shareClass];
     __block Message *coreMessage = [self getNewMessage];
     coreMessage.sendTime = [NSDate date];
+    coreMessage.sendStatue = Statue_Sending;
 //    coreMessage.messageType = messageClass;
 //    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
     
@@ -1618,9 +1619,36 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         coreMessage.sendStatue = Statue_OK;
         [self.managedObjectContext save:nil];
         
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                   [vc resetCellByMessage:coreMessage];
+                });
+                
+            }
+        }
+        
+        
     } error:^(RCErrorCode nErrorCode, long messageId) {
         coreMessage.messageId = [NSNumber numberWithLong:messageId];
         coreMessage.sendStatue = Statue_Failed;
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [vc resetCellByMessage:coreMessage];
+                });
+            }
+        }
         [self.managedObjectContext save:nil];
        
         
@@ -1761,7 +1789,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     Conversation *newCon ;
     coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
     coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
-    
+    coreMessage.sendStatue = Statue_OK;
     NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
     
     

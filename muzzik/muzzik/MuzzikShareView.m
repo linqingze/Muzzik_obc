@@ -140,7 +140,7 @@
         }
         
         UIButton *muzzikButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
-        [muzzikButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateNormal];
+        [muzzikButton setImage:[UIImage imageNamed:@"sharetomuzziker"] forState:UIControlStateNormal];
         [muzzikButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
         [muzzikButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
         [muzzikButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];

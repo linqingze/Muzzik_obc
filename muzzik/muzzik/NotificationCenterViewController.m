@@ -269,6 +269,32 @@
     [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
     [self.navigationController pushViewController:imVC animated:YES];
 }
+
+
+
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        userInfo *user = [userInfo shareClass];
+        if ([user.account.myConversation count] >indexPath.row) {
+            [user.account removeMyConversationObject:[user.account.myConversation objectAtIndex:indexPath.row]];
+            AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+            [app.managedObjectContext save:nil];
+        }
+        [tableView deleteRowsAtIndexPaths:[NSMutableArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }
+}
+-(NSString *)tableView:(UITableView *)tableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return @"删除";
+}
+-(UITableViewCellEditingStyle)tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return UITableViewCellEditingStyleDelete;
+}
+
+
 /**
  *  读取本地持久化数据，设置每个通知类型的个数;
  */

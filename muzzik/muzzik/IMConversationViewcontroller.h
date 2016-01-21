@@ -14,4 +14,5 @@
 -(void) inserCellWithMessage:(Message *) coreMessage;
 -(void) showUserImageWithimageKey:(NSString *)imageKey holdImage:(UIImage *) holdImage orginalRect:(CGRect) rect;
 -(void) connectionChanged:(RCConnectionStatus)status;
+-(void) resetCellByMessage:(Message *) changedMessage;
 @end

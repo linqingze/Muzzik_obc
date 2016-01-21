@@ -151,6 +151,8 @@
 		F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */; };
 		F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
+		F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BB41C50937100EFFD5B /* IMshareCell.m */; };
+		F2241BBB1C50F65700EFFD5B /* WebViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
 		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
@@ -178,7 +180,7 @@
 		F24568AA1C3CE09100DCE7A6 /* YYTextWeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = F245688F1C3CE09100DCE7A6 /* YYTextWeakProxy.m */; };
 		F24568AB1C3CE09100DCE7A6 /* YYLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568911C3CE09100DCE7A6 /* YYLabel.m */; };
 		F24568AC1C3CE09100DCE7A6 /* YYTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568941C3CE09100DCE7A6 /* YYTextView.m */; };
-		F24568B11C3D133C00DCE7A6 /* ownerTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */; };
+		F24568B11C3D133C00DCE7A6 /* IMtextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */; };
 		F24568DF1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F24568DD1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodeld */; };
 		F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */; };
 		F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = F24B8F571BCD1CB900FC2597 /* RDVTabBarController.m */; };
@@ -610,6 +612,10 @@
 		F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingNewCell.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
+		F2241BB31C50937100EFFD5B /* IMshareCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMshareCell.h; sourceTree = "<group>"; };
+		F2241BB41C50937100EFFD5B /* IMshareCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMshareCell.m; sourceTree = "<group>"; };
+		F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewcontroller.h; sourceTree = "<group>"; };
+		F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewcontroller.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
@@ -665,8 +671,8 @@
 		F24568921C3CE09100DCE7A6 /* YYText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYText.h; sourceTree = "<group>"; };
 		F24568931C3CE09100DCE7A6 /* YYTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextView.h; sourceTree = "<group>"; };
 		F24568941C3CE09100DCE7A6 /* YYTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextView.m; sourceTree = "<group>"; };
-		F24568AE1C3D133C00DCE7A6 /* ownerTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ownerTableViewCell.h; sourceTree = "<group>"; };
-		F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ownerTableViewCell.m; sourceTree = "<group>"; };
+		F24568AE1C3D133C00DCE7A6 /* IMTextCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMTextCell.h; sourceTree = "<group>"; };
+		F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMtextCell.m; sourceTree = "<group>"; };
 		F24568DE1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Muzzik_coreModel.xcdatamodel; sourceTree = "<group>"; };
 		F24B8F541BCD1CB900FC2597 /* RDVTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RDVTabBar.h; sourceTree = "<group>"; };
 		F24B8F551BCD1CB900FC2597 /* RDVTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RDVTabBar.m; sourceTree = "<group>"; };
@@ -1680,8 +1686,12 @@
 				F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */,
 				F21A8F221C34275200B3F70C /* IMConversationViewcontroller.h */,
 				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
-				F24568AE1C3D133C00DCE7A6 /* ownerTableViewCell.h */,
-				F24568AF1C3D133C00DCE7A6 /* ownerTableViewCell.m */,
+				F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */,
+				F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */,
+				F24568AE1C3D133C00DCE7A6 /* IMTextCell.h */,
+				F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */,
+				F2241BB31C50937100EFFD5B /* IMshareCell.h */,
+				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
 				F211310D1C47CBD80041309A /* IMShareMessage.h */,
 				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
 			);
@@ -2163,7 +2173,7 @@
 				F20FDD691AF74A05008A71C0 /* SearchForSong.m in Sources */,
 				F26131281ADE23DB0042F1D4 /* AFViewShaker.m in Sources */,
 				F21BFD481BDA97F900FE857E /* STKLocalFileDataSource.m in Sources */,
-				F24568B11C3D133C00DCE7A6 /* ownerTableViewCell.m in Sources */,
+				F24568B11C3D133C00DCE7A6 /* IMtextCell.m in Sources */,
 				F203733E1C40C475004E30D5 /* UIRefreshControl+AFNetworking.m in Sources */,
 				F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */,
 				F24568961C3CE09100DCE7A6 /* YYTextDebugOption.m in Sources */,
@@ -2175,6 +2185,7 @@
 				E11246441AAAB1F20014D461 /* ASIDataDecompressor.m in Sources */,
 				F2F7EE3E1AEE23E400265596 /* PinyinFormatter.m in Sources */,
 				E112466E1AAAB20B0014D461 /* SDImageCache.m in Sources */,
+				F2241BBB1C50F65700EFFD5B /* WebViewcontroller.m in Sources */,
 				F2EB60F21AF9FA1F000B7579 /* userDetailInfo.m in Sources */,
 				F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */,
 				F2EF736B1B4BBF6900E3A33A /* DialogVC.m in Sources */,
@@ -2187,6 +2198,7 @@
 				F216ACC91BD62EF40074ADF4 /* MuzzikPlayer.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
 				F203733F1C40C475004E30D5 /* UIWebView+AFNetworking.m in Sources */,
+				F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */,
 				F2F7EE461AEE24B700265596 /* TransfromTime.m in Sources */,
 				F2ED22DB1B136029001F7787 /* UIButton_UserMuzzik.m in Sources */,
 				F205539C1B340C1A0093AE8A /* SelectionLabel.m in Sources */,

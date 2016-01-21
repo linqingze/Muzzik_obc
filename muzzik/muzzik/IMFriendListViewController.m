@@ -36,7 +36,7 @@
     localArray = [NSMutableArray array];
     allUsers = [NSMutableArray array];
     RefreshDic = [NSMutableDictionary dictionary];
-    [self initNagationBar:@" @ 好友" leftBtn:Constant_backImage rightBtn:4];
+    [self initNagationBar:@"好 友" leftBtn:Constant_backImage rightBtn:4];
     friendArray = [NSMutableArray array];
     MytableView = [[BATableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     MytableView.delegate = self;

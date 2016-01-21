@@ -249,4 +249,5 @@
 
 #define Statue_OK           @"ok"
 #define Statue_Failed       @"failed"
+#define Statue_Sending      @"sending"
 #endif
