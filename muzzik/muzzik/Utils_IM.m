@@ -21,26 +21,51 @@
     NSString *timeString = [formatter stringFromDate:date];
     
     BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+    
     if (interval<24*60*60 && !result) {
         return timeString;
     }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
-        return @"昨天";
+        return [NSString stringWithFormat:@"昨天 %@",timeString];
     }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-        return @"2天前";
+        return [NSString stringWithFormat:@"2天前 %@",timeString];
     }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-        return @"3天前";
+        return [NSString stringWithFormat:@"3天前 %@",timeString];
     }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-        return @"4天前";
+        return [NSString stringWithFormat:@"4天前 %@",timeString];
     }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-        return @"5天前";
+        return [NSString stringWithFormat:@"5天前 %@",timeString];
     }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-        return @"6天前";
+        return [NSString stringWithFormat:@"6天前 %@",timeString];
     }else {
-        [formatter setDateFormat:@"yyyy.MM.dd"];
+        [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
         nowString = [formatter stringFromDate:date];
         
         return nowString;
     }
     
+}
+
++(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old{
+    NSTimeInterval newInterval = [new timeIntervalSinceReferenceDate];
+    NSTimeInterval oldInterval = [old timeIntervalSinceReferenceDate];
+    if (newInterval - oldInterval > 300) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
++(NSString*)DataTOjsonString:(id)object
+{
+    NSString *jsonString = nil;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:object
+                                                       options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
+                                                         error:&error];
+    if (! jsonData) {
+        NSLog(@"Got an error: %@", error);
+    } else {
+        jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    return jsonString;
 }
 @end

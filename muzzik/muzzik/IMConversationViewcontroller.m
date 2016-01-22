@@ -8,6 +8,7 @@
 
 #import "IMConversationViewcontroller.h"
 #import "IMTextCell.h"
+#import "IMTextOwnerCell.h"
 #import "IMshareCell.h"
 #import "HPGrowingTextView.h"
 #import "UIImageView+WebCache.h"
@@ -26,6 +27,10 @@
     UIImageView *cellUserheadImage;
     BOOL hideStatus;
     UILabel *statueLabel;
+    UIView *headerView;
+    UIActivityIndicatorView *activityView;
+    BOOL loadingMore;
+    BOOL keyBoadShow;
 }
 
 @end
@@ -38,12 +43,13 @@
     [userHeadImage setBackgroundColor:[UIColor blackColor]];
     statueLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
     statueLabel.textAlignment = NSTextAlignmentCenter;
-
+    statueLabel.font = [UIFont  systemFontOfSize:15];
+    [statueLabel setTextColor:[UIColor whiteColor]];
     cellUserheadImage = [[UIImageView alloc] init];
     cellUserheadImage.contentMode = UIViewContentModeScaleAspectFit;
     [userHeadImage addSubview:cellUserheadImage];
     [userHeadImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedWithImage)]];
-    [self initNagationBar:self.title leftBtn:Constant_backImage rightBtn:0];
+    [self initNagationBar:self.title leftBtn:Constant_backImage rightBtn:100];
     [self.view setBackgroundColor:[UIColor whiteColor]];
     
     tapOnview = [[UITapGestureRecognizer alloc] initWithTarget:self.view action:@selector(endEditing:)];
@@ -58,10 +64,14 @@
         NSLog(@"contain");
     }
     [super viewWillAppear:animated];
-    if (messageCount > 0 ) {
+    if (messageCount > 0 && !keyBoadShow) {
         messageCount = messageCount>_con.messages.count ? _con.messages.count :messageCount;
         [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
+    if ([[RCIMClient sharedRCIMClient] getConnectionStatus] == ConnectionStatus_NETWORK_UNAVAILABLE) {
+         [self connectionChanged:[[RCIMClient sharedRCIMClient] getConnectionStatus]];
+    }
+   
    
 }
 -(void)viewWillDisappear:(BOOL)animated{
@@ -75,14 +85,15 @@
     IMTableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     [IMTableView registerClass:[IMTextCell class] forCellReuseIdentifier:@"IMTextCell"];
     [IMTableView registerClass:[IMshareCell class] forCellReuseIdentifier:@"IMshareCell"];
+    [IMTableView registerClass:[IMTextOwnerCell class] forCellReuseIdentifier:@"IMTextOwnerCell"];
     [self.view addSubview:IMTableView];
     tableOriginRect = IMTableView.frame;
     if (_con.messages.count>15) {
-        [IMTableView addHeaderWithTarget:self action:@selector(refreshHeader)];
-        [IMTableView setHeaderRefreshingText:@"稍等..."];
-        [IMTableView setHeaderPullToRefreshText:@"下拉查看历史"];
-        [IMTableView setHeaderReleaseToRefreshText:@"松开查看"];
-        [IMTableView hideTimeLabel];
+        headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
+        [headerView setBackgroundColor:[UIColor whiteColor]];
+        activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [activityView setFrame:CGRectMake(SCREEN_WIDTH/2-15, 0, 30, 30)];
+        [headerView addSubview:activityView];
         messageCount = 15;
     }else{
         messageCount = _con.messages.count;
@@ -118,33 +129,52 @@
 }
 -(void)refreshHeader{
     messageCount +=15;
-
+    __block NSUInteger moreNum = 15;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        loadingMore = NO;
+       
+        [activityView stopAnimating];
         if (messageCount > _con.messages.count) {
-            [IMTableView setHeaderHidden:YES];
-            [IMTableView headerEndRefreshing];
-            [IMTableView removeHeader];
+            
+            moreNum = 15 - messageCount + _con.messages.count;
             messageCount = _con.messages.count;
+            [IMTableView reloadData];
+            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:moreNum inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         }else{
-           [IMTableView headerEndRefreshing];
+           
+            [IMTableView reloadData];
+            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:moreNum inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         }
-        [IMTableView reloadData];
-        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-15 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
+        
     });
 }
 
 -(void)connectionChanged:(RCConnectionStatus)status{
-    [statueLabel setAlpha:1];
+    
     if (status == ConnectionStatus_Connected) {
-        statueLabel.text = @"成功连接至服务器";
-        [statueLabel setBackgroundColor:[UIColor greenColor]];
+        [statueLabel setAlpha:1];
+        statueLabel.text = @"连接服务器成功";
+        [statueLabel setBackgroundColor:Color_Additional_2];
+        
+        [UIView animateWithDuration:3 animations:^{
+            [statueLabel setAlpha:0];
+        } completion:^(BOOL finished) {
+            [statueLabel removeFromSuperview];
+        }];
+        
+        
+    }else if(status == ConnectionStatus_Connecting ){
+        [statueLabel setAlpha:1];
+        statueLabel.text = @"正在连接...";
+        [statueLabel setBackgroundColor:Color_Action_Button_2];
+        
+    }else if(status == ConnectionStatus_Unconnected || status == ConnectionStatus_NETWORK_UNAVAILABLE){
+        [statueLabel setAlpha:1];
+        statueLabel.text = @"连接不上服务器";
+        [statueLabel setBackgroundColor:Color_Active_Button_1];
     }
     [self.view addSubview:statueLabel];
-    [UIView animateWithDuration:2 animations:^{
-        [statueLabel setAlpha:0];
-    } completion:^(BOOL finished) {
-        [statueLabel removeFromSuperview];
-    }];
+    
 }
 
 #pragma mark tableView_DelegateMethod
@@ -177,11 +207,14 @@
         }
         if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
             YYTextView *_messageLabel = [[YYTextView alloc] init];
-            [_messageLabel setFont:[UIFont fontWithName:Font_Next_Regular size:15]];
-            [_messageLabel setFrame:CGRectMake(0, 0, SCREEN_WIDTH-126, 1000)];
-            _messageLabel.text = message.messageContent;
-            [_messageLabel sizeToFit];
-            message.cellHeight = [NSNumber numberWithDouble:height+ _messageLabel.frame.size.height+17];
+            
+            NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:message.messageContent];
+            text.yy_font = [UIFont fontWithName:Font_Next_Regular size:15];
+            text.yy_color = [UIColor blackColor];
+            _messageLabel.attributedText = text;
+            CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-151, 2000)];
+
+            message.cellHeight = [NSNumber numberWithDouble:height+ labelsize.height+8];
         }else if ([message.messageType isEqualToString:Type_IM_ShareMuzzik]){
             message.cellHeight = [NSNumber numberWithDouble:height+78];
         }
@@ -199,7 +232,18 @@
     }else{
         message = _con.messages[indexPath.row+_con.messages.count-messageCount];
     }
-    if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
+    if ([message.messageType isEqualToString:Type_IM_TextMessage] &&  [message.isOwner boolValue]) {
+        IMTextOwnerCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMTextOwnerCell" forIndexPath:indexPath];
+        cell.imvc = self;
+        if (messageCount >= _con.messages.count) {
+            message = _con.messages[indexPath.row];
+        }else{
+            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
+        }
+        [cell configureCellWithMessage:message];
+        return cell;
+        
+    }else if ([message.messageType isEqualToString:Type_IM_TextMessage] &&  ![message.isOwner boolValue]) {
         IMTextCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMTextCell" forIndexPath:indexPath];
         cell.imvc = self;
         if (messageCount >= _con.messages.count) {
@@ -248,6 +292,7 @@
            RCTextMessage *rctext = [[RCTextMessage alloc] init];
         [rctext setSenderUserInfo:[RCIMClient sharedRCIMClient].currentUserInfo];
         rctext.content = growingTextView.text;
+        
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
         NSLog(@"%@",_con.targetUser.name);
         [app sendIMMessage:rctext targetCon:_con pushContent:[NSString stringWithFormat:@"%@: %@",[userInfo shareClass].name,growingTextView.text]];
@@ -257,7 +302,7 @@
 }
 
 -(void)growingTextViewDidChange:(HPGrowingTextView *)growingTextView{
-    
+    NSLog(@"%f  %f  %f",IMTableView.contentOffset.y, IMTableView.frame.origin.y,IMTableView.frame.size.height);
 }
 
 
@@ -272,18 +317,13 @@
     NSValue* aValue = [userInfo objectForKey:UIKeyboardFrameEndUserInfoKey];
     
     CGRect keyboardRect = [aValue CGRectValue];
-    if (messageCount > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height) {
-        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-    }
+    
     keyboardRect = [self.view convertRect:keyboardRect fromView:nil];
     
     //
     CGRect newTableFrame = tableOriginRect;
     newTableFrame.size.height += -keyboardRect.size.height;
-    if (messageCount > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height) {
-         IMTableView.contentOffset = CGPointMake(0, IMTableView.contentOffset.y+keyboardRect.size.height);
-    }
-   
+    
     
     
     CGRect newInputFieldFrame = commentViewRect;
@@ -316,10 +356,14 @@
     IMTableView.frame = newTableFrame;
     commentView.frame = newInputFieldFrame;
     [UIView commitAnimations];
+    if (messageCount > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height-124) {
+        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+    }
 }
 
 - (void)keyboardWillHide:(NSNotification *)notification
 {
+    keyBoadShow = NO;
     [self.view removeGestureRecognizer:tapOnview];
     NSDictionary* userInfo = [notification userInfo];
     
@@ -341,8 +385,7 @@
     IMTableView.frame = tableOriginRect;
     [UIView commitAnimations];
 }
-
--(void)inserCellWithMessage:(Message *)coreMessage{
+-(void)receiveInserCellWithMessage:(Message *)coreMessage{
     NSLog(@"%@",_con);
     messageCount++;
     _con.unReadMessage = [NSNumber numberWithInt:0];
@@ -351,12 +394,44 @@
     if (![[userInfo shareClass].account.myConversation containsObject:_con]) {
         [[userInfo shareClass].account insertObject:_con inMyConversationAtIndex:0];
     }else{
+        NSLog(@"contain");
+    }
+}
+-(void)inserCellWithMessage:(Message *)coreMessage{
+    NSLog(@"%@",_con);
+    messageCount++;
+    _con.unReadMessage = [NSNumber numberWithInt:0];
+    if (![[userInfo shareClass].account.myConversation containsObject:_con]) {
+        [[userInfo shareClass].account insertObject:_con inMyConversationAtIndex:0];
+        
+        
+    }else{
          NSLog(@"contain");
     }
-    
-//    [IMTableView beginUpdates];
-//    [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:messageCount-1 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-//    [IMTableView endUpdates];
+     NSInteger index = [_con.messages indexOfObject:coreMessage];
+    NSLog(@"%f",IMTableView.contentSize.height);
+    if (messageCount >= _con.messages.count) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+    });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+            NSLog(@"%f",IMTableView.contentSize.height);
+        });
+        
+    }else{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        });
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+            NSLog(@"%f",IMTableView.contentSize.height);
+        });
+      
+    }
+     NSLog(@"%f",IMTableView.contentSize.height);
 }
 
 -(void)playnextMuzzikUpdate{
@@ -404,6 +479,19 @@
         if (newmessage  == changedMessage) {
             NSLog(@"-------------yes---------------");
         }
+    }
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    if (scrollView.contentOffset.y < -10) {
+        if (_con.messages.count>messageCount && !loadingMore) {
+            loadingMore = YES;
+            [IMTableView setTableHeaderView:headerView];
+            [activityView startAnimating];
+            [self refreshHeader];
+        }
+        
+        NSLog(@"刷新啦");
     }
 }
 /*

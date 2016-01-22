@@ -20,7 +20,6 @@
 //#define BaseURL                 @"http://117.121.26.174/"
 #define BaseURL                 @"http://117.121.10.184:4000/"
 #define BaseURL_GUI             @"http://117.121.26.174:8000/"
-//#define BaseURL                 @"http://192.168.1.110:3000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"
 
@@ -83,7 +82,7 @@
 #define Color_Orange                [UIColor colorWithHexString:@"f26a3d"]
 #define Color_text_gray             [UIColor colorWithHexString:@"666c80"]
 #define Color_search_background     [UIColor colorWithHexString:@"323444"]
-#define Color_Active_Button_1       [UIColor colorWithHexString:@"f26a3d"]
+#define Color_Active_Button_1       [UIColor colorWithHexString:@"f66930"]
 #define Color_Active_Button_2       [UIColor colorWithHexString:@"ff794d"]
 #define Color_Theme_1               [UIColor colorWithHexString:@"201f2a"]
 #define Color_Theme_2               [UIColor colorWithHexString:@"323444"]

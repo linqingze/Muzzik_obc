@@ -19,13 +19,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/IMshareCell.m"
-            timestampString = "475060037.283766"
+            filePath = "muzzik/IMTextOwnerCell.m"
+            timestampString = "475147721.944235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "-configureCellWithMessage:"
+            startingLineNumber = "113"
+            endingLineNumber = "113"
+            landmarkName = "-rensendMessage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -35,13 +35,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "475056247.883283"
+            filePath = "muzzik/IMTextOwnerCell.m"
+            timestampString = "475147727.996285"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1639"
-            endingLineNumber = "1639"
-            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "-rensendMessage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -51,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/AppDelegate.m"
-            timestampString = "475054593.439509"
+            filePath = "muzzik/IMTextOwnerCell.m"
+            timestampString = "475147732.473824"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1620"
-            endingLineNumber = "1620"
-            landmarkName = "-sendIMMessage:targetCon:pushContent:"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "-rensendMessage"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -68,12 +68,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "muzzik/IMConversationViewcontroller.m"
-            timestampString = "475055646.297472"
+            timestampString = "475167800.653269"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "395"
-            endingLineNumber = "395"
-            landmarkName = "-resetCellByMessage:"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
+            landmarkName = "-receiveInserCellWithMessage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -83,13 +83,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/IMtextCell.m"
-            timestampString = "475069641.329834"
+            filePath = "muzzik/IMConversationViewcontroller.m"
+            timestampString = "475167800.653269"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "180"
-            endingLineNumber = "180"
-            landmarkName = "-textView:didTapHighlight:inRange:rect:"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "-connectionChanged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -99,45 +99,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "muzzik/WebViewcontroller.m"
-            timestampString = "475069080.15785"
+            filePath = "muzzik/AppDelegate.m"
+            timestampString = "475169078.548556"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
-            landmarkName = "-viewDidLoad"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/DetaiMuzzikVC.m"
-            timestampString = "475075104.320807"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2002"
-            endingLineNumber = "2002"
-            landmarkName = "-loadMuzzikView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "muzzik/DetaiMuzzikVC.m"
-            timestampString = "475075104.320807"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1827"
-            endingLineNumber = "1827"
-            landmarkName = "-loadMuzzikView"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
+            landmarkName = "-application:didReceiveRemoteNotification:fetchCompletionHandler:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

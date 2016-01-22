@@ -153,6 +153,7 @@
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
 		F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BB41C50937100EFFD5B /* IMshareCell.m */; };
 		F2241BBB1C50F65700EFFD5B /* WebViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */; };
+		F2241BBE1C51F09600EFFD5B /* IMTextOwnerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
 		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
@@ -616,6 +617,8 @@
 		F2241BB41C50937100EFFD5B /* IMshareCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMshareCell.m; sourceTree = "<group>"; };
 		F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewcontroller.h; sourceTree = "<group>"; };
 		F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewcontroller.m; sourceTree = "<group>"; };
+		F2241BBC1C51F09600EFFD5B /* IMTextOwnerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMTextOwnerCell.h; sourceTree = "<group>"; };
+		F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMTextOwnerCell.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
@@ -1690,6 +1693,8 @@
 				F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */,
 				F24568AE1C3D133C00DCE7A6 /* IMTextCell.h */,
 				F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */,
+				F2241BBC1C51F09600EFFD5B /* IMTextOwnerCell.h */,
+				F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */,
 				F2241BB31C50937100EFFD5B /* IMshareCell.h */,
 				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
 				F211310D1C47CBD80041309A /* IMShareMessage.h */,
@@ -2248,6 +2253,7 @@
 				F20FDD6F1AF74B24008A71C0 /* SearchForTopic.m in Sources */,
 				F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
+				F2241BBE1C51F09600EFFD5B /* IMTextOwnerCell.m in Sources */,
 				F24568971C3CE09100DCE7A6 /* YYTextEffectWindow.m in Sources */,
 				F2E558AB1B164D420080F9C9 /* MJRefreshHeaderView.m in Sources */,
 				F20553A21B36B7B70093AE8A /* ZJSwitch.m in Sources */,

@@ -61,7 +61,7 @@
 @property (nonatomic,assign) BOOL hasTeachToFollow;
 @property (nonatomic,retain) NSMutableDictionary *followDic;
 @property (nonatomic,retain) Account *account;
-
+@property (nonatomic,copy) NSString *rongCloundToken;
 
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;

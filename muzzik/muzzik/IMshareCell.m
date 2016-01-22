@@ -28,8 +28,7 @@
 -(void)setup{
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
-    _headImage.layer.cornerRadius = 20;
-    _headImage.layer.masksToBounds = YES;
+    [_headImage setImage:[UIImage imageNamed:@"frame"] forState:UIControlStateNormal];
     [_headImage addTarget:self action:@selector(seeUserImage) forControlEvents:UIControlEventTouchUpInside];
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
@@ -124,7 +123,7 @@
         [_resendButton setHidden:YES];
         [_activityView stopAnimating];
         [_activityView setHidden:YES];
-    }else if ([message.sendStatue isEqualToString:Statue_Sending]){
+    }else if ([message.sendStatue isEqualToString:Statue_Sending]&& ![Utils_IM checkLimitedTime:[NSDate date] oldDate:message.sendTime]){
         [_resendButton setHidden:YES];
         [_activityView setHidden:NO];
         if ([message.isOwner boolValue]) {

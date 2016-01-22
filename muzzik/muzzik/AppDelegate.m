@@ -24,7 +24,7 @@
 #import "DetaiMuzzikVC.h"
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
-
+#import "Utils_IM.h"
 #import "UMessage_Sdk_1.2.2/UMessage.h"
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
@@ -33,6 +33,7 @@
     UIViewController *itemVC;
     BOOL needsReplay;
     dispatch_queue_t _serialQueue;
+    
 }
 
 @end
@@ -148,6 +149,11 @@
 
         [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     }
+    RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
+    [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
+    [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
+    
     [[RCIMClient sharedRCIMClient] recordLaunchOptionsEvent:launchOptions];
     
     /**
@@ -356,7 +362,7 @@
     if([Globle shareGloble].isPlaying){
         [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
     }
-    
+    [[RCIMClient sharedRCIMClient] disconnect];
 }
 
 - (BOOL)canBecomeFirstResponder
@@ -451,103 +457,109 @@
 
 
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfoDic fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
-
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     userInfo *user = [userInfo shareClass];
-    if (user.launched) {
-        Globle *glob = [Globle shareGloble];
-        if (!glob.isApplicationEnterBackground && isLaunched) {
-            
-            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            
-            //
-            //        if ([self checkMute]) {
-            //            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
-            //        }else{
-            //            AudioServicesPlaySystemSound(1301);
-            //        }
-            
-            
-            
-        }
-        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-        if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] length] > 0 && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
-            DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
-            NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
-            detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
-            [nac pushViewController:detailvc animated:NO];
-        }else if (nac != _notifyVC) {
-            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-            if ([nac.viewControllers count]>1) {
-                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                    RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-                    UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-                    UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-                    [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                    
-                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                    NSLog(@"%@       didReceiveRemoteNotification",record);
-                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                    NSArray *array = [Message componentsSeparatedByString:@" "];
-                    if ([array count]>1 ) {
-                        NSString *alter = [array objectAtIndex:1];
-                        if ([alter isEqualToString:@"评论了你"]) {
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }else if([alter isEqualToString:@"提到了你"]){
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }
-                    }
-                }
+    NSArray *a = [userInfoDic allKeys];
+    NSLog(@"%@",a);
+    if ([[userInfoDic allKeys] containsObject:@"rc"]) {
+        self.tabviewController.selectedViewController = self.notifyVC;
+        self.tabviewController.selectedIndex = 3;
+        [self.notifyVC popToRootViewControllerAnimated:YES];
+    }else{
+        if (user.launched) {
+            Globle *glob = [Globle shareGloble];
+            if (!glob.isApplicationEnterBackground && isLaunched) {
+                
+                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                
+                //
+                //        if ([self checkMute]) {
+                //            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+                //        }else{
+                //            AudioServicesPlaySystemSound(1301);
+                //        }
+                
+                
+                
             }
-        }else{
-            if ([nac.viewControllers count] == 1) {
-                NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
-                [notifyVC checkNewNotification];
-                [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-            }else{
-                if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                    NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                    
-                    NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                    NSLog(@"%@       didReceiveRemoteNotification",record);
-                    NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                    NSArray *array = [Message componentsSeparatedByString:@" "];
-                    if ([array count]>1 ) {
-                        NSString *alter = [array objectAtIndex:1];
-                        if ([alter isEqualToString:@"评论了你"]) {
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }else if([alter isEqualToString:@"提到了你"]){
-                            [MuzzikItem showNewNotifyByText:Message];
-                        }
+            UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+            if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] length] > 0 && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
+                DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
+                NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
+                detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
+                [nac pushViewController:detailvc animated:NO];
+            }else if (nac != _notifyVC) {
+                RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+                UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+                [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+                if ([nac.viewControllers count]>1) {
+                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                        RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                        [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
                         
-                        //
-                        //            if ([alter isEqualToString:@"评论了你"]) {
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"提到了你"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"喜欢了你的"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"转发了你的"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }else {
-                        //                //处理关注，微博好友等
-                        //                [MuzzikItem showNewNotifyByText:Message];
-                        //            }
+                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                        NSLog(@"%@       didReceiveRemoteNotification",record);
+                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                        NSArray *array = [Message componentsSeparatedByString:@" "];
+                        if ([array count]>1 ) {
+                            NSString *alter = [array objectAtIndex:1];
+                            if ([alter isEqualToString:@"评论了你"]) {
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }else if([alter isEqualToString:@"提到了你"]){
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }
+                        }
+                    }
+                }
+            }else{
+                if ([nac.viewControllers count] == 1) {
+                    NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
+                    [notifyVC checkNewNotification];
+                    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                }else{
+                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                        
+                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                        NSLog(@"%@       didReceiveRemoteNotification",record);
+                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                        NSArray *array = [Message componentsSeparatedByString:@" "];
+                        if ([array count]>1 ) {
+                            NSString *alter = [array objectAtIndex:1];
+                            if ([alter isEqualToString:@"评论了你"]) {
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }else if([alter isEqualToString:@"提到了你"]){
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }
+                            
+                            //
+                            //            if ([alter isEqualToString:@"评论了你"]) {
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"提到了你"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"喜欢了你的"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"转发了你的"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }else {
+                            //                //处理关注，微博好友等
+                            //                [MuzzikItem showNewNotifyByText:Message];
+                            //            }
+                        }
                     }
                 }
             }
+            // [4-EXT]:处理APN
+            
+            
         }
-        // [4-EXT]:处理APN
-        
-
+        isLaunched = YES;
     }
-           isLaunched = YES;
+    
     completionHandler(UIBackgroundFetchResultNewData);
 
 }
@@ -628,6 +640,11 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    userInfo *user = [userInfo shareClass];
+    if ([user.rongCloundToken length ]>0) {
+        [[RCIMClient sharedRCIMClient] connectWithToken:user.rongCloundToken success:NULL error:NULL tokenIncorrect:NULL];
+    }
+    
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
     ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_New_notify_Now]]];
@@ -1370,17 +1387,17 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 
     userInfo *user = [userInfo shareClass];
     if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
-        user.account = [self getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
+        if (!user.account) {
+            user.account = [self getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
+        }
         if (user.account) {
             AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
             [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if( responseObject){
+                    user.rongCloundToken = [responseObject objectForKey:@"token"];
                     [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
                         NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
-                        RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
-                        [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
-                        [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
-                        [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
+                        
                     } error:^(RCConnectErrorCode status) {
                         NSLog(@"登陆的错误码为:%d", status);
                     } tokenIncorrect:^{
@@ -1392,13 +1409,21 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
                     }];
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-                NSLog(@"%@",error);
+                NSLog(@"%@",[error.userInfo objectForKey:@"NSLocalizedDescription"]);
+                if ([[error.userInfo objectForKey:@"NSLocalizedDescription"]isEqualToString:@"Request failed: unauthorized (401)"]) {
+                    user.token = @"";
+                    user.uid = @"";
+                    user.avatar = @"";
+                    user.name = @"";
+                    user.gender = @"";
+                    user.isSwitchUser = YES;
+                    user.account = nil;
+                    [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
+                }
+//                if (error.userInfo) {
+//                    <#statements#>
+//                }
             }];
-        }else{
-            if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
-                [self registerRongClound];
-            }
-            
         }
     }
     
@@ -1406,6 +1431,9 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     
 }
 - (void)onConnectionStatusChanged:(RCConnectionStatus)status{
+    if (status == ConnectionStatus_Unconnected) {
+        [self registerRongClound];
+    }
     UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
     if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
         //handle message
@@ -1575,6 +1603,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     
     userInfo *user = [userInfo shareClass];
     __block Message *coreMessage = [self getNewMessage];
+
     coreMessage.sendTime = [NSDate date];
     coreMessage.sendStatue = Statue_Sending;
 //    coreMessage.messageType = messageClass;
@@ -1583,11 +1612,14 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
     if ([contentMessage isKindOfClass:[RCTextMessage class]] ) {
         RCTextMessage *textMessage = (RCTextMessage *)contentMessage;
+        textMessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
         coreMessage.messageType = Type_IM_TextMessage;
         coreMessage.messageContent = textMessage.content;
         coreMessage.abstractString = textMessage.content;
+        
     }else if ([contentMessage isKindOfClass:[IMShareMessage class]]){
         IMShareMessage *shareMessage = (IMShareMessage *)contentMessage;
+        shareMessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
         coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
         coreMessage.messageType = Type_IM_ShareMuzzik;;
         coreMessage.abstractString = @"分享了一条Muzzik";
@@ -1598,6 +1630,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     targetCon.abstractString = coreMessage.abstractString;
 //    NSLog(@"%@",targetCon.messages.count);
     [targetCon addMessagesObject:coreMessage];
+     [self.managedObjectContext save:nil];
     if (!targetCon.sendTime) {
         [user.account insertObject:targetCon inMyConversationAtIndex:0];
         targetCon.sendTime =[NSDate date];
@@ -1626,8 +1659,10 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
             
             IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
             if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                   [vc resetCellByMessage:coreMessage];
+                dispatch_async(_serialQueue, ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [vc resetCellByMessage:coreMessage];
+                    });
                 });
                 
             }
@@ -1644,9 +1679,12 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
             
             IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
             if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [vc resetCellByMessage:coreMessage];
+                dispatch_async(_serialQueue, ^{
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [vc resetCellByMessage:coreMessage];
+                    });
                 });
+                
             }
         }
         [self.managedObjectContext save:nil];
@@ -1712,6 +1750,8 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     UserCore *user = [[UserCore alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
     return user;
 }
+
+
 -(UserCore *)getNewUserWithuserinfo:(RCUserInfo *)userinfo{
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
@@ -1741,7 +1781,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
                 newUser.avatar = userinfo.portraitUri;
                 [self.managedObjectContext save:nil];
             }
-            
             return newUser;
         }
     }
@@ -1784,87 +1823,101 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 
 
 -(void) configureMessagetype:(NSString *)messageClass rawmessage:(RCMessage *)receiveMessage{
-    userInfo *user = [userInfo shareClass];
-    Message *coreMessage = [self getNewMessage];
-    Conversation *newCon ;
-    coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
-    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
-    coreMessage.sendStatue = Statue_OK;
-    NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
-    
-    
-    if ([messageClass isEqualToString:@"RCTextMessage"] ) {
-        RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
-        NSDictionary *infoDic = [self decodeUserinfoRawdic:textMessage.extra];
-        if (infoDic) {
-            RCUserInfo *info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-            textMessage.senderUserInfo = info;
-            coreMessage.messageUser = [self getNewUserWithuserinfo:info];
+    dispatch_async(_serialQueue, ^{
+        userInfo *user = [userInfo shareClass];
+        Message *coreMessage = [self getNewMessage];
+        Conversation *newCon ;
+        coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
+        coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
+        coreMessage.sendStatue = Statue_OK;
+        NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
+        
+        
+        if ([messageClass isEqualToString:@"RCTextMessage"] ) {
+            RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
+            NSDictionary *infoDic = [self decodeUserinfoRawdic:textMessage.extra];
+            if (infoDic) {
+                RCUserInfo *info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
+                textMessage.senderUserInfo = info;
+                coreMessage.messageUser = [self getNewUserWithuserinfo:info];
+            }
+            
+            NSLog(@"%@ %@ %@",textMessage.senderUserInfo.name,textMessage.senderUserInfo.portraitUri,textMessage.senderUserInfo.userId);
+            coreMessage.messageType = Type_IM_TextMessage;
+            coreMessage.messageContent = textMessage.content;
+            coreMessage.abstractString = textMessage.content;
+            newCon = [self getConversationByUserInfo:textMessage.senderUserInfo];
+        }else if ([messageClass isEqualToString:@"IMShareMessage"]){
+            IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
+            
+            NSDictionary *infoDic = [self decodeUserinfoRawdic:shareMessage.extra];
+            if (infoDic) {
+                RCUserInfo *info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
+                shareMessage.senderUserInfo = info;
+                coreMessage.messageUser = [self getNewUserWithuserinfo:info];
+            }
+            
+            
+            coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
+            coreMessage.messageType = Type_IM_ShareMuzzik;;
+            coreMessage.abstractString = @"分享了一条Muzzik";
+            newCon = [self getConversationByUserInfo:shareMessage.senderUserInfo];
+            
         }
-        
-        NSLog(@"%@ %@ %@",textMessage.senderUserInfo.name,textMessage.senderUserInfo.portraitUri,textMessage.senderUserInfo.userId);
-        coreMessage.messageType = Type_IM_TextMessage;
-        coreMessage.messageContent = textMessage.content;
-        coreMessage.abstractString = textMessage.content;
-        newCon = [self getConversationByUserInfo:textMessage.senderUserInfo];
-    }else if ([messageClass isEqualToString:@"IMShareMessage"]){
-        IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
-        
-        NSDictionary *infoDic = [self decodeUserinfoRawdic:shareMessage.extra];
-        if (infoDic) {
-            RCUserInfo *info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-            shareMessage.senderUserInfo = info;
-            coreMessage.messageUser = [self getNewUserWithuserinfo:info];
+        if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
+            coreMessage.isOwner = [NSNumber numberWithBool:YES];
+        }else{
+            coreMessage.isOwner = [NSNumber numberWithBool:NO];
         }
-        
-        
-        coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
-        coreMessage.messageType = Type_IM_ShareMuzzik;;
-        coreMessage.abstractString = @"分享了一条Muzzik";
-        newCon = [self getConversationByUserInfo:shareMessage.senderUserInfo];
-        
-    }
-    if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
-        coreMessage.isOwner = [NSNumber numberWithBool:YES];
-    }else{
-        coreMessage.isOwner = [NSNumber numberWithBool:NO];
-    }
-    newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
-    newCon.abstractString = coreMessage.abstractString;
-    [newCon addMessagesObject:coreMessage];
-    if (!newCon.sendTime) {
-        [user.account insertObject:newCon inMyConversationAtIndex:0];
-        newCon.sendTime =[NSDate date];
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else if([self checkLimitedTime:coreMessage.sendTime oldDate:newCon.sendTime]){
-        newCon.sendTime = coreMessage.sendTime;
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else{
-        newCon.sendTime = coreMessage.sendTime;
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
-    }
-    if (![user.account.myConversation.firstObject.targetId isEqualToString:receiveMessage.targetId]) {
-        [user.account removeMyConversationObject:newCon];
-        [user.account insertObject:newCon inMyConversationAtIndex:0];
-    }
-    [self.managedObjectContext save:nil];
-    
-    UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-    if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
-        NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
-        [notifyvc newMessageArrive];
-    }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-        //handle message
-        NSLog(@"2121");
-        
-        IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
-        if ([vc.con.targetId isEqualToString:receiveMessage.targetId]) {
-            [vc inserCellWithMessage:coreMessage];
+        newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
+        newCon.abstractString = coreMessage.abstractString;
+        [self.managedObjectContext save:nil];
+        [newCon addMessagesObject:coreMessage];
+         [self.managedObjectContext save:nil];
+        if (!newCon.sendTime) {
+            [user.account insertObject:newCon inMyConversationAtIndex:0];
+            [self.managedObjectContext save:nil];
+            newCon.sendTime =[NSDate date];
+            coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
+        }else if([self checkLimitedTime:coreMessage.sendTime oldDate:newCon.sendTime]){
+            newCon.sendTime = coreMessage.sendTime;
+            coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
+        }else{
+            newCon.sendTime = coreMessage.sendTime;
+            coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
         }
+        [self.managedObjectContext save:nil];
+        if (![user.account.myConversation.firstObject.targetId isEqualToString:receiveMessage.targetId]) {
+            [user.account removeMyConversationObject:newCon];
+            [user.account insertObject:newCon inMyConversationAtIndex:0];
+        }
+        [self.managedObjectContext save:nil];
         
-    }else{
-        //设置红点
-    }
+        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+        if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
+            NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
+            [notifyvc newMessageArrive];
+        }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+            //handle message
+            NSLog(@"2121");
+            
+            IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+            if ([vc.con.targetId isEqualToString:receiveMessage.targetId]) {
+                [vc inserCellWithMessage:coreMessage];
+            }
+            
+        }else{
+            //设置红点
+            dispatch_async(dispatch_get_main_queue(), ^{
+                RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
+                UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
+                UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
+                [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+            });
+            
+        }
+
+    });
 }
 
 -(NSDictionary *) decodeUserinfoRawdic:(NSString *)rawString{

@@ -52,8 +52,8 @@
     border.contentsScale = [UIScreen mainScreen].scale;
     border.lineWidth =0.3;
     UIBezierPath *path = [UIBezierPath bezierPath];
-    [path moveToPoint:CGPointMake(16, 59)];
-    [path addLineToPoint:CGPointMake(SCREEN_WIDTH-16, 59)];
+    [path moveToPoint:CGPointMake(16, 60)];
+    [path addLineToPoint:CGPointMake(SCREEN_WIDTH-16, 60)];
     border.path = path.CGPath;
     [self.layer addSublayer:border];
     

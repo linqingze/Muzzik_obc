@@ -10,4 +10,6 @@
 
 @interface Utils_IM : NSObject
 +(NSString *) getStringFromIMDate:(NSDate*)date;
++(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
++(NSString*)DataTOjsonString:(id)object;
 @end
