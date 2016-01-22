@@ -52,7 +52,7 @@
     notifyArray = [NSMutableArray array];
     [[MuzzikObject shareClass].notifyBUtton setHidden:YES];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-     [self initNagationBar:@"消息" leftBtn:8 rightBtn:13];
+     [self initNagationBar:@"消息" leftBtn:8 rightBtn:0];
     notifyTabelView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     notifyTabelView.delegate = self;
     notifyTabelView.dataSource = self;
@@ -404,14 +404,14 @@
 
     }
 }
--(void)rightBtnAction:(UIButton *)sender{
-//    IMListViewController *rcc = [[IMListViewController alloc] init];
-//    [self.navigationController pushViewController:rcc animated:YES];
-    IMFriendListViewController *showuser = [[IMFriendListViewController alloc] init];
-    [self.navigationController pushViewController:showuser animated:YES];
-    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
-
-}
+//-(void)rightBtnAction:(UIButton *)sender{
+////    IMListViewController *rcc = [[IMListViewController alloc] init];
+////    [self.navigationController pushViewController:rcc animated:YES];
+//    IMFriendListViewController *showuser = [[IMFriendListViewController alloc] init];
+//    [self.navigationController pushViewController:showuser animated:YES];
+//    [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+//
+//}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

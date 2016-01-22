@@ -18,6 +18,7 @@
 #import "TopicDetail.h"
 #import "MuzzikShareView.h"
 #import "repostVC.h"
+#import "IMConversationViewcontroller.h"
 @interface userDetailInfo ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,CellDelegate,UIActionSheetDelegate>{
     UITableView *MyTableView;
     int page;
@@ -29,6 +30,7 @@
     UIImage *shareImage;
     NSString *muzzikuserName;
     UIAlertView *loginAlter;
+    UIButton *conversationButton;
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
@@ -105,12 +107,15 @@
                 if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
+                    [conversationButton setHidden:NO];
                 }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
+                    [conversationButton setHidden:YES];
                 }else{
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
+                    [conversationButton setHidden:YES];
                 }
                 NSArray *dicKeys = [_profileDic allKeys];
                 if ([dicKeys containsObject:@"avatar"]) {
@@ -1029,10 +1034,17 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         cover.size.height =  SCREEN_WIDTH-yOffset;
         _coverImage.frame = cover;
         
+        
+        
+        
         CGRect d = _attentionButton.frame;
+        CGRect newRect = conversationButton.frame;
+        
+        newRect.origin.y = yOffset+16;
         d.origin.y = yOffset+16;
         
         _attentionButton.frame = d;
+        conversationButton.frame = newRect;
     }
     if (yOffset>SCREEN_WIDTH) {
         [_messageView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, 55)];
@@ -1145,6 +1157,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH/2, 16, 85, 23)];
     [_attentionButton addTarget:self action:@selector(payAttention) forControlEvents:UIControlEventTouchUpInside];
     [_headView addSubview:_attentionButton];
+    
+    conversationButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-152, 16, 57, 23)];
+    [conversationButton setImage:[UIImage imageNamed:@"chatImage"] forState:UIControlStateNormal];
+    [conversationButton addTarget:self action:@selector(newConversationAction) forControlEvents:UIControlEventTouchUpInside];
+    [_headView addSubview:conversationButton];
     
     _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
     [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:24]];
@@ -1274,12 +1291,15 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
+            [conversationButton setHidden:NO];
         }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
+            [conversationButton setHidden:YES];
         }else{
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
+            [conversationButton setHidden:YES];
         }
     }
 }
@@ -1315,4 +1335,23 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 
+
+-(void)newConversationAction{
+    RCUserInfo *targetUserinfo;
+    if ([[_profileDic objectForKey:@"_id"] length] >0 && [[_profileDic objectForKey:@"avatar"] length] >0 && [[_profileDic objectForKey:@"name"] length] >0) {
+        
+        __block IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+        
+        
+        AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+        targetUserinfo = [[RCUserInfo alloc] initWithUserId:[_profileDic objectForKey:@"_id"] name:[_profileDic objectForKey:@"name"]  portrait:[_profileDic objectForKey:@"avatar"] ];
+        imVC.con = [app getConversationByUserInfo:targetUserinfo];
+        imVC.con.unReadMessage = [NSNumber numberWithInt:0];
+        imVC.title = imVC.con.targetUser.name;
+        [app.managedObjectContext save:nil];
+        
+        
+        [self.navigationController pushViewController:imVC animated:YES];
+    }
+}
 @end

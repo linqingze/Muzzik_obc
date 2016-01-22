@@ -143,7 +143,7 @@
         [muzzikButton setImage:[UIImage imageNamed:@"sharetomuzziker"] forState:UIControlStateNormal];
         [muzzikButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
         [muzzikButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-        [muzzikButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];
+        [muzzikButton setImage:[UIImage imageNamed:@"sharetomuzziker"] forState:UIControlStateHighlighted];
         [muzzikButton addTarget:self action:@selector(shareAction:) forControlEvents:UIControlEventTouchUpInside];
         [shareView addSubview:muzzikButton];
         muzzikButton.tag = 2006;
@@ -223,9 +223,9 @@
 }
 
 -(void)closeShareView{
-//    if (self.tabbarController) {
-//        [self.tabbarController setTabBarHidden:NO animated:YES];
-//    }
+    if (self.tabbarController) {
+        [self.tabbarController setTabBarHidden:NO animated:YES];
+    }
     [UIView animateWithDuration:0.5 animations:^{
         [self setAlpha:0];
         [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
