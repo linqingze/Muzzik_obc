@@ -87,7 +87,7 @@
     [self checkNewNotification];
     //[self getSeverConversation];
    // [self getLocalConversation];
-    
+    [self resetNotifyButtonImage];
     
     [notifyTabelView reloadData];
 }
@@ -441,22 +441,22 @@
         notifyvc.numOfNewNotification = user.notificationNumReply;
         user.notificationNumReplyNew = NO;
     }else if (sender.tag == 1002) {
+        notifyvc.title = @"他们喜欢了你的Muzzik";
+        notifyvc.notifyType = Notification_moved;
+        notifyvc.numOfNewNotification = user.notificationNumMoved;
+        user.notificationNumMovedNew = NO;
+        
+    }else if (sender.tag == 1003) {
         notifyvc.title = @"他们提到了你";
         notifyvc.notifyType = Notification_at;
         notifyvc.numOfNewNotification = user.notificationNumMetion;
         user.notificationNumMetionNew = NO;
 
-    }else if (sender.tag == 1003) {
+    }else if (sender.tag == 1004) {
         notifyvc.title = @"他们关注了你";
         notifyvc.notifyType = Notification_follow;
         notifyvc.numOfNewNotification = user.notificationNumFollow;
         user.notificationNumFollowNew = NO;
-
-    }else if (sender.tag == 1004) {
-        notifyvc.title = @"他们喜欢了你的Muzzik";
-        notifyvc.notifyType = Notification_moved;
-        notifyvc.numOfNewNotification = user.notificationNumMoved;
-        user.notificationNumMovedNew = NO;
 
     }else if (sender.tag == 1005) {
         notifyvc.title = @"他们转发了你的Muzzik";

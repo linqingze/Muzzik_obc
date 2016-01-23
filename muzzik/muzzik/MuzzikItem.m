@@ -1167,43 +1167,68 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
 #pragma -mark 时间转换
 + (NSString *)transtromTime:(id)time
 {
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
-    NSDate *localDate = [dateFormatter dateFromString:time];
-    NSDate *Tdate = [NSDate date];
-    NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-    NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
-    
-    NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
-    NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"HH:mm"];
-    NSTimeInterval interval = fabs([localDate timeIntervalSinceNow]);
-    NSString *nowString = [formatter stringFromDate:now];
-    NSString *timeString = [formatter stringFromDate:aimDate];
-    
-    BOOL result = [nowString compare:timeString] == NSOrderedAscending;
-    if (interval<24*60*60 && !result) {
-        return timeString;
-    }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
-        return @"昨天";
-    }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-        return @"2天前";
-    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-        return @"3天前";
-    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-        return @"4天前";
-    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-        return @"5天前";
-    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-        return @"6天前";
-    }else {
-        [formatter setDateFormat:@"yyyy.MM.dd"];
-        nowString = [formatter stringFromDate:aimDate];
+    if ([time isKindOfClass:[NSString class]]) {
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+        NSDate *localDate = [dateFormatter dateFromString:time];
+        NSDate *Tdate = [NSDate date];
+        NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
         
-        return nowString;
+        NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
+        NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"HH:mm"];
+        NSTimeInterval interval = fabs([localDate timeIntervalSinceNow]);
+        NSString *nowString = [formatter stringFromDate:now];
+        NSString *timeString = [formatter stringFromDate:aimDate];
+        
+        BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+        if (interval<24*60*60 && !result) {
+            return timeString;
+        }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+            return [NSString stringWithFormat:@"昨天 %@",timeString];
+        }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+            return [NSString stringWithFormat:@"前天 %@",timeString];
+        }else {
+            [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
+            nowString = [formatter stringFromDate:aimDate];
+            
+            return nowString;
+        }
+    }else if([time isKindOfClass:[NSNumber class]]){
+        double num = [time doubleValue];
+        NSDate *Tdate = [NSDate date];
+        
+        NSTimeZone *zone = [NSTimeZone systemTimeZone];
+        
+        NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
+        
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num+Tinterval];
+        NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
+        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+        [formatter setDateFormat:@"HH:mm"];
+        NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
+        NSString *nowString = [formatter stringFromDate:now];
+        NSString *timeString = [formatter stringFromDate:date];
+        BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+        if (interval<24*60*60 && !result) {
+            return timeString;
+        }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+            return [NSString stringWithFormat:@"昨天 %@",timeString];
+        }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+            return [NSString stringWithFormat:@"前天 %@",timeString];
+        }else {
+            [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
+            nowString = [formatter stringFromDate:date];
+            
+            return nowString;
+        }
+        
+        return @"";
     }
     
+    return @"";
 }
 
 + (NSString *)transtromTimeNday:(id)time
