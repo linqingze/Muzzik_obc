@@ -33,21 +33,21 @@
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
     _timeLabel.textAlignment = NSTextAlignmentCenter;
-    [_timeLabel setTextColor:Color_Text_3];
+    [_timeLabel setTextColor:Color_Additional_5];
     [_timeLabel setBackgroundColor:[UIColor whiteColor]];
     _timelineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"timedivideline"]];
     [_timelineImage setFrame:CGRectMake(SCREEN_WIDTH/2-140, 16, 280, 8)];
     _timelineImage.contentMode = UIViewContentModeScaleAspectFit;
     
-    _muzzikUserHeader = [[UIButton alloc] initWithFrame:CGRectMake(5, 5, 60, 60)];
+    _muzzikUserHeader = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 60, 60)];
     [_muzzikUserHeader addTarget:self action:@selector(playMyzzik) forControlEvents:UIControlEventTouchUpInside];
     
-    _artistNamel = [[UILabel alloc] initWithFrame:CGRectMake(70, 5, SCREEN_WIDTH - 206, 15)];
-    [_artistNamel setFont:[UIFont fontWithName:Font_Next_Regular size:15]];
+    _artistNamel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, SCREEN_WIDTH - 216, 17)];
+    [_artistNamel setFont:[UIFont fontWithName:Font_Next_medium size:15]];
     
     _artistNamel.textColor = Color_Text_1;
-    _songName = [[UILabel alloc]  initWithFrame:CGRectMake(70, 25, SCREEN_WIDTH - 206, 15)];
-    [_songName setFont:[UIFont fontWithName:Font_Next_Regular size:12]];
+    _songName = [[UILabel alloc]  initWithFrame:CGRectMake(80, 30, SCREEN_WIDTH - 216, 15)];
+    [_songName setFont:[UIFont fontWithName:Font_Next_medium size:12]];
     [_songName setTextColor:Color_Text_2];
     
     
@@ -85,9 +85,9 @@
         [_timeLabel setHidden:NO];
         [_timeLabel setBounds:CGRectMake(0, 0, 120, 15)];
         _timeLabel.text = [Utils_IM getStringFromIMDate:message.sendTime];
-        [_timeLabel sizeToFit];
-        [_timeLabel setFrame:CGRectMake(SCREEN_WIDTH/2 - _timeLabel.frame.size.width/2-5, 16, _timeLabel.frame.size.width+10, 8)];
-        height += 40;
+        CGSize size = [_timeLabel sizeThatFits:CGSizeMake(120, 15)];
+        [_timeLabel setFrame:CGRectMake(SCREEN_WIDTH/2 -size.width/2-5, 16,size.width+10, 8)];
+        height += 48;
     }else{
         [_timeLabel setHidden:YES];
         [_timelineImage setHidden:YES];
@@ -111,13 +111,13 @@
     if ([message.isOwner boolValue]) {
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(SCREEN_WIDTH-53, height, 40, 40)];
-        [_messageView setFrame:CGRectMake(73, height, SCREEN_WIDTH-136, 70)];
+        [_messageView setFrame:CGRectMake(73, height, SCREEN_WIDTH-136, 80)];
         
         
     }else{
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(13, height, 40, 40)];
-        [_messageView setFrame:CGRectMake(63, height, SCREEN_WIDTH-136, 70)];
+        [_messageView setFrame:CGRectMake(63, height, SCREEN_WIDTH-136, 80)];
     }
     if ([message.sendStatue isEqualToString:Statue_OK]) {
         [_resendButton setHidden:YES];
@@ -187,6 +187,7 @@
     
 }
 -(void)seeUserImage{
+    [self.imvc.view resignFirstResponder];
     CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
     
     [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];

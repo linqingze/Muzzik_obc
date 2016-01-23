@@ -63,6 +63,7 @@
 @property (nonatomic,retain) Account *account;
 @property (nonatomic,copy) NSString *rongCloundToken;
 
+
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

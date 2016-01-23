@@ -549,7 +549,6 @@
                         NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
                         RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
                         [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
-                        [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
                     } error:^(RCConnectErrorCode status) {
                         NSLog(@"登陆的错误码为:%d", status);
                     } tokenIncorrect:^{

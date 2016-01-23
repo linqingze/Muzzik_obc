@@ -931,8 +931,17 @@
     
 }
 -(void)attentionOrVisit{
-    if ([[_profileDic objectForKey:@"isFollow"] boolValue] && [[_profileDic objectForKey:@"isFans"] boolValue]) {
-        [self newConversationAction];
+    
+    if ([[_profileDic objectForKey:@"isFollow"] boolValue] && [[_profileDic objectForKey:@"isFans"] boolValue] ) {
+        if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+            [self newConversationAction];
+        }else{
+            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
+            uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
+            [self.navigationController pushViewController:uInfo animated:YES];
+        }
+        
+        
     }else if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
         userDetailInfo *uInfo = [[userDetailInfo alloc] init];
         uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
@@ -1368,7 +1377,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [_profileDic setObject:[NSNumber numberWithBool:user.isFans ]forKey:@"isFans"];
             [_profileDic setObject:[NSNumber numberWithBool:user.isFollow ]forKey:@"isFollow"];
         if (user.isFollow &&user.isFans) {
-            [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+            if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+            }else{
+                [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+            }
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
             
@@ -1730,7 +1743,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             
             [cardView addSubview:_addFriendButton];
             if ([[proDic objectForKey:@"isFollow"] boolValue] &&[[proDic objectForKey:@"isFans"] boolValue]) {
-                [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+                if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                    [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+                }else{
+                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+                }
                 [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
                 [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
                
@@ -1832,7 +1849,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         // NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        
+        self.localmuzzik.rawDic = dic;
         self.localmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
         self.localmuzzik.date = [dic objectForKey:@"date"];
         self.localmuzzik.message = [dic objectForKey:@"message"];
@@ -1896,7 +1913,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [_timeStamp sizeToFit];
         [_timeImage setFrame:CGRectMake(CGRectGetMaxX(_timeStamp.frame)+3, _timeImage.frame.origin.y, _timeImage.frame.size.width, _timeImage.frame.size.height)];
         
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL_LUCH,self.localmuzzik.MuzzikUser.user_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakreq = requestForm;
         [requestForm setCompletionBlock :^{

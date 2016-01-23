@@ -26,7 +26,7 @@
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
     _timeLabel.textAlignment = NSTextAlignmentCenter;
-    [_timeLabel setTextColor:Color_Text_3];
+    [_timeLabel setTextColor:Color_Additional_5];
     [_timeLabel setBackgroundColor:[UIColor whiteColor]];
     _timelineImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"timedivideline"]];
     [_timelineImage setFrame:CGRectMake(SCREEN_WIDTH/2-140, 16, 280, 8)];
@@ -60,9 +60,9 @@
         [_timeLabel setHidden:NO];
         [_timeLabel setBounds:CGRectMake(0, 0, 120, 15)];
         _timeLabel.text = [Utils_IM getStringFromIMDate:message.sendTime];
-        [_timeLabel sizeToFit];
-        [_timeLabel setFrame:CGRectMake(SCREEN_WIDTH/2 - _timeLabel.frame.size.width/2-5, 16, _timeLabel.frame.size.width+10, 8)];
-        height += 40;
+        CGSize size = [_timeLabel sizeThatFits:CGSizeMake(120, 15)];
+        [_timeLabel setFrame:CGRectMake(SCREEN_WIDTH/2 -size.width/2-5, 16,size.width+10, 8)];
+        height += 48;
     }else{
         [_timeLabel setHidden:YES];
         [_timelineImage setHidden:YES];
@@ -71,7 +71,7 @@
     
     if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:message.messageContent];
-        text.yy_font = [UIFont fontWithName:Font_Next_Regular size:Message_size];
+        text.yy_font = [UIFont fontWithName:Font_Next_medium size:Message_size];
         text.yy_color = [UIColor whiteColor];
         _messageLabel.attributedText = text;
         CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-151, 2000)];
@@ -79,7 +79,7 @@
         [_headImage setFrame:CGRectMake(SCREEN_WIDTH-53, height, 40, 40)];
         
         [_messageLabel setFrame:CGRectMake(SCREEN_WIDTH-73-labelsize.width, height, labelsize.width, labelsize.height)];
-        [_messageLabel setTextColor:[UIColor whiteColor]];
+//        [_messageLabel setTextColor:[UIColor whiteColor]];
         [_messageLabel setBackgroundColor:Color_Active_Button_2];
         _messageLabel.textAlignment = NSTextAlignmentLeft;
     }
@@ -105,11 +105,12 @@
 }
 -(void)seeUserImage{
     CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
-    
+    [self.imvc.view resignFirstResponder];
     [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
 }
 
 -(void)rensendMessage{
+    userInfo *user = [userInfo shareClass];
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [_resendButton setHidden:YES];
     [_activityView setHidden:NO];
@@ -117,7 +118,7 @@
     RCTextMessage *rctext = [[RCTextMessage alloc] init];
     [rctext setSenderUserInfo:[RCIMClient sharedRCIMClient].currentUserInfo];
     rctext.content = self.cellMessage.messageContent;
-    
+    rctext.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
     [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:self.imvc.con.targetId content:rctext pushContent:[NSString stringWithFormat:@"%@: %@",self.imvc.con.targetUser.name,self.cellMessage.messageContent] success:^(long messageId) {
         self.cellMessage.sendStatue = Statue_OK;
         [app.managedObjectContext save:nil];

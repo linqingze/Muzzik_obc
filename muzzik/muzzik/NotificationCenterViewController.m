@@ -102,41 +102,49 @@
 }
 -(void) settingHeadView{
     headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 136)];
-    
+    UIImage *backColor = [self createImageWithColor:Color_line_2];
+    UIImage *hightlightImage = [self createImageWithColor:[UIColor colorWithHexString:@"f5f5f5"]];
     replyButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 16, (SCREEN_WIDTH - 44) / 3, 57)];
     replyButton.layer.cornerRadius = 5;
     replyButton.layer.masksToBounds = YES;
-    [replyButton setBackgroundColor:Color_line_2];
+    [replyButton setBackgroundImage:backColor forState:UIControlStateNormal];
+    [replyButton setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
+
     [replyButton addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     replyButton.tag = 1001;
     moveButon = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 44) / 3+22, 16, (SCREEN_WIDTH - 44) / 3, 57)];
     moveButon.layer.cornerRadius = 5;
     moveButon.layer.masksToBounds = YES;
-    [moveButon setBackgroundColor:Color_line_2];
+    [moveButon setBackgroundImage:backColor forState:UIControlStateNormal];
+    [moveButon setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
     [moveButon addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     moveButon.tag = 1002;
     mentionButton = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 44)*2 / 3+28, 16, (SCREEN_WIDTH - 44) / 3, 57)];
     mentionButton.layer.cornerRadius = 5;
     mentionButton.layer.masksToBounds = YES;
-    [mentionButton setBackgroundColor:Color_line_2];
+    [mentionButton setBackgroundImage:backColor forState:UIControlStateNormal];
+    [mentionButton setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
     [mentionButton addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     mentionButton.tag = 1003;
     followButton = [[UIButton alloc] initWithFrame:CGRectMake(16, 79, (SCREEN_WIDTH - 44) / 3, 57)];
     followButton.layer.cornerRadius = 5;
     followButton.layer.masksToBounds = YES;
-    [followButton setBackgroundColor:Color_line_2];
+    [followButton setBackgroundImage:backColor forState:UIControlStateNormal];
+    [followButton setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
     [followButton addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     followButton.tag = 1004;
     repostButton = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 44) / 3 +22, 79, (SCREEN_WIDTH - 44) / 3, 57)];
     repostButton.layer.cornerRadius = 5;
     repostButton.layer.masksToBounds = YES;
-    [repostButton setBackgroundColor:Color_line_2];
+    [repostButton setBackgroundImage:backColor forState:UIControlStateNormal];
+    [repostButton setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
     [repostButton addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     repostButton.tag = 1005;
     topicButton = [[UIButton alloc] initWithFrame:CGRectMake((SCREEN_WIDTH - 44)*2 / 3 +28, 79, (SCREEN_WIDTH - 44) / 3, 57)];
     topicButton.layer.cornerRadius = 5;
     topicButton.layer.masksToBounds = YES;
-    [topicButton setBackgroundColor:Color_line_2];
+    [topicButton setBackgroundImage:backColor forState:UIControlStateNormal];
+    [topicButton setBackgroundImage:hightlightImage forState:UIControlStateHighlighted];
     [topicButton addTarget:self action:@selector(seeNotify:) forControlEvents:UIControlEventTouchUpInside];
     topicButton.tag = 1006;
     [headerView addSubview:replyButton];
@@ -473,44 +481,70 @@
     
     if (user.notificationNumReply >0) {
         [replyButton setImage:[UIImage imageNamed:@"noti_reply"] forState:UIControlStateNormal];
+        [replyButton setImage:[UIImage imageNamed:@"noti_reply"] forState:UIControlStateHighlighted];
     }
     else{
         [replyButton setImage:[UIImage imageNamed:@"greynoti_reply"] forState:UIControlStateNormal];
+        [replyButton setImage:[UIImage imageNamed:@"greynoti_reply"] forState:UIControlStateHighlighted];
     }
     
     if (user.notificationNumMoved >0) {
         [moveButon setImage:[UIImage imageNamed:@"noti_like"] forState:UIControlStateNormal];
+        [moveButon setImage:[UIImage imageNamed:@"noti_like"] forState:UIControlStateHighlighted];
     }
     else{
         [moveButon setImage:[UIImage imageNamed:@"greynoti_like"] forState:UIControlStateNormal];
+         [moveButon setImage:[UIImage imageNamed:@"greynoti_like"] forState:UIControlStateHighlighted];
     }
     
     if (user.notificationNumMetion >0) {
         [mentionButton setImage:[UIImage imageNamed:@"noti_at"] forState:UIControlStateNormal];
+        [mentionButton setImage:[UIImage imageNamed:@"noti_at"] forState:UIControlStateHighlighted];
     }
     else{
         [mentionButton setImage:[UIImage imageNamed:@"greynoti_at"] forState:UIControlStateNormal];
+         [mentionButton setImage:[UIImage imageNamed:@"greynoti_at"] forState:UIControlStateHighlighted];
     }
     
     if (user.notificationNumFollow >0) {
         [followButton setImage:[UIImage imageNamed:@"noti_follow"] forState:UIControlStateNormal];
+        [followButton setImage:[UIImage imageNamed:@"noti_follow"] forState:UIControlStateHighlighted];
     }
     else{
         [followButton setImage:[UIImage imageNamed:@"greynoti_follow"] forState:UIControlStateNormal];
+        [followButton setImage:[UIImage imageNamed:@"greynoti_follow"] forState:UIControlStateHighlighted];
     }
     
     if (user.notificationNumRepost >0) {
         [repostButton setImage:[UIImage imageNamed:@"noti_retweet"] forState:UIControlStateNormal];
+         [repostButton setImage:[UIImage imageNamed:@"noti_retweet"] forState:UIControlStateHighlighted];
     }
     else{
         [repostButton setImage:[UIImage imageNamed:@"greynoti_retweet"] forState:UIControlStateNormal];
+        [repostButton setImage:[UIImage imageNamed:@"greynoti_retweet"] forState:UIControlStateHighlighted];
     }
     
     if (user.notificationNumParticipationTopic >0) {
         [topicButton setImage:[UIImage imageNamed:@"noti_topic"] forState:UIControlStateNormal];
+        [topicButton setImage:[UIImage imageNamed:@"noti_topic"] forState:UIControlStateHighlighted];
     }
     else{
         [topicButton setImage:[UIImage imageNamed:@"greynoti_topic"] forState:UIControlStateNormal];
+        [topicButton setImage:[UIImage imageNamed:@"greynoti_topic"] forState:UIControlStateHighlighted];
     }
 }
+
+-(UIImage*) createImageWithColor: (UIColor*) color
+{
+    CGRect rect=CGRectMake(0.0f, 0.0f, 150.0f, 80.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *theImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return theImage;
+}
+
+
 @end

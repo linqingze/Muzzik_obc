@@ -39,7 +39,7 @@
 @property (copy, nonatomic) NSString *appID;
 @property (copy, nonatomic) NSString *clientId;
 @property (assign, nonatomic) SdkStatus sdkStatus;
-
+@property (nonatomic,assign) NSInteger IMconnectionStatus;
 @property (assign, nonatomic) int lastPayloadIndex;
 @property (retain, nonatomic) NSString *payloadId;
 

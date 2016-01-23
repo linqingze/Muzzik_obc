@@ -92,7 +92,7 @@
     // Do any additional setup after loading the view.
 }
 -(void)loadDataMessage{
-    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.uid]]];
+    ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL_LUCH,self.uid]]];
     [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
     __weak ASIHTTPRequest *weakrequest = requestForm;
     [requestForm setCompletionBlock :^{
@@ -107,7 +107,12 @@
                 if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
-                    [conversationButton setHidden:NO];
+                    if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                        [conversationButton setHidden:NO];
+                    }else{
+                        [conversationButton setHidden:YES];
+                    }
+                    
                 }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
                     [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
                     [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
@@ -277,7 +282,7 @@
             }
             
             
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,[_profileDic  objectForKey:@"_id"]]]];
+            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL_LUCH,[_profileDic  objectForKey:@"_id"]]]];
             [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page, nil] Method:GetMethod auth:YES];
             __weak ASIHTTPRequest *weakre = request;
             [request setCompletionBlock :^{
@@ -1291,7 +1296,11 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         if ([[_profileDic objectForKey:@"isFollow"] boolValue] &&[[_profileDic objectForKey:@"isFans"] boolValue]) {
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
-            [conversationButton setHidden:NO];
+            if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                [conversationButton setHidden:NO];
+            }else{
+                [conversationButton setHidden:YES];
+            }
         }else if([[_profileDic objectForKey:@"isFollow"] boolValue]){
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];

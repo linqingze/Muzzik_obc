@@ -125,7 +125,7 @@
     //    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
     
     self.tabviewController.tabBar.translucent = YES;
-    
+    self.IMconnectionStatus = ConnectionStatus_Unconnected;
     
     RCIMClient *client = [RCIMClient sharedRCIMClient];
     [[RCIMClient sharedRCIMClient] initWithAppKey:AppKey_RongClound];
@@ -350,20 +350,8 @@
 ////    NSLog(@"payload:%@",[payloadMsg stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]);
 ////    }
 //}
-- (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-}
 
-- (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    [Globle shareGloble].isApplicationEnterBackground = YES;
-    if([Globle shareGloble].isPlaying){
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
-    }
-    [[RCIMClient sharedRCIMClient] disconnect];
-}
+
 
 - (BOOL)canBecomeFirstResponder
 {
@@ -633,10 +621,23 @@
     NSLog(@"Regist fail%@",error);
     
 }
-
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    [Globle shareGloble].isApplicationEnterBackground = YES;
+    if([Globle shareGloble].isPlaying){
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_SetSongInformationNotification object:nil userInfo:nil];
+    }
+    [[RCIMClient sharedRCIMClient] disconnect];
+}
 - (void)applicationWillEnterForeground:(UIApplication *)application {
     [self saveContext];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+}
+- (void)applicationWillResignActive:(UIApplication *)application {
+     [[RCIMClient sharedRCIMClient] disconnect];
+    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -1391,7 +1392,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
             user.account = [self getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
         }
         if (user.account) {
-            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            AFHTTPSessionManager *manager = [[AFHTTPSessionManager alloc] initWithBaseURL:[NSURL URLWithString:BaseURL_LUCH]];
             [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
                 if( responseObject){
                     user.rongCloundToken = [responseObject objectForKey:@"token"];
@@ -1431,6 +1432,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     
 }
 - (void)onConnectionStatusChanged:(RCConnectionStatus)status{
+    self.IMconnectionStatus = status;
     if (status == ConnectionStatus_Unconnected) {
         [self registerRongClound];
     }
@@ -1600,16 +1602,13 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 }
 
 -(void)sendIMMessage:(RCMessageContent *)contentMessage targetCon:(Conversation *)targetCon pushContent:(NSString *)pushContent{
-    
     userInfo *user = [userInfo shareClass];
     __block Message *coreMessage = [self getNewMessage];
 
     coreMessage.sendTime = [NSDate date];
     coreMessage.sendStatue = Statue_Sending;
-//    coreMessage.messageType = messageClass;
-//    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
     
-    NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
+//    NSLog(@"%@ %@ %@",coreMessage.messageUser.name,coreMessage.messageUser.avatar,coreMessage.messageUser.user_id);
     if ([contentMessage isKindOfClass:[RCTextMessage class]] ) {
         RCTextMessage *textMessage = (RCTextMessage *)contentMessage;
         textMessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
@@ -1617,7 +1616,8 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         coreMessage.messageContent = textMessage.content;
         coreMessage.abstractString = textMessage.content;
         
-    }else if ([contentMessage isKindOfClass:[IMShareMessage class]]){
+    }
+    else if ([contentMessage isKindOfClass:[IMShareMessage class]]){
         IMShareMessage *shareMessage = (IMShareMessage *)contentMessage;
         shareMessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
         coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
@@ -1627,18 +1627,22 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     }
     coreMessage.messageUser = user.account.ownerUser;
     coreMessage.isOwner = [NSNumber numberWithBool:YES];
-    targetCon.abstractString = coreMessage.abstractString;
+    
 //    NSLog(@"%@",targetCon.messages.count);
     [targetCon addMessagesObject:coreMessage];
      [self.managedObjectContext save:nil];
+    targetCon.abstractString = coreMessage.abstractString;
+    
     if (!targetCon.sendTime) {
         [user.account insertObject:targetCon inMyConversationAtIndex:0];
         targetCon.sendTime =[NSDate date];
         coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else if([self checkLimitedTime:coreMessage.sendTime oldDate:targetCon.sendTime]){
+    }
+    else if([self checkLimitedTime:coreMessage.sendTime oldDate:targetCon.sendTime]){
         targetCon.sendTime = coreMessage.sendTime;
         coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else{
+    }
+    else{
         targetCon.sendTime = coreMessage.sendTime;
         coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
     }
@@ -1647,6 +1651,14 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         [user.account insertObject:targetCon inMyConversationAtIndex:0];
     }
     [self.managedObjectContext save:nil];
+    UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
+    if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+        IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+        if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
+            [vc inserCellWithMessage:coreMessage];
+        }
+    }
+    
     [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:targetCon.targetId content:contentMessage pushContent:pushContent success:^(long messageId) {
         coreMessage.messageId = [NSNumber numberWithLong:messageId];
         coreMessage.sendStatue = Statue_OK;
@@ -1654,15 +1666,11 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         
         UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
         if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-            //handle message
-            NSLog(@"2121");
             
             IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
             if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
-                dispatch_async(_serialQueue, ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [vc resetCellByMessage:coreMessage];
-                    });
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [vc resetCellByMessage:coreMessage];
                 });
                 
             }
@@ -1674,15 +1682,11 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         coreMessage.sendStatue = Statue_Failed;
         UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
         if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-            //handle message
-            NSLog(@"2121");
             
             IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
             if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
-                dispatch_async(_serialQueue, ^{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [vc resetCellByMessage:coreMessage];
-                    });
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [vc resetCellByMessage:coreMessage];
                 });
                 
             }
@@ -1691,16 +1695,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
        
         
     }];
-    UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-    if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-        //handle message
-        NSLog(@"2121");
-        
-        IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
-        if ([vc.con.targetId isEqualToString:targetCon.targetId]) {
-            [vc inserCellWithMessage:coreMessage];
-        }
-    }
 }
 
 
@@ -1869,16 +1863,17 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         }else{
             coreMessage.isOwner = [NSNumber numberWithBool:NO];
         }
-        newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
-        newCon.abstractString = coreMessage.abstractString;
-        [self.managedObjectContext save:nil];
         [newCon addMessagesObject:coreMessage];
          [self.managedObjectContext save:nil];
+        newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
+        newCon.abstractString = coreMessage.abstractString;
+        
         if (!newCon.sendTime) {
+            coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
+            newCon.sendTime =[NSDate date];
             [user.account insertObject:newCon inMyConversationAtIndex:0];
             [self.managedObjectContext save:nil];
-            newCon.sendTime =[NSDate date];
-            coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
+
         }else if([self checkLimitedTime:coreMessage.sendTime oldDate:newCon.sendTime]){
             newCon.sendTime = coreMessage.sendTime;
             coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
@@ -1886,7 +1881,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
             newCon.sendTime = coreMessage.sendTime;
             coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
         }
-        [self.managedObjectContext save:nil];
         if (![user.account.myConversation.firstObject.targetId isEqualToString:receiveMessage.targetId]) {
             [user.account removeMyConversationObject:newCon];
             [user.account insertObject:newCon inMyConversationAtIndex:0];
@@ -1896,14 +1890,18 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
         if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
             NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
-            [notifyvc newMessageArrive];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [notifyvc newMessageArrive];
+            });
         }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
             //handle message
             NSLog(@"2121");
             
             IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
             if ([vc.con.targetId isEqualToString:receiveMessage.targetId]) {
-                [vc inserCellWithMessage:coreMessage];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [vc receiveInserCellWithMessage:coreMessage];
+                });
             }
             
         }else{

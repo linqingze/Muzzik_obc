@@ -17,8 +17,9 @@
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
 
-//#define BaseURL                 @"http://117.121.26.174/"
-#define BaseURL                 @"http://117.121.10.184:4000/"
+#define BaseURL                 @"http://117.121.26.174/"
+//#define BaseURL                 @"http://117.121.10.184:4000/"
+#define BaseURL_LUCH            @"http://117.121.26.174:4001/"
 #define BaseURL_GUI             @"http://117.121.26.174:8000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"

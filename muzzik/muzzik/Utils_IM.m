@@ -27,15 +27,7 @@
     }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
         return [NSString stringWithFormat:@"昨天 %@",timeString];
     }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-        return [NSString stringWithFormat:@"2天前 %@",timeString];
-    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-        return [NSString stringWithFormat:@"3天前 %@",timeString];
-    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-        return [NSString stringWithFormat:@"4天前 %@",timeString];
-    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-        return [NSString stringWithFormat:@"5天前 %@",timeString];
-    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-        return [NSString stringWithFormat:@"6天前 %@",timeString];
+        return [NSString stringWithFormat:@"前天 %@",timeString];
     }else {
         [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
         nowString = [formatter stringFromDate:date];
