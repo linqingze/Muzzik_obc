@@ -54,6 +54,7 @@
     _messageView = [[UIView alloc] init];
     _messageView.layer.cornerRadius = 5;
     _messageView.layer.masksToBounds = YES;
+     _messageView.layer.borderWidth = 1;
     [_messageView addSubview:_muzzikUserHeader];
     [_messageView addSubview:_songName];
     [_messageView addSubview:_artistNamel];
@@ -94,8 +95,8 @@
         height+=8;
     }
     
-    _messageView.layer.borderWidth = 1;
-    _messageView.layer.borderColor = Color_Active_Button_2.CGColor;
+   
+ 
     if (message.messageData) {
         _playMuzzik = [[muzzik new] makeMuzziksByMuzzikArray:[NSMutableArray arrayWithArray:@[[NSJSONSerialization JSONObjectWithData:message.messageData options:NSJSONReadingMutableContainers error:nil]]]][0];
         
@@ -112,12 +113,13 @@
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(SCREEN_WIDTH-53, height, 40, 40)];
         [_messageView setFrame:CGRectMake(73, height, SCREEN_WIDTH-136, 80)];
-        
+           _messageView.layer.borderColor = Color_Active_Button_2.CGColor;
         
     }else{
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(13, height, 40, 40)];
         [_messageView setFrame:CGRectMake(63, height, SCREEN_WIDTH-136, 80)];
+           _messageView.layer.borderColor = Color_line_1.CGColor;
     }
     if ([message.sendStatue isEqualToString:Statue_OK]) {
         [_resendButton setHidden:YES];
