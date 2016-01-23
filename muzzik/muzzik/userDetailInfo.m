@@ -282,7 +282,7 @@
             }
             
             
-            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL_LUCH,[_profileDic  objectForKey:@"_id"]]]];
+            ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/muzziks",BaseURL,[_profileDic  objectForKey:@"_id"]]]];
             [request addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:Limit_Constant,Parameter_Limit,[NSNumber numberWithInt:page],Parameter_page, nil] Method:GetMethod auth:YES];
             __weak ASIHTTPRequest *weakre = request;
             [request setCompletionBlock :^{
@@ -1166,6 +1166,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     conversationButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-152, 16, 57, 23)];
     [conversationButton setImage:[UIImage imageNamed:@"chatImage"] forState:UIControlStateNormal];
     [conversationButton addTarget:self action:@selector(newConversationAction) forControlEvents:UIControlEventTouchUpInside];
+    [conversationButton setHidden:YES];
     [_headView addSubview:conversationButton];
     
     _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
