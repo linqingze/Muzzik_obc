@@ -16,4 +16,5 @@
 -(void) connectionChanged:(RCConnectionStatus)status;
 -(void) resetCellByMessage:(Message *) changedMessage;
 -(void)receiveInserCellWithMessage:(Message *)coreMessage;
+-(void)userDetail:(NSString *)user_id;
 @end

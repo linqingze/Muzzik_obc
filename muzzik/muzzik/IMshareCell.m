@@ -29,7 +29,7 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [_headImage setImage:[UIImage imageNamed:@"frame"] forState:UIControlStateNormal];
-    [_headImage addTarget:self action:@selector(seeUserImage) forControlEvents:UIControlEventTouchUpInside];
+    [_headImage addTarget:self action:@selector(showUserInfo) forControlEvents:UIControlEventTouchUpInside];
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
     _timeLabel.textAlignment = NSTextAlignmentCenter;
@@ -188,13 +188,16 @@
     }
     
 }
--(void)seeUserImage{
-    [self.imvc.view resignFirstResponder];
-    CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
-    
-    [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
-}
+//-(void)seeUserImage{
+//    [self.imvc.view resignFirstResponder];
+//    CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
+//    
+//    [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
+//}
 
+-(void)showUserInfo{
+    [self.imvc userDetail:self.cellMessage.messageUser.user_id];
+}
 -(void)rensendMessage{
     AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
     [_resendButton setHidden:YES];

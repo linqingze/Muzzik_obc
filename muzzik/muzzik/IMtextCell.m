@@ -30,7 +30,7 @@
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
     _headImage = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 40)];
     [_headImage setImage:[UIImage imageNamed:@"frame"] forState:UIControlStateNormal];
-    [_headImage addTarget:self action:@selector(seeUserImage) forControlEvents:UIControlEventTouchUpInside];
+    [_headImage addTarget:self action:@selector(showUserInfo) forControlEvents:UIControlEventTouchUpInside];
     _timeLabel = [[UILabel alloc] init];
     [_timeLabel setFont:[UIFont fontWithName:Font_Next_Regular size:10]];
     _timeLabel.textAlignment = NSTextAlignmentCenter;
@@ -89,12 +89,14 @@
     }
     [_headImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,message.messageUser.avatar,Image_Size_Small]] forState:UIControlStateNormal];
 }
--(void)seeUserImage{
-    CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
-    [self.imvc.view resignFirstResponder];
-    [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
+//-(void)seeUserImage{
+//    CGRect rect = [self convertRect:self.headImage.frame toView:self.imvc.view];
+//    [self.imvc.view resignFirstResponder];
+//    [self.imvc showUserImageWithimageKey:self.cellMessage.messageUser.avatar holdImage:[self.headImage imageForState:UIControlStateNormal] orginalRect:rect];
+//}
+-(void)showUserInfo{
+    [self.imvc userDetail:self.cellMessage.messageUser.user_id];
 }
-
 -(void)textView:(YYTextView *)textView didTapHighlight:(YYTextHighlight *)highlight inRange:(NSRange)characterRange rect:(CGRect)rect{
     NSString *string = [textView.text substringWithRange:characterRange];
     if ([string rangeOfString:@"http://"].location == NSNotFound) {

@@ -13,6 +13,7 @@
 #import "HPGrowingTextView.h"
 #import "UIImageView+WebCache.h"
 #import "YYTextView.h"
+#import "userDetailInfo.h"
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
@@ -408,6 +409,25 @@
         [cellUserheadImage setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
     }];
 }
+
+-(void)userDetail:(NSString *)user_id{
+    userInfo *user = [userInfo shareClass];
+    if ([user_id isEqualToString:user.uid]) {
+        UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+        [self.navigationController pushViewController:home animated:YES];
+        
+        
+    }else{
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = user_id;
+        [self.navigationController pushViewController:detailuser animated:YES];
+        [self.rdv_tabBarController setTabBarHidden:YES animated:YES];
+    }
+    
+}
+
 -(void)tappedWithImage{
     hideStatus = NO;
     [self setNeedsStatusBarAppearanceUpdate];
