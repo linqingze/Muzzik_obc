@@ -193,6 +193,8 @@
     if (mobject.image) {
         [headImage setImage:mobject.image];
         userImage = mobject.image;
+        [headerView addSubview:closeButton];
+        
     }
     if ([mobject.tempmessage length]>0) {
         hpTextview.text = [hpTextview.text stringByAppendingString:mobject.tempmessage];
@@ -319,6 +321,14 @@
 }
 -(void)rightBtnAction:(UIButton *)sender{
     if (!isSending) {
+        NSDate *  senddate=[NSDate date];
+        
+        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+        
+        [dateformatter setDateFormat:@"YYYYMMdd"];
+        NSString *locationString=[dateformatter stringFromDate:senddate];
+        [MuzzikItem addObjectToLocal:locationString ForKey:@"Muzzik_lastShowDateString"];
+        [MuzzikItem addObjectToLocal:@"6" ForKey:@"Muzzik_times_userPoDate"];
         isSending = YES;
         userInfo *user = [userInfo shareClass];
         MuzzikObject *mobject = [MuzzikObject shareClass];

@@ -25,9 +25,9 @@
 #import "RDVTabBarItem.h"
 #import "LoginViewController.h"
 #import "Utils_IM.h"
-#import "UMessage_Sdk_1.2.2/UMessage.h"
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
+#import "IMDeviceContent.h"
 @interface AppDelegate ()<UIApplicationDelegate,WeiboSDKDelegate,WXApiDelegate,RDVTabBarControllerDelegate,RCIMClientReceiveMessageDelegate,GeTuiSdkDelegate,RCConnectionStatusChangeDelegate>{
     BOOL isLaunched;
     UIViewController *itemVC;
@@ -52,8 +52,6 @@
     [MobClick startWithAppkey:UMAPPKEY reportPolicy:BATCH channelId:@"App Store"];
 //    NSString *version = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
 //    [MobClick setAppVersion:version];
-    
-    
     
     
     NSDictionary * dic = [MuzzikItem messageFromLocal];
@@ -122,7 +120,7 @@
     tabBarController.delegate = self;
     self.tabviewController = tabBarController;
     //[self.tabviewController.tabBar setBackgroundImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
-    //    [self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
+    //[self.tabviewController.tabBar setShadowImage:[MuzzikItem createImageWithColor:[UIColor clearColor]]];
     
     self.tabviewController.tabBar.translucent = YES;
     self.IMconnectionStatus = ConnectionStatus_Unconnected;
@@ -152,6 +150,7 @@
     RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
     [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
     [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMDeviceContent class]];
     [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
     
     [[RCIMClient sharedRCIMClient] recordLaunchOptionsEvent:launchOptions];
@@ -443,7 +442,6 @@
 
 
 
-
 -(void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfoDic fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler{
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     userInfo *user = [userInfo shareClass];
@@ -485,20 +483,6 @@
                     if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
                         RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
                         [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                        
-                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                        NSLog(@"%@       didReceiveRemoteNotification",record);
-                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                        NSArray *array = [Message componentsSeparatedByString:@" "];
-                        if ([array count]>1 ) {
-                            NSString *alter = [array objectAtIndex:1];
-                            if ([alter isEqualToString:@"评论了你"]) {
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }else if([alter isEqualToString:@"提到了你"]){
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }
-                        }
                     }
                 }
             }else{
@@ -506,39 +490,6 @@
                     NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
                     [notifyVC checkNewNotification];
                     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-                }else{
-                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
-                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
-                        
-                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
-                        NSLog(@"%@       didReceiveRemoteNotification",record);
-                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
-                        NSArray *array = [Message componentsSeparatedByString:@" "];
-                        if ([array count]>1 ) {
-                            NSString *alter = [array objectAtIndex:1];
-                            if ([alter isEqualToString:@"评论了你"]) {
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }else if([alter isEqualToString:@"提到了你"]){
-                                [MuzzikItem showNewNotifyByText:Message];
-                            }
-                            
-                            //
-                            //            if ([alter isEqualToString:@"评论了你"]) {
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"提到了你"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"喜欢了你的"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"转发了你的"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else if([alter isEqualToString:@"参与了你发起的话题"]){
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }else {
-                            //                //处理关注，微博好友等
-                            //                [MuzzikItem showNewNotifyByText:Message];
-                            //            }
-                        }
-                    }
                 }
             }
             // [4-EXT]:处理APN
@@ -553,7 +504,6 @@
 }
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken
 {
-    [UMessage registerDeviceToken:deviceToken];
     NSString *token = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
     _deviceToken = [token stringByReplacingOccurrencesOfString:@" " withString:@""];
     [[RCIMClient sharedRCIMClient] setDeviceToken:_deviceToken];
@@ -590,7 +540,6 @@
     
    // [[UIApplication sharedApplication] cancelAllLocalNotifications];
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
-    [UMessage didReceiveRemoteNotification:userInfo];
     // [4-EXT]:处理APN
     NSString *payloadMsg = [userInfo objectForKey:@"payload"];
     NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], payloadMsg];
@@ -1446,53 +1395,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 }
 
 
-#pragma mark configure Method
-
--(void) configureUmengNotificationWithOptions:(NSDictionary *)launchOptions {
-    [UMessage startWithAppkey:AppKey_UMeng launchOptions:launchOptions];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= _IPHONE80_
-    if(IOS_8_OR_LATER)
-    {
-        //register remoteNotification types （iOS 8.0及其以上版本）
-        UIMutableUserNotificationAction *action1 = [[UIMutableUserNotificationAction alloc] init];
-        action1.identifier = @"action1_identifier";
-        action1.title=@"Accept";
-        action1.activationMode = UIUserNotificationActivationModeForeground;//当点击的时候启动程序
-        
-        UIMutableUserNotificationAction *action2 = [[UIMutableUserNotificationAction alloc] init];  //第二按钮
-        action2.identifier = @"action2_identifier";
-        action2.title=@"Reject";
-        action2.activationMode = UIUserNotificationActivationModeBackground;//当点击的时候不启动程序，在后台处理
-        action2.authenticationRequired = YES;//需要解锁才能处理，如果action.activationMode = UIUserNotificationActivationModeForeground;则这个属性被忽略；
-        action2.destructive = YES;
-        
-        UIMutableUserNotificationCategory *categorys = [[UIMutableUserNotificationCategory alloc] init];
-        categorys.identifier = @"category1";//这组动作的唯一标示
-        [categorys setActions:@[action1,action2] forContext:(UIUserNotificationActionContextDefault)];
-        
-        UIUserNotificationSettings *userSettings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeBadge|UIUserNotificationTypeSound|UIUserNotificationTypeAlert
-                                                                                     categories:[NSSet setWithObject:categorys]];
-        [UMessage registerRemoteNotificationAndUserNotificationSettings:userSettings];
-        
-    } else{
-        //register remoteNotification types (iOS 8.0以下)
-        [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
-         |UIRemoteNotificationTypeSound
-         |UIRemoteNotificationTypeAlert];
-    }
-#else
-    
-    //register remoteNotification types (iOS 8.0以下)
-    [UMessage registerForRemoteNotificationTypes:UIRemoteNotificationTypeBadge
-     |UIRemoteNotificationTypeSound
-     |UIRemoteNotificationTypeAlert];
-    
-#endif
-    //for log
-    [UMessage setLogEnabled:YES];
-}
-
-
 #pragma mark - Core Data stack
 
 @synthesize managedObjectContext = _managedObjectContext;
@@ -1589,11 +1491,17 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
                 [self configureMessagetype:NSStringFromClass([RCTextMessage class]) rawmessage:message];
             }
             
-        }else if ([message.content isMemberOfClass:[IMShareMessage class]]){
+        }
+        else if ([message.content isMemberOfClass:[IMShareMessage class]]){
             IMShareMessage * textMessage = (IMShareMessage *)message.content;
             if ([textMessage.extra length] >80) {
             [self configureMessagetype:NSStringFromClass([IMShareMessage class]) rawmessage:message];
             }
+        }
+        else if ([message.content isKindOfClass:[IMDeviceContent class]]){
+            
+        }else{
+            
         }
     }
     
@@ -1621,7 +1529,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         shareMessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
         coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
         coreMessage.messageType = Type_IM_ShareMuzzik;;
-        coreMessage.abstractString = @"分享了一条Muzzik";
+        coreMessage.abstractString = @"[Muzzik]";
         
     }
     coreMessage.messageUser = user.account.ownerUser;
@@ -1633,7 +1541,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     targetCon.abstractString = coreMessage.abstractString;
     
     if (!targetCon.sendTime) {
-        [user.account insertObject:targetCon inMyConversationAtIndex:0];
         targetCon.sendTime =[NSDate date];
         coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
     }
@@ -1804,9 +1711,12 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         }
         
     }else{
+        
         newCon = [self getNewConversation];
         newCon.targetId = userinfo.userId;
+        
         newCon.targetUser = [self getNewUserWithuserinfo:userinfo];
+        [user.account addMyConversationObject:newCon];
         
     }
     NSLog(@"%@ %@ %@",newCon.targetUser.name,newCon.targetUser.avatar,newCon.targetUser.user_id);
@@ -1853,7 +1763,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
             
             coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
             coreMessage.messageType = Type_IM_ShareMuzzik;;
-            coreMessage.abstractString = @"分享了一条Muzzik";
+            coreMessage.abstractString = @"[Muzzik]";
             newCon = [self getConversationByUserInfo:shareMessage.senderUserInfo];
             
         }
@@ -1870,7 +1780,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         if (!newCon.sendTime) {
             coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
             newCon.sendTime =[NSDate date];
-            [user.account insertObject:newCon inMyConversationAtIndex:0];
             [self.managedObjectContext save:nil];
 
         }else if([self checkLimitedTime:coreMessage.sendTime oldDate:newCon.sendTime]){

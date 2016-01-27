@@ -99,6 +99,8 @@
 #define Color_Text_4                [UIColor colorWithHexString:@"bbbbbb"]
 #define Color_line_1                [UIColor colorWithHexString:@"dddddd"]
 #define Color_line_2                [UIColor colorWithHexString:@"f8f8f8"]
+#define Color_line_3                [UIColor colorWithHexString:@"f5f5f5"]
+
 #define Color_Additional_1          [UIColor colorWithHexString:@"b98dd9"]
 #define Color_Additional_2          [UIColor colorWithHexString:@"30bfa7"]
 #define Color_Additional_3          [UIColor colorWithHexString:@"e64e6f"]

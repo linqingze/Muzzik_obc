@@ -37,6 +37,7 @@
     UIButton *repostButton;
     UIButton *topicButton;
     UIView *headerView;
+    UIView *footView;
 }
 
 @end
@@ -72,12 +73,24 @@
         
         
     }
+    UIImageView *tipsImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_tip"]];
+    footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH,tipsImage.frame.size.height+100)];
+    [tipsImage setFrame:CGRectMake(SCREEN_WIDTH/2-tipsImage.frame.size.width/2, 100, tipsImage.frame.size.width, tipsImage.frame.size.height)];
+    [footView addSubview:tipsImage];
+    if ([[userInfo shareClass].account.myConversation count] == 0) {
+        
+        
+        [notifyTabelView setTableFooterView:footView];
+    }
     
     
 }
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
+    if ([[userInfo shareClass].account.myConversation count] > 0) {
+        [notifyTabelView setTableFooterView:nil];
+        
+    }
     
     
 }
@@ -290,6 +303,9 @@
             AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
             [app.managedObjectContext save:nil];
         }
+        if ([user.account.myConversation count]  == 0) {
+            [notifyTabelView setTableFooterView:footView];
+        }
         [tableView deleteRowsAtIndexPaths:[NSMutableArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
     }
 }
@@ -425,7 +441,9 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)newMessageArrive{
+    
     dispatch_async(dispatch_get_main_queue(), ^{
+        [notifyTabelView setTableFooterView:nil];
         [notifyTabelView reloadData];
     });
     
@@ -545,6 +563,5 @@
     UIGraphicsEndImageContext();
     return theImage;
 }
-
 
 @end

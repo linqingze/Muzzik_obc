@@ -79,6 +79,9 @@
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    if ([_con.messages count] == 0) {
+        [[userInfo shareClass].account removeMyConversationObject:_con];
+    }
 }
 -(void) settingTableView{
     IMTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-124)];
@@ -212,12 +215,12 @@
 
         if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
             YYTextView *_messageLabel = [[YYTextView alloc] init];
-            
+            _messageLabel.textContainerInset = UIEdgeInsetsMake(9, 10, 9, 10);
             NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:message.messageContent];
             text.yy_font = [UIFont fontWithName:Font_Next_Regular size:15];
             text.yy_color = [UIColor blackColor];
             _messageLabel.attributedText = text;
-            CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-151, 2000)];
+            CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-136, 2000)];
 
             message.cellHeight = [NSNumber numberWithDouble:height+ labelsize.height+10];
             [app.managedObjectContext save:nil];
@@ -315,6 +318,7 @@
 
 - (void)keyboardWillShow:(NSNotification *)notification
 {
+    keyBoadShow = YES;
     [self.view addGestureRecognizer:tapOnview];
     
     
@@ -473,18 +477,20 @@
         [app.managedObjectContext save:nil];
         
         
+    }if ([_con.messages containsObject:coreMessage]) {
+        NSInteger index = [_con.messages indexOfObject:coreMessage];
+        
+        if (messageCount >= _con.messages.count) {
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            
+        }else{
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
+            
+        }
     }
-    NSInteger index = [_con.messages indexOfObject:coreMessage];
     
-    if (messageCount >= _con.messages.count) {
-        [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        
-    }else{
-        [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-        
-    }
 }
 
 
@@ -498,28 +504,31 @@
         
         
     }
-    NSInteger index = [_con.messages indexOfObject:coreMessage];
-    if (messageCount >= _con.messages.count) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        });
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
-            NSLog(@"%f",IMTableView.contentSize.height);
-        });
-        
-    }else{
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        });
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    if ([_con.messages containsObject:coreMessage]) {
+        NSInteger index = [_con.messages indexOfObject:coreMessage];
+        if (messageCount >= _con.messages.count) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            });
             
-            [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
-            NSLog(@"%f",IMTableView.contentSize.height);
-        });
-        
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+                NSLog(@"%f",IMTableView.contentSize.height);
+            });
+            
+        }else{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            });
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                
+                [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+                NSLog(@"%f",IMTableView.contentSize.height);
+            });
+            
+        }
+
     }
     
     
@@ -547,6 +556,13 @@
         }
         
         NSLog(@"刷新啦");
+    }
+    
+   
+}
+-(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+    if (keyBoadShow) {
+        [comnentTextView resignFirstResponder];
     }
 }
 /*

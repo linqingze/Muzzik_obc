@@ -42,11 +42,11 @@
     _muzzikUserHeader = [[UIButton alloc] initWithFrame:CGRectMake(10, 10, 60, 60)];
     [_muzzikUserHeader addTarget:self action:@selector(playMyzzik) forControlEvents:UIControlEventTouchUpInside];
     
-    _artistNamel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, SCREEN_WIDTH - 216, 17)];
+    _artistNamel = [[UILabel alloc] initWithFrame:CGRectMake(80, 10, SCREEN_WIDTH - 240, 17)];
     [_artistNamel setFont:[UIFont fontWithName:Font_Next_medium size:15]];
     
     _artistNamel.textColor = Color_Text_1;
-    _songName = [[UILabel alloc]  initWithFrame:CGRectMake(80, 30, SCREEN_WIDTH - 216, 15)];
+    _songName = [[UILabel alloc]  initWithFrame:CGRectMake(80, 30, SCREEN_WIDTH - 240, 15)];
     [_songName setFont:[UIFont fontWithName:Font_Next_medium size:12]];
     [_songName setTextColor:Color_Text_2];
     
@@ -106,19 +106,19 @@
         }else{
             [_muzzikUserHeader setImage:[UIImage imageNamed:@"IMmuzzikplay"] forState:UIControlStateNormal];
         }
-        _songName.text = _playMuzzik.music.name;
-        _artistNamel.text = _playMuzzik.music.artist;
+        _artistNamel.text = _playMuzzik.music.name;
+        _songName.text = _playMuzzik.music.artist;
     }
     if ([message.isOwner boolValue]) {
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(SCREEN_WIDTH-53, height, 40, 40)];
-        [_messageView setFrame:CGRectMake(73, height, SCREEN_WIDTH-136, 80)];
+        [_messageView setFrame:CGRectMake(88, height, SCREEN_WIDTH-151, 80)];
            _messageView.layer.borderColor = Color_Active_Button_2.CGColor;
         
     }else{
         [_messageView setBackgroundColor:[UIColor whiteColor]];
         [_headImage setFrame:CGRectMake(13, height, 40, 40)];
-        [_messageView setFrame:CGRectMake(63, height, SCREEN_WIDTH-136, 80)];
+        [_messageView setFrame:CGRectMake(63, height, SCREEN_WIDTH-151, 80)];
            _messageView.layer.borderColor = Color_line_1.CGColor;
     }
     if ([message.sendStatue isEqualToString:Statue_OK]) {
@@ -173,7 +173,7 @@
 -(void)longPress:(UILongPressGestureRecognizer *)gesture
 {
     if (gesture.state == UIGestureRecognizerStateBegan) {
-        [_messageView setBackgroundColor:Color_line_1];
+        [_messageView setBackgroundColor:Color_line_3];
     }else if (gesture.state == UIGestureRecognizerStateEnded){
         NSLog(@"%d,%d",[gesture locationInView:self].x, [gesture locationInView:self].y);
         if (CGRectContainsPoint(self.bounds,[gesture locationInView:self]) ) {

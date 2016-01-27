@@ -7,25 +7,17 @@
 //
 
 #import "IMFriendListViewController.h"
-#import "BATableView.h"
 #import "TransfromTime.h"
 #import "UIImageView+WebCache.h"
 #import <RongIMLib/RongIMLib.h>
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
-@interface IMFriendListViewController ()<BATableViewDelegate,UITableViewDataSource,UITableViewDelegate>{
+#import "AtfreindCell.h"
+@interface IMFriendListViewController ()<UITableViewDataSource,UITableViewDelegate>{
     NSMutableDictionary *RefreshDic;
-    BATableView *MytableView;
-    NSMutableArray *recentContactArray;
-    NSMutableArray *friendArray;
-    NSMutableArray *arrCapital;
-    NSInteger friendCount;
-    NSInteger page;
-    UIButton *nextButton;
-    NSMutableArray *allUsers;
-    NSMutableArray *localArray;
+    UITableView *MytableView;
+    UIView *footView;
 }
-@property (nonatomic,retain)TransfromTime *transfrom;
 @end
 
 @implementation IMFriendListViewController
@@ -33,139 +25,41 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    localArray = [NSMutableArray array];
-    allUsers = [NSMutableArray array];
-    RefreshDic = [NSMutableDictionary dictionary];
-    [self initNagationBar:@"好 友" leftBtn:Constant_backImage rightBtn:4];
-    friendArray = [NSMutableArray array];
-    MytableView = [[BATableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
+    [self initNagationBar:@"分享给Muzziker" leftBtn:Constant_backImage rightBtn:0];
+    MytableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-64)];
     MytableView.delegate = self;
+    MytableView.dataSource = self;
+    MytableView.rowHeight = 60;
     [self.view addSubview:MytableView];
-    page = 1;
-    [self requestForFriend];
-    NSData *friendData = [MuzzikItem getDataFromLocalKey:@"localFriend_Muzzik"];
-    NSArray *tempArray = [NSKeyedUnarchiver unarchiveObjectWithData:friendData];
-    if (tempArray) {
-        friendArray =[[MuzzikUser new] makeMuzziksByUserArray:[tempArray mutableCopy]];
-        if ([friendArray count]>0) {
-            NSMutableArray *arr = [NSMutableArray arrayWithArray:[self.transfrom firstCharactor:friendArray]];
-            arrCapital = [NSMutableArray array];
-            for (NSDictionary *dictionary in arr) {
-                if (![arrCapital containsObject:[dictionary objectForKey:@"firstcapital"]]) {
-                    [arrCapital addObject:[dictionary objectForKey:@"firstcapital"]];
-                }
-            }
-            NSMutableArray *uppercaseArr = [NSMutableArray array];
-            for (NSString *str in arrCapital) {
-                [uppercaseArr addObject:[str uppercaseString]];
-            }
-            
-            friendArray = [NSMutableArray arrayWithArray:[self.transfrom arrayFromString:arr  searchStr:uppercaseArr]];
-            if ([arrCapital count]>0 && [[arrCapital objectAtIndex:0] isEqualToString:@"#"]) {
-                [arrCapital addObject:[arrCapital objectAtIndex:0]];
-                [friendArray addObject:[friendArray objectAtIndex:0]];
-                [friendArray removeObjectAtIndex:0];
-                [arrCapital removeObjectAtIndex:0];
-                
-            }
-            [MytableView reloadData];
-        }
+    MytableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.view setBackgroundColor:[UIColor whiteColor]];
+    if ([[userInfo shareClass].account.myConversation count] == 0) {
+        
+        UIImageView *tipsImage = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"chat_tip"]];
+        footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0,SCREEN_WIDTH,tipsImage.frame.size.height+100)];
+        [tipsImage setFrame:CGRectMake(SCREEN_WIDTH/2-tipsImage.frame.size.width/2, 100, tipsImage.frame.size.width, tipsImage.frame.size.height)];
+        [footView addSubview:tipsImage];
+        [MytableView setTableFooterView:footView];
     }
     
-    // Do any additional setup after loading the view.
-    self.transfrom = [[TransfromTime alloc] init];
-    [self.view setBackgroundColor:[UIColor whiteColor]];
-    
 }
 
 
--(void) requestForFriend{
-    ASIHTTPRequest *requestfriend = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@/follows",BaseURL,[userInfo shareClass].uid]]];
-    [requestfriend addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:@"100",Parameter_Limit,[NSString stringWithFormat:@"%ld",(long)page],Parameter_page, nil] Method:GetMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestfriend;
-    [requestfriend setCompletionBlock:^{
-        //        NSLog(@"%@",[weakrequest originalURL]);
-        //        NSLog(@"%@",[weakrequest responseString]);
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
-        NSMutableArray *tempArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
-        [localArray addObjectsFromArray:[dic objectForKey:@"users"]];
-        [allUsers addObjectsFromArray:tempArray];
-        
-        if ([[dic objectForKey:@"users"] count]<100) {
-            friendArray = allUsers;
-            [localArray addObjectsFromArray:[dic objectForKey:@"users"]];
-            [MuzzikItem addObjectToLocal:[NSKeyedArchiver archivedDataWithRootObject:localArray] ForKey:@"localFriend_Muzzik"];
-            NSMutableArray *arr = [NSMutableArray arrayWithArray:[self.transfrom firstCharactor:friendArray]];
-            arrCapital = [NSMutableArray array];
-            for (NSDictionary *dictionary in arr) {
-                if (![arrCapital containsObject:[dictionary objectForKey:@"firstcapital"]]) {
-                    [arrCapital addObject:[dictionary objectForKey:@"firstcapital"]];
-                }
-            }
-            NSMutableArray *uppercaseArr = [NSMutableArray array];
-            for (NSString *str in arrCapital) {
-                [uppercaseArr addObject:[str uppercaseString]];
-            }
-            
-            friendArray = [NSMutableArray arrayWithArray:[self.transfrom arrayFromString:arr  searchStr:uppercaseArr]];
-            if ([arrCapital count]>0 && [[arrCapital objectAtIndex:0] isEqualToString:@"#"]) {
-                [arrCapital addObject:[arrCapital objectAtIndex:0]];
-                [friendArray addObject:[friendArray objectAtIndex:0]];
-                [friendArray removeObjectAtIndex:0];
-                [arrCapital removeObjectAtIndex:0];
-                
-            }
-            if ([recentContactArray count]>0) {
-                NSMutableArray *temparray = [NSMutableArray array];
-                for (MuzzikUser *muzzikuser in recentContactArray) {
-                    [temparray addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"*",@"firstcapital",muzzikuser,@"user", nil]];
-                }
-                [arrCapital insertObject:@"最近联系人" atIndex:0];
-                [friendArray insertObject:temparray atIndex:0];
-            }
-            
-            
-            
-            [MytableView reloadData];
-            
-            
-        }else{
-            [self requestForFriend];
-        }
-        
-    }];
-    [requestfriend startAsynchronous];
-}
 #pragma mark - UITableViewDataSource
-- (NSArray *) sectionIndexTitlesForABELTableView:(BATableView *)tableView {
-    return arrCapital;
-}
 
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
-{
-    return arrCapital[section];
-}
-//-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
-//
-//}
-- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView {
-    return [friendArray count];
-}
-
-- (NSInteger) tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [[friendArray objectAtIndex:section] count];
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    return [[userInfo shareClass].account.myConversation count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString * cellName = @"AtfreindCell";
-    
+    UserCore *coreUser = [[userInfo shareClass].account.myConversation objectAtIndex:indexPath.row].targetUser;
     AtfreindCell * cell = [tableView dequeueReusableCellWithIdentifier:cellName];
     if (!cell) {
         cell = [[AtfreindCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellName];
     }
-    MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
     [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,muzzikuser.avatar,Image_Size_Small]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+    [cell.headerImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,coreUser.avatar,Image_Size_Small]] placeholderImage:[UIImage imageNamed:Image_user_placeHolder] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (![[RefreshDic allKeys] containsObject:[NSString stringWithFormat:@"%ld",(long)indexPath.row]]) {
             [RefreshDic setObject:indexPath forKey:[NSString stringWithFormat:@"%ld",(long)indexPath.row]];
             [cell.headerImage setAlpha:0];
@@ -176,22 +70,21 @@
         
         
     }];
-    cell.label.text = muzzikuser.name;
+    cell.label.text = coreUser.name;
     
     //self.dataSource[indexPath.section][@"data"][indexPath.row];
     return cell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    MuzzikUser *muzzikuser =[ friendArray[indexPath.section][indexPath.row] objectForKey:@"user"];
-    userInfo *user = [userInfo shareClass];
+    UserCore *coreUser = [[userInfo shareClass].account.myConversation objectAtIndex:indexPath.row].targetUser;
     
     
     __block IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
 
     
     AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
-    RCUserInfo *targetUserinfo = [[RCUserInfo alloc] initWithUserId:muzzikuser.user_id name:muzzikuser.name portrait:muzzikuser.avatar];
+    RCUserInfo *targetUserinfo = [[RCUserInfo alloc] initWithUserId:coreUser.user_id name:coreUser.name portrait:coreUser.avatar];
     imVC.con = [app getConversationByUserInfo:targetUserinfo];
     imVC.con.unReadMessage = [NSNumber numberWithInt:0];
     imVC.title = imVC.con.targetUser.name;
@@ -200,11 +93,15 @@
     if (self.shareMuzzik) {
         IMShareMessage *imshare = [[IMShareMessage alloc] init];
         imshare.jsonStr = [self DataTOjsonString:self.shareMuzzik.rawDic];
-        imshare.extra = [self DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:muzzikuser.name,@"name",muzzikuser.avatar,@"avatar",muzzikuser.user_id,@"_id", nil]];
-        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",user.name] ];
+        imshare.extra = [self DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:coreUser.name,@"name",coreUser.avatar,@"avatar",coreUser.user_id,@"_id", nil]];
+        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",coreUser.name] ];
     }
     
-    [self.navigationController pushViewController:imVC animated:YES];
+    NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+    [array removeLastObject];
+    [array addObject:imVC];
+    [self.navigationController setViewControllers:array animated:YES];
+
     
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{

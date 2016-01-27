@@ -108,7 +108,6 @@
 		F20878B71B9F2A7F00A9FA45 /* badgeImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20878B61B9F2A7F00A9FA45 /* badgeImageView.m */; };
 		F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */; };
 		F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F208EF4C1B1F783A00DB5A68 /* CoreText.framework */; };
-		F2094EF71C323FB400E90272 /* libUMessage_Sdk_1.2.2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */; };
 		F20B10321AF69D8D0067EBD3 /* searchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10311AF69D8D0067EBD3 /* searchViewController.m */; };
 		F20B10361AF6B4A30067EBD3 /* UserHomePage.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10351AF6B4A30067EBD3 /* UserHomePage.m */; };
 		F20B10391AF6B4DE0067EBD3 /* NotificationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F20B10381AF6B4DE0067EBD3 /* NotificationVC.m */; };
@@ -157,6 +156,7 @@
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
 		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
+		F23BFE281C55CE6600D3EA6E /* IMDeviceContent.m in Sources */ = {isa = PBXBuildFile; fileRef = F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */; };
 		F24568951C3CE09100DCE7A6 /* YYTextContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568631C3CE09100DCE7A6 /* YYTextContainerView.m */; };
 		F24568961C3CE09100DCE7A6 /* YYTextDebugOption.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568651C3CE09100DCE7A6 /* YYTextDebugOption.m */; };
 		F24568971C3CE09100DCE7A6 /* YYTextEffectWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = F24568671C3CE09100DCE7A6 /* YYTextEffectWindow.m */; };
@@ -241,6 +241,7 @@
 		F2A62EE81AE956A700FAAA01 /* MusicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EE71AE956A700FAAA01 /* MusicCell.m */; };
 		F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F2A62EEA1AE9F6D900FAAA01 /* ChooseMusicVC.m */; };
 		F2A7F97D1AEF75B3000FCC57 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F2A7F97A1AEF75B3000FCC57 /* libWeChatSDK.a */; };
+		F2ACF0801C5870A60034B581 /* HttpWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = F2ACF07F1C5870A60034B581 /* HttpWrapper.m */; };
 		F2AD9F7F1B5F9D180039FBC4 /* SUNSlideSwitchView.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AD9F7E1B5F9D180039FBC4 /* SUNSlideSwitchView.m */; };
 		F2AEC6981B09075800DA676E /* ReplyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC6971B09075800DA676E /* ReplyObject.m */; };
 		F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */ = {isa = PBXBuildFile; fileRef = F2AEC69A1B0908B500DA676E /* NotifyObject.m */; };
@@ -528,8 +529,6 @@
 		F208EF491B1E1D2E00DB5A68 /* RJTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RJTextView.h; sourceTree = "<group>"; };
 		F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RJTextView.m; sourceTree = "<group>"; };
 		F208EF4C1B1F783A00DB5A68 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
-		F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libUMessage_Sdk_1.2.2.a; sourceTree = "<group>"; };
-		F2094EF61C323FB400E90272 /* UMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UMessage.h; sourceTree = "<group>"; };
 		F20B10301AF69D8D0067EBD3 /* searchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = searchViewController.h; sourceTree = "<group>"; };
 		F20B10311AF69D8D0067EBD3 /* searchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = searchViewController.m; sourceTree = "<group>"; };
 		F20B10341AF6B4A30067EBD3 /* UserHomePage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserHomePage.h; sourceTree = "<group>"; };
@@ -625,6 +624,8 @@
 		F22AB3A51B068A6000C61677 /* TapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TapImageView.m; sourceTree = "<group>"; };
 		F232510F1BF1BB85005F7234 /* ShareResultViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShareResultViewController.h; sourceTree = "<group>"; };
 		F23251101BF1BB85005F7234 /* ShareResultViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShareResultViewController.m; sourceTree = "<group>"; };
+		F23BFE261C55CE6600D3EA6E /* IMDeviceContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMDeviceContent.h; sourceTree = "<group>"; };
+		F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMDeviceContent.m; sourceTree = "<group>"; };
 		F24568621C3CE09100DCE7A6 /* YYTextContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextContainerView.h; sourceTree = "<group>"; };
 		F24568631C3CE09100DCE7A6 /* YYTextContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YYTextContainerView.m; sourceTree = "<group>"; };
 		F24568641C3CE09100DCE7A6 /* YYTextDebugOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YYTextDebugOption.h; sourceTree = "<group>"; };
@@ -783,6 +784,8 @@
 		F2A7F97A1AEF75B3000FCC57 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		F2A7F97B1AEF75B3000FCC57 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		F2A7F97C1AEF75B3000FCC57 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
+		F2ACF07E1C5870A60034B581 /* HttpWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HttpWrapper.h; sourceTree = "<group>"; };
+		F2ACF07F1C5870A60034B581 /* HttpWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HttpWrapper.m; sourceTree = "<group>"; };
 		F2AD9F7D1B5F9D180039FBC4 /* SUNSlideSwitchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUNSlideSwitchView.h; sourceTree = "<group>"; };
 		F2AD9F7E1B5F9D180039FBC4 /* SUNSlideSwitchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUNSlideSwitchView.m; sourceTree = "<group>"; };
 		F2AEC6961B09075800DA676E /* ReplyObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReplyObject.h; sourceTree = "<group>"; };
@@ -936,7 +939,6 @@
 				F208EF4D1B1F783A00DB5A68 /* CoreText.framework in Frameworks */,
 				F24F0A771BB42A340073F6FA /* libWeiboSDK.a in Frameworks */,
 				E1FA13361AB18DAF005EDA1D /* Foundation.framework in Frameworks */,
-				F2094EF71C323FB400E90272 /* libUMessage_Sdk_1.2.2.a in Frameworks */,
 				F26206731B56181F0023CDF5 /* libMobClickLibrary.a in Frameworks */,
 				F2738ACC1C312CD100F7F2F6 /* RongIMKit.framework in Frameworks */,
 				F2738AC91C312CD100F7F2F6 /* libopencore-amrnb.a in Frameworks */,
@@ -983,6 +985,7 @@
 		E11245F41AAAAE4B0014D461 /* muzzik */ = {
 			isa = PBXGroup;
 			children = (
+				F2ACF07D1C586D980034B581 /* HttpHelper */,
 				E112461E1AAAB0F60014D461 /* 3plus-in */,
 				E112461D1AAAB0E50014D461 /* muzzik class */,
 				E11246231AAAB1740014D461 /* 首页 */,
@@ -1094,7 +1097,6 @@
 				F203730E1C40C475004E30D5 /* AFNetworking */,
 				F203731C1C40C475004E30D5 /* UIKit+AFNetworking */,
 				F24568601C3CE09100DCE7A6 /* YYText */,
-				F2094EF41C323FB400E90272 /* UMessage_Sdk_1.2.2 */,
 				F2738ABD1C312CD100F7F2F6 /* Rong_Cloud_iOS_SDK_v2_4_2_stable */,
 				F21BFD2D1BDA97F900FE857E /* StreamingKit */,
 				F24B8F531BCD1CB900FC2597 /* RDVTabBarController */,
@@ -1453,15 +1455,6 @@
 			name = switch;
 			sourceTree = "<group>";
 		};
-		F2094EF41C323FB400E90272 /* UMessage_Sdk_1.2.2 */ = {
-			isa = PBXGroup;
-			children = (
-				F2094EF51C323FB400E90272 /* libUMessage_Sdk_1.2.2.a */,
-				F2094EF61C323FB400E90272 /* UMessage.h */,
-			);
-			path = UMessage_Sdk_1.2.2;
-			sourceTree = "<group>";
-		};
 		F20B10331AF6B41A0067EBD3 /* 我 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1697,6 +1690,8 @@
 				F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */,
 				F2241BB31C50937100EFFD5B /* IMshareCell.h */,
 				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
+				F23BFE261C55CE6600D3EA6E /* IMDeviceContent.h */,
+				F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */,
 				F211310D1C47CBD80041309A /* IMShareMessage.h */,
 				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
 			);
@@ -1864,6 +1859,15 @@
 				F208EF4A1B1E1D2E00DB5A68 /* RJTextView.m */,
 			);
 			name = FixableText;
+			sourceTree = "<group>";
+		};
+		F2ACF07D1C586D980034B581 /* HttpHelper */ = {
+			isa = PBXGroup;
+			children = (
+				F2ACF07E1C5870A60034B581 /* HttpWrapper.h */,
+				F2ACF07F1C5870A60034B581 /* HttpWrapper.m */,
+			);
+			name = HttpHelper;
 			sourceTree = "<group>";
 		};
 		F2E558961B164D060080F9C9 /* MJRefresh */ = {
@@ -2171,6 +2175,7 @@
 				E112469F1AAACE3C0014D461 /* topicCardCell.m in Sources */,
 				F2A62EEB1AE9F6D900FAAA01 /* ChooseMusicVC.m in Sources */,
 				F21A8F241C34275200B3F70C /* IMConversationViewcontroller.m in Sources */,
+				F2ACF0801C5870A60034B581 /* HttpWrapper.m in Sources */,
 				E11246721AAAB20B0014D461 /* SDWebImageDownloaderOperation.m in Sources */,
 				F21BFD441BDA97F900FE857E /* STKCoreFoundationDataSource.m in Sources */,
 				F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */,
@@ -2240,6 +2245,7 @@
 				F2F7EE4C1AEE676F00265596 /* TopicHotVC.m in Sources */,
 				F20373341C40C475004E30D5 /* AFURLRequestSerialization.m in Sources */,
 				F245689D1C3CE09100DCE7A6 /* YYTextSelectionView.m in Sources */,
+				F23BFE281C55CE6600D3EA6E /* IMDeviceContent.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
 				F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */,
 				F20373381C40C475004E30D5 /* AFImageDownloader.m in Sources */,

@@ -223,9 +223,9 @@
 }
 
 -(void)closeShareView{
-    if (self.tabbarController) {
-        [self.tabbarController setTabBarHidden:NO animated:YES];
-    }
+//    if (self.tabbarController) {
+//        [self.tabbarController setTabBarHidden:NO animated:YES];
+//    }
     [UIView animateWithDuration:0.5 animations:^{
         [self setAlpha:0];
         [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
@@ -236,9 +236,6 @@
 }
 
 -(void) showShareView{
-    if (self.tabbarController) {
-        [self.tabbarController setTabBarHidden:YES animated:YES];
-    }
     AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
     [myDelegate.window addSubview:self];
     [UIView animateWithDuration:0.3 animations:^{
@@ -391,6 +388,10 @@
                 }];
                 [request startAsynchronous];
             }else if (sender.tag == 2006) {
+                if (self.tabbarController) {
+                    [self.tabbarController setTabBarHidden:YES animated:YES];
+                }
+
                 IMFriendListViewController *imvc = [[IMFriendListViewController alloc] init];
                 imvc.shareMuzzik = self.shareMuzzik;
                 [self.ownerVC.navigationController pushViewController:imvc animated:YES];

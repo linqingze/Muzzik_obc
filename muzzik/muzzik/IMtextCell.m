@@ -44,7 +44,7 @@
     _messageLabel.textColor = Color_Text_1;
     _messageLabel.delegate = self;
     _messageLabel.layer.cornerRadius = 5;
-    _messageLabel.textContainerInset = UIEdgeInsetsMake(10, 10, 10, 10);
+    _messageLabel.textContainerInset = UIEdgeInsetsMake(9, 10, 9, 10);
     _messageLabel.dataDetectorTypes = UIDataDetectorTypeLink;
     [_messageLabel setFont:[UIFont fontWithName:Font_Next_Regular size:Message_size]];
 
@@ -77,7 +77,7 @@
         text.yy_font = [UIFont fontWithName:Font_Next_medium size:Message_size];
         text.yy_color = Color_Text_1;
         _messageLabel.attributedText = text;
-        CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-151, 2000)];
+        CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-136, 2000)];
         
         [_headImage setFrame:CGRectMake(13, height, 40, 40)];
         
