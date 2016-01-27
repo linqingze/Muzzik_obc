@@ -470,6 +470,7 @@
             }
             UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
             if (glob.isApplicationEnterBackground && [[userInfoDic allKeys] containsObject:@"payload"] && [[userInfoDic objectForKey:@"payload"] length] > 0 && [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"].location!= NSNotFound) {
+                
                 DetaiMuzzikVC *detailvc = [[DetaiMuzzikVC alloc] init];
                 NSRange range = [[userInfoDic objectForKey:@"payload"] rangeOfString:@"muzzik_id"];
                 detailvc.muzzik_id = [[userInfoDic objectForKey:@"payload"] substringWithRange:NSMakeRange(range.length, [[userInfoDic objectForKey:@"payload"] length]-range.length)];
@@ -483,6 +484,20 @@
                     if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
                         RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
                         [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
+                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                        
+                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                        NSLog(@"%@       didReceiveRemoteNotification",record);
+                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                        NSArray *array = [Message componentsSeparatedByString:@" "];
+                        if ([array count]>1 ) {
+                            NSString *alter = [array objectAtIndex:1];
+                            if ([alter isEqualToString:@"评论了你"]) {
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }else if([alter isEqualToString:@"提到了你"]){
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }
+                        }
                     }
                 }
             }else{
@@ -490,6 +505,23 @@
                     NotificationCenterViewController *notifyVC = (NotificationCenterViewController *)[nac.viewControllers lastObject];
                     [notifyVC checkNewNotification];
                     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+                }else{
+                    if ([[userInfoDic allKeys] containsObject:@"aps"] && [[[userInfoDic objectForKey:@"aps"] allKeys] containsObject:@"alert"] && [[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] && [[[[userInfoDic objectForKey:@"aps"] objectForKey:@"alert"] allKeys] containsObject:@"body"]) {
+                        NSDictionary *aps = [userInfoDic objectForKey:@"aps"];
+                        
+                        NSString *record = [NSString stringWithFormat:@"[APN]%@, %@", [NSDate date], aps];
+                        NSLog(@"%@       didReceiveRemoteNotification",record);
+                        NSString *Message = [[aps objectForKey:@"alert" ] objectForKey:@"body"];
+                        NSArray *array = [Message componentsSeparatedByString:@" "];
+                        if ([array count]>1 ) {
+                            NSString *alter = [array objectAtIndex:1];
+                            if ([alter isEqualToString:@"评论了你"]) {
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }else if([alter isEqualToString:@"提到了你"]){
+                                [MuzzikItem showNewNotifyByText:Message];
+                            }
+                        }
+                    }
                 }
             }
             // [4-EXT]:处理APN
