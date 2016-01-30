@@ -32,6 +32,7 @@
 -(void)attention:(NSInteger)index;
 -(void)newMuzzik:(muzzik *)localMzzik;
 -(void)clickOnCell:(muzzik *)tempMuzzik;
+-(void)userDetail:(NSString *)uid holdeImage:(UIImage *)image avatarKey:(NSString *)key;
 @end
 
 #endif

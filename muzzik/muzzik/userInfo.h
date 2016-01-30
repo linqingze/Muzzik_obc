@@ -7,6 +7,16 @@
 //
 #import "Account.h"
 #import <Foundation/Foundation.h>
+#import <RongIMLib/RongIMLib.h>
+typedef NS_ENUM(NSInteger, NotificationType) {
+    NotificationType_reply = 1,
+    NotificationType_moved,
+    NotificationType_at,
+    NotificationType_follow,
+    NotificationType_repost,
+    NotificationType_topic,
+    NotificationType_IM
+};
 @protocol searchSource <NSObject>
 
 
@@ -18,7 +28,6 @@
 @end
 
 @interface userInfo : NSObject
-@property (nonatomic,assign) BOOL fixTitle;
 @property (nonatomic,assign) BOOL launched;
 @property (nonatomic,retain) muzzik *poMuzzik;
 @property (nonatomic,copy) NSString *token;
@@ -62,8 +71,9 @@
 @property (nonatomic,retain) NSMutableDictionary *followDic;
 @property (nonatomic,retain) Account *account;
 @property (nonatomic,copy) NSString *rongCloundToken;
-
-
+@property (nonatomic,assign) NotificationType notificationType;
+@property (nonatomic,copy) NSString *notificationMessage;
+@property (nonatomic,retain) RCUserInfo *targetUserinfo;
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

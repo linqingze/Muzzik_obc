@@ -864,7 +864,7 @@ static NSOperationQueue *sharedQueue = nil;
 
 - (void)startAsynchronous
 {
-    NSLog(@"    header:%@ ",self.requestHeaders);
+//    NSLog(@"    header:%@ ",self.requestHeaders);
 #if DEBUG_REQUEST_STATUS || DEBUG_THROTTLING
 	ASI_DEBUG_LOG(@"[STATUS] Starting asynchronous request %@",self);
 #endif

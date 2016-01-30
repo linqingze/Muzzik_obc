@@ -2013,8 +2013,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)newConversationAction{
     RCUserInfo *targetUserinfo;
     if ([[_profileDic objectForKey:@"_id"] length] >0 && [[_profileDic objectForKey:@"avatar"] length] >0 && [[_profileDic objectForKey:@"name"] length] >0) {
-        
-        __block IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+        BOOL isContained = NO;
+        IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
         
         
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
@@ -2025,7 +2025,24 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         [app.managedObjectContext save:nil];
         
         
-        [self.navigationController pushViewController:imVC animated:YES];
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                isContained = YES;
+                break;
+            }
+        }
+        if (isContained) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            for (UIViewController *vc in self.navigationController.viewControllers) {
+                if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                    [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:vc]];
+                }
+            }
+            [array addObject:imVC];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:imVC animated:YES];
+        }
     }
     
 }

@@ -230,6 +230,28 @@
     
 }
 
+
+-(void)updateStatus:(NSString *)status{
+    if ([self.cellMessage.sendStatue isEqualToString:Statue_OK]) {
+        [_resendButton setHidden:YES];
+        [_activityView stopAnimating];
+        [_activityView setHidden:YES];
+    }else if ([self.cellMessage.sendStatue isEqualToString:Statue_Sending] && ![Utils_IM checkLimitedTime:[NSDate date] oldDate:self.cellMessage.sendTime] ){
+        [_resendButton setHidden:YES];
+        [_activityView setHidden:NO];
+        [_activityView setFrame:CGRectMake(_messageView.frame.origin.x-43, _messageView.frame.origin.y + 8, 24, 24)];
+        [_activityView startAnimating];
+        
+    }else{
+        [_resendButton setHidden:NO];
+        [_activityView stopAnimating];
+        [_activityView setHidden:YES];
+        [_resendButton setFrame:CGRectMake(_messageView.frame.origin.x-50, _messageView.frame.origin.y, 40, 40)];
+        [_activityView setFrame:CGRectMake(_messageView.frame.origin.x-43, _messageView.frame.origin.y + 8, 24, 24)];
+    }
+}
+
+
 -(NSString*)DataTOjsonString:(id)object
 {
     NSString *jsonString = nil;
@@ -244,4 +266,5 @@
     }
     return jsonString;
 }
+
 @end

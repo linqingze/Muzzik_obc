@@ -30,4 +30,5 @@
 
 
 -(void) configureCellWithMessage:(Message *) message;
+-(void)updateStatus:(NSString *)status;
 @end

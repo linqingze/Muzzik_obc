@@ -151,7 +151,6 @@
     [self.blurView addSubview:self.playView];
     [self initPlayList];
     userInfo *user = [userInfo shareClass];
-    user.fixTitle = YES;
     // Do any additional setup after loading the view.
 }
 

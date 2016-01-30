@@ -206,6 +206,10 @@
     }
     
     [self loadDataMessage];
+    userInfo *user = [userInfo shareClass];
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
+    }
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];

@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface NotifyButton : UIButton
-
+@property (nonatomic,assign) NotificationType notificationType;
+@property (nonatomic,copy) NSString *notificationMessage;
+@property (nonatomic,retain) RCUserInfo *targetUserinfo;
 @end

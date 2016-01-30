@@ -35,7 +35,7 @@
 #import "NotifyButton.h"
 #import "HttpWrapper.h"
 
-#define size_to_change  3
+
 @interface FeedViewController ()<UITableViewDataSource,UITableViewDelegate,UICollectionViewDelegateFlowLayout,TTTAttributedLabelDelegate,CellDelegate>{
     NSArray *localMuzzikIdArray;
     NSMutableArray *suggestDayArray;
@@ -45,15 +45,10 @@
     UIImage *shareImage;
     UITableView *feedTableView;
     UITableView *trendTableView;
-    UIView *addView;
+    
     NSString *trendLastId;
-    BOOL diffDate;
+    
     NSString *feedLastId;
-    
-    UIImageView *activityImage;
-    UIImageView *wordImage;
-    
-    UIImageView *startLogo;
     NSMutableDictionary *feedRefreshDic;
     NSMutableDictionary *feedReFreshPoImageDic;
     
@@ -67,12 +62,8 @@
     UIButton *feedButton;
     UIButton *trendButton;
     UIView *lineBar;
-    
-    NSTimer *timer;
-    NSInteger timeCount;
-    UIImageView *coverImageView;
     NotifyButton *notifyBtn;
-    UIAlertView *starAlert;
+    BOOL diffDate;
     
     NSMutableArray *muzzikArray;
     
@@ -205,57 +196,6 @@
     NSString *locationString=[dateformatter stringFromDate:senddate];
     NSString *lastShowDateString = [MuzzikItem getStringForKey:@"Muzzik_lastShowDateString"];
     diffDate =![lastShowDateString isEqualToString:locationString];
-    if ([lastShowDateString length] == 0) {
-        [MuzzikItem addObjectToLocal:lastShowDateString ForKey:@"Muzzik_lastShowDateString"];
-    }
-    NSArray *activityArray = [MuzzikItem getArrayFromLocalForKey:@"Muzzik_activity_localData"];
-    BOOL showed = NO;
-    if ([activityArray count] >0) {
-        for (NSDictionary *tempDic in activityArray) {
-            NSString *from  = [self transformDateToString:[tempDic objectForKey:@"from"]];
-            NSString *to    = [self transformDateToString:[tempDic objectForKey:@"to"]];
-            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-            [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
-            NSString *now   = [formatter stringFromDate:[NSDate date]];
-            NSLog(@"%ld   %ld",(long)[now compare:from],(long)[now compare:to]);
-            if ([now compare:from]>=0  && [now compare:to]<=0) {
-                
-                NSData *image = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"image"]];
-                NSData *textImageEX = [MuzzikItem getDataFromLocalKey:[tempDic objectForKey:@"textImageEX"]];
-                showed = YES;
-                [self addCoverVCToWindowFullImage:[UIImage imageWithData: image] slogan:[UIImage imageWithData: textImageEX]];
-                break;
-                
-            }
-        }
-    }
-    if (!showed) {
-        [self addCoverVCToWindowFullImage:nil slogan:nil];
-    }
-    
-    
-    
-    
-    NSLog(@"locationString:%@",locationString);
-    NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
-    if (dic == nil) {
-        dic = [NSDictionary dictionaryWithObjectsAndKeys:@"0",@"times",locationString,@"date",@"no",@"hasClicked", nil];
-        [MuzzikItem addObjectToLocal:dic ForKey:@"Muzzik_Check_Comment_Five_star"];
-    }else if(![[dic objectForKey:@"hasClicked"] isEqualToString:@"yes"]){
-        
-        if (![[dic objectForKey:@"date"] isEqualToString:locationString]) {
-            NSString *tempString = [dic objectForKey:@"times"];
-            tempString = [NSString stringWithFormat:@"%d",[tempString intValue]+1];
-            if ([tempString intValue]==2) {
-                [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:@"0",@"times",locationString,@"date",@"no",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
-                timeCount = 120;
-                timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(updateTime) userInfo:nil repeats:YES];
-                [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSRunLoopCommonModes];
-            }else{
-                [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:tempString,@"times",locationString,@"date",@"no",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
-            }
-        }
-    }
     
     
 }
@@ -282,6 +222,9 @@
         user.isSwitchUser = NO;
         [self trendReloadMuzzikSource];
         [self feedReloadMuzzikSource];
+    }
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
     }
 //    [shareViewFull setAlpha:0];
 //    [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
@@ -312,20 +255,7 @@
     return [formatter stringFromDate:aimDate];
     
 }
--(void)updateTime{
-    if (timeCount>0) {
-        NSLog(@"%d",timeCount);
-        timeCount-- ;
-    }else{
-        starAlert= [[UIAlertView alloc] initWithTitle:@"跪求五星好评" message:@"" delegate:self cancelButtonTitle:@"残忍拒绝" otherButtonTitles:nil];
-        // optional - add more buttons:
-        [starAlert addButtonWithTitle:@"走你!"];
-        [starAlert show];
-        [timer invalidate];
-        timer = nil;
-        
-    }
-}
+
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context{
     [lineBar setFrame:CGRectMake(mainScroll.contentOffset.x*(lineBar.frame.size.width/SCREEN_WIDTH), lineBar.frame.origin.y, lineBar.frame.size.width, lineBar.frame.size.height)];
 }
@@ -346,115 +276,7 @@
     [self.navigationController pushViewController:search animated:YES];
 }
 
-- (void)addCoverVCToWindowFullImage:(UIImage *)fullImage slogan:(UIImage*)sloganImage{
-    userInfo *user = [userInfo shareClass];
-    user.launched = YES;
-    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-    addView = [[UIView alloc] initWithFrame:self.navigationController.view.bounds];
-    coverImageView = [[UIImageView alloc] initWithFrame:self.navigationController.view.bounds];
-    UIImageView *startSlogan;
-    
-    if (fullImage && sloganImage) {
-        [coverImageView setImage:fullImage];
-        startSlogan =[[UIImageView alloc] initWithImage:sloganImage];
-    }else{
-        [coverImageView setImage:[UIImage imageNamed:@"startImage"]];
-        startSlogan =[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Startslogan"]];
-    }
-    
-    coverImageView.contentMode = UIViewContentModeScaleAspectFill;
-    CGFloat sizeScale = startSlogan.image.size.width/(SCREEN_WIDTH*0.9);
-    if (sizeScale >= 1) {
-        [startSlogan setFrame:CGRectMake(SCREEN_WIDTH*3/80, 64, startSlogan.image.size.width/sizeScale, startSlogan.image.size.height/sizeScale)];
-    }else{
-        [startSlogan setFrame:CGRectMake(SCREEN_WIDTH*3/80, 64, startSlogan.image.size.width, startSlogan.image.size.height)];
-    }
-    
-    
-    [startSlogan setAlpha:0];
-    startSlogan.contentMode = UIViewContentModeScaleAspectFit;
-    [UIView animateWithDuration:2 animations:^{
-        [startSlogan setAlpha:1];
-    }];
-    if (fullImage) {
-        startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"landingpageshareImage"]];
-        
-    }else{
-        startLogo = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"muzzikSlogan"]];
-        
-    }
-    [startLogo setFrame:CGRectMake(SCREEN_WIDTH-18-startLogo.frame.size.width, SCREEN_HEIGHT-startLogo.frame.size.height-18, startLogo.frame.size.width, startLogo.frame.size.height)];
-    UIButton *tapButton = [[UIButton alloc] initWithFrame:startLogo.frame];
-    [tapButton addTarget:self action:@selector(activityShareAction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    
-    NSLog(@"width:%f",[ UIScreen mainScreen ].bounds.size.width);
-    [coverImageView addSubview:startLogo];
-    [coverImageView addSubview:startSlogan];
-    [addView addSubview:coverImageView];
-    [addView addSubview:tapButton];
-    [app.window addSubview:addView];
-    
-    if (fullImage) {
-        [UIView animateWithDuration:1 animations:^{
-            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:1 animations:^{
-                [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
-            } completion:^(BOOL finished) {
-                [UIView animateWithDuration:1 animations:^{
-                    [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
-                } completion:^(BOOL finished) {
-                    [UIView animateWithDuration:1 animations:^{
-                        [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
-                    } completion:^(BOOL finished) {
-                        [UIView animateWithDuration:1 animations:^{
-                            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-size_to_change, startLogo.frame.origin.y-size_to_change, startLogo.frame.size.width+2*size_to_change, startLogo.frame.size.height+2*size_to_change)];
-                        } completion:^(BOOL finished) {
-                            [UIView animateWithDuration:1 animations:^{
-                                [startLogo setFrame:CGRectMake(startLogo.frame.origin.x+size_to_change, startLogo.frame.origin.y+size_to_change, startLogo.frame.size.width-2*size_to_change, startLogo.frame.size.height-2*size_to_change)];
-                            } completion:^(BOOL finished) {
-                                [UIView animateWithDuration:1 animations:^{
-                                    [startLogo setAlpha:0];
-                                } completion:^(BOOL finished) {
-                                    [UIView animateWithDuration:0.3 animations:^{
-                                        [startLogo setHidden:YES];
-                                        [startSlogan setHidden:YES];
-                                        [coverImageView setAlpha:0];
-                                        [coverImageView setFrame:CGRectMake(-coverImageView.frame.size.width, -coverImageView.frame.size.height, coverImageView.frame.size.width*3, coverImageView.frame.size.height*3)];
-                                    } completion:^(BOOL finished) {
-                                        [coverImageView removeFromSuperview];
-                                        [addView removeFromSuperview];
-                                        [self checkTeachPo];
-                                    }];
-                                }];
-                            }];
-                        }];
-                    }];
-                }];
-            }];
-        }];
-    }else{
-        
-        [UIView animateWithDuration:5 animations:^{
-            [startLogo setFrame:CGRectMake(startLogo.frame.origin.x-1, startLogo.frame.origin.y, startLogo.frame.size.width, startLogo.frame.size.height)];
-        } completion:^(BOOL finished) {
-            [UIView animateWithDuration:0.5 animations:^{
-                [startLogo setHidden:YES];
-                [startSlogan setHidden:YES];
-                [coverImageView setAlpha:0];
-                [coverImageView setFrame:CGRectMake(-coverImageView.frame.size.width, -coverImageView.frame.size.height, coverImageView.frame.size.width*3, coverImageView.frame.size.height*3)];
-            } completion:^(BOOL finished) {
-                [coverImageView removeFromSuperview];
-                [addView removeFromSuperview];
-                [self checkTeachPo];
-            }];
-            
-        }];
-        
-    }
-    
-}
+
 -(void)checkTeachPo{
     if (diffDate) {
         NSString *dateCountString = [MuzzikItem getStringForKey:@"Muzzik_times_userPoDate"];
@@ -490,36 +312,7 @@
     }];
     
 }
--(void)activityShareAction:(UIButton *)sender{
-    
-    userInfo *user = [userInfo shareClass];
-    [startLogo setImage:[UIImage imageNamed:@"landingpageQRcode"]];
-    [startLogo setFrame:CGRectMake(SCREEN_WIDTH-116, SCREEN_HEIGHT-116, 98, 98)];
-    UIImage *myImage = [MuzzikItem convertViewToImage:addView];
-    if (user.WeChatInstalled) {
-        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [app sendImageContent:myImage];
-    }else{
-        WBMessageObject *message = [WBMessageObject message];
-        
-        message.text =[NSString stringWithFormat:@"一起来用Muzzik吧"];
-        
-        WBImageObject *image = [WBImageObject object];
-        image.imageData = UIImageJPEGRepresentation(myImage, 1.0);
-        message.imageObject = image;
-        AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-        
-        WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-        authRequest.redirectURI = URL_WeiBo_redirectURI;
-        authRequest.scope = @"all";
-        
-        WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:message authInfo:authRequest access_token:myDelegate.wbtoken];
-        
-        //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
-        [WeiboSDK sendRequest:request];
-    }
-    [addView removeFromSuperview];
-}
+
 - (void)feedRefreshHeader
 {
     [HttpWrapper getFeedListByLastid:nil completion:^(NSDictionary *responseDic, NSError *error) {
@@ -1799,16 +1592,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 }
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
-    if (alertView == starAlert) {
-        if (buttonIndex == 1) {
-            NSDictionary *dic = [MuzzikItem getDictionaryFromLocalForKey:@"Muzzik_Check_Comment_Five_star"];
-            [MuzzikItem addObjectToLocal:[NSDictionary dictionaryWithObjectsAndKeys:[dic objectForKey:@"times"],@"times",[dic objectForKey:@"date"],@"date",@"yes",@"hasClicked", nil] ForKey:@"Muzzik_Check_Comment_Five_star"];
-            NSString *str = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/app/id%@?mt=8",APP_ID ];
-            
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:str]];
-        }
-    }
-    else if (buttonIndex == 1) {
+if (buttonIndex == 1) {
         // do stuff
         if (!self.repostMuzzik.isReposted) {
             

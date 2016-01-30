@@ -15,7 +15,7 @@
 #import "NSString+MD5.h"
 #import "phoneForResetVC.h"
 #import "IMShareMessage.h"
-#import <RongIMLib/RongIMLib.h>
+
 @interface LoginViewController ()<TencentSessionDelegate,TencentLoginDelegate,UITextFieldDelegate>{
     CGFloat scaleHeight;
     UIImageView *backGroundImage;

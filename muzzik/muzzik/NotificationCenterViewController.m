@@ -357,63 +357,66 @@
         [request setCompletionBlock :^{
             //    NSLog(@"%@",weakrequest.originalURL);
             NSLog(@"%@",[weakrequest responseString]);
-            NSData *data = [weakrequest responseData];
-            NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            if (dic) {
-                page ++;
-                if (!isNotifyFull) {
-                    notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
-                }else{
-                    [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
-                }
-                
-                
-                if (user.notificationNumTotal>[notifyArray count]) {
-                    [self loadDataMessageFull:YES];
-                }
-                else{
-                    for (NSInteger i = 0; i<user.notificationNumTotal; i++) {
-                        NotifyObject *tempMuzzik = notifyArray[i];
-                        if ([tempMuzzik.type isEqualToString:@"comment"]) {
-                            user.notificationNumReply ++;
-                            user.notificationNumReplyNew = YES;
-                        }
-                        else if ([tempMuzzik.type isEqualToString:@"at"]) {
-                            user.notificationNumMetion ++;
-                            user.notificationNumMetionNew = YES;
-                        }
-                        else if ([tempMuzzik.type isEqualToString:@"moved"]) {
-                            user.notificationNumMoved ++;
-                            user.notificationNumMovedNew = YES;
-                        }
-                        else if ([tempMuzzik.type isEqualToString:@"repost"]) {
-                            user.notificationNumRepost ++;
-                            user.notificationNumRepostNew = YES;
-                        }
-                        else if ([tempMuzzik.type isEqualToString:@"participate_topic"]) {
-                            user.notificationNumParticipationTopic ++;
-                            user.notificationNumParticipationTopicNew = YES;
-                        }
-                        else {
-                            user.notificationNumFollow ++;
-                            user.notificationNumFollowNew = YES;
-                        }
-                    }
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumReply] forKey:@"comment"];
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumRepost] forKey:@"repost"];
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumMetion] forKey:@"at"];
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumFollow] forKey:@"follow"];
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumMoved] forKey:@"moved"];
-                    [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumParticipationTopic] forKey:@"participate_topic"];
-                    [MuzzikItem addObjectToLocal:[notifyDic copy] ForKey:Notification_Number_Dictionary];
-                    if (user.notificationNumTotal > 0) {
-                        [self resetNotifyButtonImage];
-                        user.notificationNumTotal = 0;
+            if ([weakrequest responseStatusCode] == 200) {
+                NSData *data = [weakrequest responseData];
+                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                if (dic) {
+                    page ++;
+                    if (!isNotifyFull) {
+                        notifyArray = [[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]];
+                    }else{
+                        [notifyArray addObjectsFromArray:[[NotifyObject new] makeMuzziksByNotifyArray:[dic objectForKey:@"notifies"]]];
                     }
                     
                     
+                    if (user.notificationNumTotal>[notifyArray count]) {
+                        [self loadDataMessageFull:YES];
+                    }
+                    else{
+                        for (NSInteger i = 0; i<user.notificationNumTotal; i++) {
+                            NotifyObject *tempMuzzik = notifyArray[i];
+                            if ([tempMuzzik.type isEqualToString:@"comment"]) {
+                                user.notificationNumReply ++;
+                                user.notificationNumReplyNew = YES;
+                            }
+                            else if ([tempMuzzik.type isEqualToString:@"at"]) {
+                                user.notificationNumMetion ++;
+                                user.notificationNumMetionNew = YES;
+                            }
+                            else if ([tempMuzzik.type isEqualToString:@"moved"]) {
+                                user.notificationNumMoved ++;
+                                user.notificationNumMovedNew = YES;
+                            }
+                            else if ([tempMuzzik.type isEqualToString:@"repost"]) {
+                                user.notificationNumRepost ++;
+                                user.notificationNumRepostNew = YES;
+                            }
+                            else if ([tempMuzzik.type isEqualToString:@"participate_topic"]) {
+                                user.notificationNumParticipationTopic ++;
+                                user.notificationNumParticipationTopicNew = YES;
+                            }
+                            else {
+                                user.notificationNumFollow ++;
+                                user.notificationNumFollowNew = YES;
+                            }
+                        }
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumReply] forKey:@"comment"];
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumRepost] forKey:@"repost"];
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumMetion] forKey:@"at"];
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumFollow] forKey:@"follow"];
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumMoved] forKey:@"moved"];
+                        [notifyDic setObject:[NSNumber numberWithInteger:user.notificationNumParticipationTopic] forKey:@"participate_topic"];
+                        [MuzzikItem addObjectToLocal:[notifyDic copy] ForKey:Notification_Number_Dictionary];
+                        if (user.notificationNumTotal > 0) {
+                            [self resetNotifyButtonImage];
+                            user.notificationNumTotal = 0;
+                        }
+                        
+                        
+                    }
                 }
             }
+            
         }];
         [request setFailedBlock:^{
             if (![[weakrequest responseString] length]>0) {

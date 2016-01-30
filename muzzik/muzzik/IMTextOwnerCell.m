@@ -71,7 +71,7 @@
     
     if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:message.messageContent];
-        text.yy_font = [UIFont fontWithName:Font_Next_medium size:Message_size];
+        text.yy_font = [UIFont fontWithName:Font_Next_Regular size:Message_size];
         text.yy_color = [UIColor whiteColor];
         _messageLabel.attributedText = text;
         CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-136, 2000)];
@@ -148,6 +148,25 @@
         WebViewcontroller *webvc = [[WebViewcontroller alloc] init];
         webvc.url = url;
         [self.imvc.navigationController pushViewController:webvc animated:YES];
+    }
+}
+-(void)updateStatus:(NSString *)status{
+    if ([self.cellMessage.sendStatue isEqualToString:Statue_OK]) {
+        [_resendButton setHidden:YES];
+        [_activityView stopAnimating];
+        [_activityView setHidden:YES];
+    }else if ([self.cellMessage.sendStatue isEqualToString:Statue_Sending] && ![Utils_IM checkLimitedTime:[NSDate date] oldDate:self.cellMessage.sendTime] ){
+        [_resendButton setHidden:YES];
+        [_activityView setHidden:NO];
+        [_activityView setFrame:CGRectMake(_messageLabel.frame.origin.x-43, _messageLabel.frame.origin.y + 8, 24, 24)];
+        [_activityView startAnimating];
+        
+    }else{
+        [_resendButton setHidden:NO];
+        [_activityView stopAnimating];
+        [_activityView setHidden:YES];
+        [_resendButton setFrame:CGRectMake(_messageLabel.frame.origin.x-50, _messageLabel.frame.origin.y, 40, 40)];
+        [_activityView setFrame:CGRectMake(_messageLabel.frame.origin.x-43, _messageLabel.frame.origin.y + 8, 24, 24)];
     }
 }
 @end

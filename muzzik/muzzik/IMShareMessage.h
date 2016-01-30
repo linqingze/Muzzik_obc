@@ -6,7 +6,7 @@
 //  Copyright © 2016年 muzziker. All rights reserved.
 //
 
-#import <RongIMLib/RongIMLib.h>
+
 
 @interface IMShareMessage : RCMessageContent<RCMessagePersistentCompatible,RCMessageContentView>
 @property(nonatomic,retain) NSString *jsonStr;

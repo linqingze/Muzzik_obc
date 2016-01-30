@@ -61,6 +61,7 @@
 -(void)playNext{
     if (self.index == self.MusicArray.count-1 && [self.MusicArray count] >1) {
         self.playingMuzzik = self.MusicArray[0];
+        self.index = 0;
         if ([MuzzikItem isLocalMusicContainKey:_playingMuzzik.music.key]) {
             NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:MUSIC_FileName] stringByAppendingPathComponent:_playingMuzzik.music.key];
             musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];

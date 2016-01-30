@@ -315,9 +315,13 @@
 -(void)pushRepost{
     [self.delegate showRepost:self.muzzik_id];
 }
-
 -(void)goToUser{
-    [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+    if ([self.delegate respondsToSelector:@selector(userDetail:holdeImage:avatarKey:)]) {
+        [self.delegate userDetail:self.songModel.MuzzikUser.user_id holdeImage:[self.userImage imageForState:UIControlStateNormal] avatarKey:self.songModel.MuzzikUser.avatar];
+    }else{
+        [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+    }
+    
 }
 
 -(void)setIsFollow:(BOOL)isFollow{

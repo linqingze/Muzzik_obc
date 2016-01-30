@@ -74,7 +74,7 @@
     
     if ([message.messageType isEqualToString:Type_IM_TextMessage]) {
         NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:message.messageContent];
-        text.yy_font = [UIFont fontWithName:Font_Next_medium size:Message_size];
+        text.yy_font = [UIFont fontWithName:Font_Next_Regular size:Message_size];
         text.yy_color = Color_Text_1;
         _messageLabel.attributedText = text;
         CGSize labelsize = [_messageLabel sizeThatFits:CGSizeMake(SCREEN_WIDTH-136, 2000)];

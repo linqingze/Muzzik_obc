@@ -294,8 +294,10 @@
         }
         
     }
-   
-    
+    userInfo *user = [userInfo shareClass];
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
+    }
     
 }
 
@@ -935,17 +937,34 @@
     if ([[_profileDic objectForKey:@"isFollow"] boolValue] && [[_profileDic objectForKey:@"isFans"] boolValue] ) {
         if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
             [self newConversationAction];
+        }
+    }else if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+        
+        
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:self.localmuzzik.MuzzikUser.user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
         }else{
-            userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-            uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
-            [self.navigationController pushViewController:uInfo animated:YES];
+            [self.navigationController pushViewController:detailuser animated:YES];
         }
         
-        
-    }else if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
-        [self.navigationController pushViewController:uInfo animated:YES];
     }else{
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
@@ -983,6 +1002,8 @@
     }
 }
 -(void)goToUser{
+    
+    
     userInfo *user = [userInfo shareClass];
     if ([self.localmuzzik.MuzzikUser.user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
@@ -991,7 +1012,27 @@
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:self.localmuzzik.MuzzikUser.user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }
 }
 -(void)pushRepost{
@@ -1155,11 +1196,32 @@
     userInfo *user = [userInfo shareClass];
     if ([user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = user_id;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }
     
     
@@ -2099,8 +2161,8 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
 -(void)newConversationAction{
     RCUserInfo *targetUserinfo;
     if ([[_profileDic objectForKey:@"_id"] length] >0 && [[_profileDic objectForKey:@"avatar"] length] >0 && [[_profileDic objectForKey:@"name"] length] >0) {
-        
-        __block IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+        BOOL isContained = NO;
+        IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
         
         
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
@@ -2109,9 +2171,26 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         imVC.con.unReadMessage = [NSNumber numberWithInt:0];
         imVC.title = imVC.con.targetUser.name;
         [app.managedObjectContext save:nil];
-
         
-        [self.navigationController pushViewController:imVC animated:YES];
+        
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                isContained = YES;
+                break;
+            }
+        }
+        if (isContained) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            for (UIViewController *vc in self.navigationController.viewControllers) {
+                if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                    [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:vc]];
+                }
+            }
+            [array addObject:imVC];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:imVC animated:YES];
+        }
     }
     
 }

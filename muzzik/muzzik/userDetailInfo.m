@@ -31,6 +31,8 @@
     NSString *muzzikuserName;
     UIAlertView *loginAlter;
     UIButton *conversationButton;
+    UIView *userHeadImage;
+    UIImageView *cellUserheadImage;
 }
 @property(nonatomic,retain) muzzik *repostMuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
@@ -70,6 +72,17 @@
     self.muzziks = [NSMutableArray array];
     RefreshDic = [NSMutableDictionary dictionary];
     ReFreshPoImageDic = [NSMutableDictionary dictionary];
+    
+    
+    userHeadImage = [[UIView alloc] init];
+    [userHeadImage setBackgroundColor:[UIColor blackColor]];
+    cellUserheadImage = [[UIImageView alloc] init];
+    cellUserheadImage.contentMode = UIViewContentModeScaleAspectFit;
+    [userHeadImage addSubview:cellUserheadImage];
+    [userHeadImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tappedWithImage)]];
+    
+    
+    
     muzzikShareView = [[MuzzikShareView alloc] initMyShare];
     muzzikShareView.ownerVC = self;
     [self initNagationBar:@"Ta" leftBtn:Constant_backImage rightBtn:11];
@@ -349,6 +362,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
+    userInfo *user = [userInfo shareClass];
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
+    }
     
 }
 -(void)viewWillDisappear:(BOOL)animated{
@@ -836,18 +853,58 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         }
     }
 }
--(void)userDetail:(NSString *)uid{
+-(void)userDetail:(NSString *)uid holdeImage:(UIImage *)image avatarKey:(NSString *)key{
     userInfo *user = [userInfo shareClass];
     if ([uid isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
         home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
-    }else{
+    }else if([uid isEqualToString:[_profileDic objectForKey:@"_id"]]){
+        [userHeadImage setFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 1, 1)];
+        [cellUserheadImage setFrame:CGRectMake(0, 0, 1, 1)];
+        [cellUserheadImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,key,Image_Size_Big]] placeholderImage:image completed:NULL];
+        [self.navigationController.view addSubview:userHeadImage];
+        [UIView animateWithDuration:0.3 animations:^{
+            [userHeadImage setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+            [cellUserheadImage setFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
+        }];
+    }
+    else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = uid;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:uid]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }
 }
+-(void)tappedWithImage{
+    [self setNeedsStatusBarAppearanceUpdate];
+    [UIView animateWithDuration:0.3 animations:^{
+        [userHeadImage setFrame:CGRectMake(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 1, 1)];
+        [cellUserheadImage setFrame:CGRectMake(0, 0, 1, 1)];
+    } completion:^(BOOL finished) {
+        [userHeadImage removeFromSuperview];
+    }];
+}
+
 -(void)payAttention{
     if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
         [_profileDic setValue:[NSNumber numberWithBool:NO] forKey:@"isFollow"];

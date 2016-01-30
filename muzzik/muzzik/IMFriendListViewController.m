@@ -9,7 +9,7 @@
 #import "IMFriendListViewController.h"
 #import "TransfromTime.h"
 #import "UIImageView+WebCache.h"
-#import <RongIMLib/RongIMLib.h>
+
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
 #import "AtfreindCell.h"

@@ -1008,14 +1008,27 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     //设置阴影路径
     [mobject.notifyBUtton setTitle:text forState:UIControlStateNormal];
     [mobject.notifyBUtton sizeToFit];
-    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-100, mobject.notifyBUtton.frame.size.width+34, 34)];
-    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-164, mobject.notifyBUtton.frame.size.width+34, 34)];
+    
+    userInfo *user = [userInfo shareClass];
+    
+    mobject.notifyBUtton.notificationType = user.notificationType;
+    mobject.notifyBUtton.notificationMessage = user.notificationMessage;
+    mobject.notifyBUtton.targetUserinfo = user.targetUserinfo;
+    
+    user.notificationType = 0;
+    user.targetUserinfo = nil;
+    user.notificationMessage = @"";
+    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    UINavigationController *nac = (UINavigationController *)app.tabviewController.selectedViewController;
     [mobject.notifyBUtton setAlpha:0];
-    [myDelegate.window.rootViewController.view addSubview:mobject.notifyBUtton];
+    NSLog(@"%@",nac.viewControllers.lastObject);
+    [nac.viewControllers.lastObject.view addSubview:mobject.notifyBUtton];
     [UIView animateWithDuration:0.4 animations:^{
         [mobject.notifyBUtton setAlpha:0.8];
     } completion:^(BOOL finished) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
             [mobject.notifyBUtton removeFromSuperview];
             
         });

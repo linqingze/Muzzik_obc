@@ -32,7 +32,7 @@
 #import "MuzzikPlayer.h"
 #import "Muzzik_Configure_Luc.h"
 #import "AFNetworking.h"
-
+#import <RongIMLib/RongIMLib.h>
 #endif
 #define muzzik_muzzik_PrefixHeader_pch
 

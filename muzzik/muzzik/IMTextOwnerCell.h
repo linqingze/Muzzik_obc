@@ -22,4 +22,5 @@
 @property (nonatomic,retain) UIButton *resendButton;
 
 -(void) configureCellWithMessage:(Message *) message;
+-(void) updateStatus:(NSString *) status;
 @end
