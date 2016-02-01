@@ -28,8 +28,12 @@
 #import "IMConversationViewcontroller.h"
 #import "IMShareMessage.h"
 #import "IMDeviceContent.h"
+#import "IMListenMessage.h"
+#import "IMEnterMessage.h"
+#import "IMCancelListenMessage.h"
+#import "IMSynMusicMessage.h"
 #import "userDetailInfo.h"
-
+#import "IMMessageDispatcher.h"
 
 #define size_to_change  3
 
@@ -74,10 +78,20 @@
     if (dic) {
        
         user.uid = [dic objectForKey:@"_id"];
+        user.rootId = [dic objectForKey:@"_id"];
         user.token = [dic objectForKey:@"token"];
         user.gender = [dic objectForKey:@"gender"];
         user.avatar = [dic objectForKey:@"avatar"];
         user.name = [dic objectForKey:@"name"];
+        if ([user.uid length]>0) {
+            NSArray *focusUser = [MuzzikItem getArrayFromLocalForKey:[NSString stringWithFormat:@"%@_focusUser",user.uid]];
+            if (focusUser.count >0) {
+                user.focusArray = [focusUser mutableCopy];
+            }else{
+                user.focusArray = [NSMutableArray array];
+            }
+        }
+        
         if ([user.token length]>0) {
             [self registerRongClound];
         }
@@ -230,7 +244,11 @@
     RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
     [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
     [[RCIMClient sharedRCIMClient] registerMessageType:[IMShareMessage class]];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMEnterMessage class]];
     [[RCIMClient sharedRCIMClient] registerMessageType:[IMDeviceContent class]];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMListenMessage class]];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMSynMusicMessage class]];
+    [[RCIMClient sharedRCIMClient] registerMessageType:[IMCancelListenMessage class]];
     [[RCIMClient sharedRCIMClient] setRCConnectionStatusChangeDelegate:self];
     
     [[RCIMClient sharedRCIMClient] recordLaunchOptionsEvent:launchOptions];
@@ -1777,22 +1795,25 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         
         //添加支持的类型
         if ([message.content isMemberOfClass:[RCTextMessage class]]) {
-            RCTextMessage * textMessage = (RCTextMessage *)message.content;
-            if ([textMessage.extra length] >80) {
-                [self configureMessagetype:NSStringFromClass([RCTextMessage class]) rawmessage:message];
-            }
+            [IMMessageDispatcher processTextMessageByRCMessage:message];
             
         }
         else if ([message.content isMemberOfClass:[IMShareMessage class]]){
-            IMShareMessage * textMessage = (IMShareMessage *)message.content;
-            if ([textMessage.extra length] >80) {
-            [self configureMessagetype:NSStringFromClass([IMShareMessage class]) rawmessage:message];
-            }
+            [IMMessageDispatcher processShareMessageByRCMessage:message];
+        }else if ([message.content isKindOfClass:[IMEnterMessage class]]){
+            [IMMessageDispatcher processEnterMessageByRCMessage:message];
         }
-        else if ([message.content isKindOfClass:[IMDeviceContent class]]){
-            
-        }else{
-            
+        else if ([message.content isKindOfClass:[IMListenMessage class]]){
+            [IMMessageDispatcher processListenToMessageByRCMessage:message];
+        }
+        else if ([message.content isKindOfClass:[IMCancelListenMessage class]]){
+            [IMMessageDispatcher processCancelMessageByRCMessage:message];
+        }
+        else if ([message.content isKindOfClass:[IMSynMusicMessage class]]){
+            [IMMessageDispatcher processSynMusicMessageByRCMessage:message];
+        }
+        else{
+            [IMMessageDispatcher processUnkowMessage:message];
         }
     }
     
@@ -1977,10 +1998,30 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     }
     return nil;
 }
--(Conversation *) getNewConversation{
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
-    Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
-    return con;
+-(Conversation *) getNewConversationWithTargetId:(NSString *) targetId{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+    [fetchRequest setEntity:entity];
+    // Specify criteria for filtering which objects to fetch
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", targetId];
+    [fetchRequest setPredicate:predicate];
+    // Specify how the fetched objects should be sorted
+    
+    NSError *error = nil;
+    NSArray *fetchedObjects = [self.managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects == nil) {
+        NSLog(@"%@",error.userInfo);
+    }else{
+        if ([fetchedObjects count] == 0 ) {
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
+            Conversation *con = [[Conversation alloc] initWithEntity:entity insertIntoManagedObjectContext:self.managedObjectContext];
+            return con;
+        }else{
+            return fetchedObjects[0];
+        }
+    }
+    return nil;
+    
 }
 -(Conversation *)getConversationByUserInfo:(RCUserInfo *)userinfo{
     userInfo *user = [userInfo shareClass];
@@ -2003,7 +2044,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         
     }else{
         
-        newCon = [self getNewConversation];
+        newCon = [self getNewConversationWithTargetId:userinfo.userId];
         newCon.targetId = userinfo.userId;
         
         newCon.targetUser = [self getNewUserWithuserinfo:userinfo];
@@ -2012,116 +2053,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
     }
     NSLog(@"%@ %@ %@",newCon.targetUser.name,newCon.targetUser.avatar,newCon.targetUser.user_id);
     return newCon;
-}
-
-
-
--(void) configureMessagetype:(NSString *)messageClass rawmessage:(RCMessage *)receiveMessage{
-    userInfo *user = [userInfo shareClass];
-    Message *coreMessage;
-    Conversation *newCon ;
-    UserCore *newUser;
-    RCUserInfo *info;
-    if ([messageClass isEqualToString:@"RCTextMessage"] ) {
-        RCTextMessage *textMessage = (RCTextMessage *)receiveMessage.content;
-        NSDictionary *infoDic = [self decodeUserinfoRawdic:textMessage.extra];
-        if (infoDic) {
-            info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-            textMessage.senderUserInfo = info;
-            newUser = [self getNewUserWithuserinfo:info];
-            
-        }
-        
-        //NSLog(@"%@ %@ %@",textMessage.senderUserInfo.name,textMessage.senderUserInfo.portraitUri,textMessage.senderUserInfo.userId);
-        
-        coreMessage = [self getNewMessage];
-        
-        coreMessage.messageType = Type_IM_TextMessage;
-        coreMessage.messageContent = textMessage.content;
-        coreMessage.abstractString = textMessage.content;
-    }else if ([messageClass isEqualToString:@"IMShareMessage"]){
-        IMShareMessage *shareMessage = (IMShareMessage *)receiveMessage.content;
-        
-        NSDictionary *infoDic = [self decodeUserinfoRawdic:shareMessage.extra];
-        if (infoDic) {
-            info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-            shareMessage.senderUserInfo = info;
-            newUser = [self getNewUserWithuserinfo:info];
-        }
-        coreMessage = [self getNewMessage];
-        coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
-        coreMessage.messageType = Type_IM_ShareMuzzik;;
-        coreMessage.abstractString = @"[Muzzik]";
-        
-    }
-    coreMessage.messageUser = newUser;
-    coreMessage.sendTime = [NSDate dateWithTimeIntervalSince1970:receiveMessage.sentTime/1000];
-    coreMessage.messageId = [NSNumber numberWithLong:receiveMessage.messageId];
-    coreMessage.sendStatue = Statue_OK;
-    
-    if ([receiveMessage.senderUserId isEqualToString:user.uid]) {
-        coreMessage.isOwner = [NSNumber numberWithBool:YES];
-    }else{
-        coreMessage.isOwner = [NSNumber numberWithBool:NO];
-    }
-   // [self.managedObjectContext save:nil];
-    newCon = [self getConversationByUserInfo:info];
-    [newCon addMessagesObject:coreMessage];
-   // [self.managedObjectContext save:nil];
-    newCon.unReadMessage = [NSNumber numberWithInt:[newCon.unReadMessage intValue] +1];
-    newCon.abstractString = coreMessage.abstractString;
-    
-    if (!newCon.sendTime) {
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-        newCon.sendTime =[NSDate date];
-        
-        
-    }else if([self checkLimitedTime:coreMessage.sendTime oldDate:newCon.sendTime]){
-        newCon.sendTime = coreMessage.sendTime;
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:YES];
-    }else{
-        newCon.sendTime = coreMessage.sendTime;
-        coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
-    }
-    [self.managedObjectContext save:nil];
-    if (![user.account.myConversation.firstObject.targetId isEqualToString:receiveMessage.targetId]) {
-        [user.account removeMyConversationObject:newCon];
-        [user.account insertObject:newCon inMyConversationAtIndex:0];
-    }
-    [self.managedObjectContext save:nil];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UINavigationController *nac = (UINavigationController *)self.tabviewController.selectedViewController;
-        if (nac == self.notifyVC) {
-            if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
-                NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
-                [notifyvc newMessageArrive];
-            }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-                //handle message
-                NSLog(@"2121");
-                
-                IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
-                if ([vc.con.targetId isEqualToString:receiveMessage.targetId]) {
-                    [vc receiveInserCellWithMessage:coreMessage];
-                }
-                
-            }
-        }
-        else{
-            //设置红点
-            RDVTabBarItem *item = [[[self.tabviewController tabBar] items] objectAtIndex:3];
-            UIImage *selectedimage = [UIImage imageNamed:@"tabbarNotification_Selected"];
-            UIImage *unselectedimage = [UIImage imageNamed:@"tabbarGetNotifucation"];
-            [item setFinishedSelectedImage:selectedimage withFinishedUnselectedImage:unselectedimage];
-            user.targetUserinfo = info;
-            user.notificationType = NotificationType_IM;
-            user.notificationMessage = [NSString stringWithFormat:@"%@: %@",info.name,coreMessage.abstractString];
-            NSLog(@"%@",nac.viewControllers.lastObject);
-            if ([nac.viewControllers.lastObject isKindOfClass:[FeedViewController class]] || [nac.viewControllers.lastObject isKindOfClass:[DetaiMuzzikVC class]] || [nac.viewControllers.lastObject isKindOfClass:[userDetailInfo class]]  || [nac.viewControllers.lastObject isKindOfClass:[UserHomePage class]]||[nac.viewControllers.lastObject isKindOfClass:[TopicVC class]]  ){
-                [MuzzikItem showNewNotifyByText:user.notificationMessage ];
-            }
-        }
-     });
-
 }
 
 -(NSDictionary *) decodeUserinfoRawdic:(NSString *)rawString{

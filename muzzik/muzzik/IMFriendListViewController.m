@@ -94,7 +94,7 @@
         IMShareMessage *imshare = [[IMShareMessage alloc] init];
         imshare.jsonStr = [self DataTOjsonString:self.shareMuzzik.rawDic];
         imshare.extra = [self DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:coreUser.name,@"name",coreUser.avatar,@"avatar",coreUser.user_id,@"_id", nil]];
-        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",coreUser.name] ];
+        [app sendIMMessage:imshare targetCon:imVC.con pushContent:[NSString stringWithFormat:@"%@ 给你分享了一条Muzzik",[userInfo shareClass].name] ];
     }
     
     NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];

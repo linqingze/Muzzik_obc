@@ -15,6 +15,8 @@
 -(void) showUserImageWithimageKey:(NSString *)imageKey holdImage:(UIImage *) holdImage orginalRect:(CGRect) rect;
 -(void) connectionChanged:(RCConnectionStatus)status;
 -(void) resetCellByMessage:(Message *) changedMessage;
--(void)receiveInserCellWithMessage:(Message *)coreMessage;
--(void)userDetail:(NSString *)user_id;
+-(void) receiveInserCellWithMessage:(Message *)coreMessage;
+-(void) userDetail:(NSString *)user_id;
+-(void) removeCell:(UITableViewCell *) cell;
+-(void) updateSynMusicMessage:(NSDictionary *) musicDic;
 @end

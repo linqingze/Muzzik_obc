@@ -1644,7 +1644,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [commentTitle addSubview:commentLabel];
             [MuzzikItem addLineOnView:commentTitle heightPoint:44 toLeft:16 toRight:16 withColor:Color_line_1];
             [MuzzikItem addLineOnView:commentTitle heightPoint:45 toLeft:16 toRight:16 withColor:Color_line_1];
-            
+            [_muzzikView addSubview:commentTitle];
             [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+140)];
             [MuzzikItem addLineOnView:_muzzikView heightPoint:_reposts.frame.origin.y+94 toLeft:16 toRight:16 withColor:Color_line_1];
             [muzzikTableView setTableHeaderView:_muzzikView];
@@ -1778,7 +1778,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [commentTitle addSubview:commentLabel];
             [MuzzikItem addLineOnView:commentTitle heightPoint:44 toLeft:16 toRight:16 withColor:Color_line_1];
             [MuzzikItem addLineOnView:commentTitle heightPoint:45 toLeft:16 toRight:16 withColor:Color_line_1];
-            
+            [_muzzikView addSubview:commentTitle];
             [_muzzikView setFrame:CGRectMake(0, 0, SCREEN_WIDTH, _reposts.frame.origin.y+275)];
             [muzzikTableView setTableHeaderView:_muzzikView];
             
@@ -1813,6 +1813,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             [MuzzikItem showNotifyOnView:self.view text:@"来晚一步，该信息已删除"];
         }else{
             self.localmuzzik = commentArray[0];
+            
             self.localmuzzik.rawDic =[[dic objectForKey:@"muzziks"] objectAtIndex:0];
             [commentArray removeObject:self.localmuzzik];
             commentToMuzzik = self.localmuzzik;

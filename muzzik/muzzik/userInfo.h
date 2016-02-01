@@ -74,6 +74,10 @@ typedef NS_ENUM(NSInteger, NotificationType) {
 @property (nonatomic,assign) NotificationType notificationType;
 @property (nonatomic,copy) NSString *notificationMessage;
 @property (nonatomic,retain) RCUserInfo *targetUserinfo;
+@property (nonatomic,retain) NSMutableArray *listenUser;
+@property (nonatomic,retain) NSMutableArray *focusArray;    //关心用户列表
+@property (nonatomic,copy) NSString *rootId;                //一起听歌root用户 id
+@property (nonatomic,copy) NSString *listenToUid;           //正在听的user用户 id
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

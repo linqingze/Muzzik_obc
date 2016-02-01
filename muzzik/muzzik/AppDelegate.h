@@ -43,7 +43,6 @@
 @property (assign, nonatomic) int lastPayloadIndex;
 @property (retain, nonatomic) NSString *payloadId;
 
-
 //-(void) downLoadLyricByMusic:(music *)music;
 - (void) sendImageContent:(UIImage *)image;
 -(void) sendMusicContentByMuzzik:(muzzik*)localMuzzik scen:(int)scene image:(UIImage *)image;
@@ -55,7 +54,7 @@
 -(Account *) getAccountByUserName:(NSString *)name userId:(NSString *) uid userToken:(NSString *)token Avatar:(NSString *) avatar;
 -(Message *) getNewMessage;
 -(UserCore *) getNewUser;
--(Conversation *) getNewConversation;
+-(Conversation *) getNewConversationWithTargetId:(NSString *) targetId;
 -(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
 -(Conversation *)getConversationByUserInfo:(RCUserInfo *)userinfo;
 -(void)sendIMMessage:(RCMessageContent *)contentMessage targetCon:(Conversation *)targetCon pushContent:(NSString *)pushContent;

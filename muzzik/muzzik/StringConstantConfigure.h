@@ -244,8 +244,10 @@
 
 
 
-#define Type_IM_TextMessage  @"text"
-#define Type_IM_ShareMuzzik  @"shareMuzzik"
+#define Type_IM_TextMessage     @"text"
+#define Type_IM_ShareMuzzik     @"shareMuzzik"
+#define Type_IM_Enter           @"Enter"
+#define Type_IM_ListenTo     @"ListenTo"
 
 #define Statue_OK           @"ok"
 #define Statue_Failed       @"failed"

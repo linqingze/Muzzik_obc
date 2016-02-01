@@ -14,6 +14,8 @@
 #import "UIImageView+WebCache.h"
 #import "YYTextView.h"
 #import "userDetailInfo.h"
+
+
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
@@ -35,6 +37,8 @@
     UIView *messageCountView;
     UILabel *messageLeftLabel;
     NSInteger newMessgaeCount;
+    Message *listenMessage;
+
 }
 
 @end
@@ -122,6 +126,7 @@
     [commentView addSubview:line];
     [self.view addSubview:commentView];
     comnentTextView = [[HPGrowingTextView alloc] initWithFrame:CGRectMake(13, 10, SCREEN_WIDTH-26, 40)];
+    comnentTextView.tintColor = Color_Active_Button_1;
     comnentTextView.layer.borderWidth =1;
     comnentTextView.layer.borderColor = Color_line_1.CGColor;
     comnentTextView.layer.cornerRadius = 3;
@@ -622,6 +627,9 @@
     [messageCountView removeFromSuperview];
     newMessgaeCount = 0;
     [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+}
+-(void)removeCell:(UITableViewCell *)cell{
+    
 }
 /*
 #pragma mark - Navigation

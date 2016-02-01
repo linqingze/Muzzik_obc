@@ -322,6 +322,9 @@
         }
         if (responseDic) {
              NSArray *array = [[muzzik new] makeMuzziksByMuzzikArray:[responseDic objectForKey:@"muzziks"]];
+            if ([array count]>0) {
+                [self.feedMuzziks removeAllObjects];
+            }
             for (muzzik *tempmuzzik in array) {
                 BOOL isContained = NO;
                 for (muzzik *arrayMuzzik in self.feedMuzziks) {

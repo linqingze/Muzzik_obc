@@ -153,6 +153,12 @@
 		F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BB41C50937100EFFD5B /* IMshareCell.m */; };
 		F2241BBB1C50F65700EFFD5B /* WebViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */; };
 		F2241BBE1C51F09600EFFD5B /* IMTextOwnerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */; };
+		F22A29641C5DF4FF002099D5 /* ListenCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A29631C5DF4FF002099D5 /* ListenCell.m */; };
+		F22A29671C5E0496002099D5 /* IMListenMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A29661C5E0496002099D5 /* IMListenMessage.m */; };
+		F22A296B1C5E073C002099D5 /* IMEnterMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A296A1C5E073C002099D5 /* IMEnterMessage.m */; };
+		F22A296E1C5E37AE002099D5 /* IMSynMusicMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A296D1C5E37AE002099D5 /* IMSynMusicMessage.m */; };
+		F22A29711C5E3816002099D5 /* IMCancelListenMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A29701C5E3816002099D5 /* IMCancelListenMessage.m */; };
+		F22A29741C5F1A68002099D5 /* IMMessageDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = F22A29731C5F1A68002099D5 /* IMMessageDispatcher.m */; };
 		F22AB3A31B05E29900C61677 /* SongListCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A21B05E29900C61677 /* SongListCell.m */; };
 		F22AB3A61B068A6000C61677 /* TapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22AB3A51B068A6000C61677 /* TapImageView.m */; };
 		F23251111BF1BB85005F7234 /* ShareResultViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F23251101BF1BB85005F7234 /* ShareResultViewController.m */; };
@@ -618,6 +624,18 @@
 		F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewcontroller.m; sourceTree = "<group>"; };
 		F2241BBC1C51F09600EFFD5B /* IMTextOwnerCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMTextOwnerCell.h; sourceTree = "<group>"; };
 		F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMTextOwnerCell.m; sourceTree = "<group>"; };
+		F22A29621C5DF4FF002099D5 /* ListenCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListenCell.h; sourceTree = "<group>"; };
+		F22A29631C5DF4FF002099D5 /* ListenCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListenCell.m; sourceTree = "<group>"; };
+		F22A29651C5E0496002099D5 /* IMListenMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMListenMessage.h; sourceTree = "<group>"; };
+		F22A29661C5E0496002099D5 /* IMListenMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMListenMessage.m; sourceTree = "<group>"; };
+		F22A29691C5E073C002099D5 /* IMEnterMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMEnterMessage.h; sourceTree = "<group>"; };
+		F22A296A1C5E073C002099D5 /* IMEnterMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMEnterMessage.m; sourceTree = "<group>"; };
+		F22A296C1C5E37AE002099D5 /* IMSynMusicMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMSynMusicMessage.h; sourceTree = "<group>"; };
+		F22A296D1C5E37AE002099D5 /* IMSynMusicMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMSynMusicMessage.m; sourceTree = "<group>"; };
+		F22A296F1C5E3815002099D5 /* IMCancelListenMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMCancelListenMessage.h; sourceTree = "<group>"; };
+		F22A29701C5E3816002099D5 /* IMCancelListenMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMCancelListenMessage.m; sourceTree = "<group>"; };
+		F22A29721C5F1A68002099D5 /* IMMessageDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMMessageDispatcher.h; sourceTree = "<group>"; };
+		F22A29731C5F1A68002099D5 /* IMMessageDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMMessageDispatcher.m; sourceTree = "<group>"; };
 		F22AB3A11B05E29900C61677 /* SongListCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SongListCell.h; sourceTree = "<group>"; };
 		F22AB3A21B05E29900C61677 /* SongListCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SongListCell.m; sourceTree = "<group>"; };
 		F22AB3A41B068A6000C61677 /* TapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TapImageView.h; sourceTree = "<group>"; };
@@ -995,6 +1013,8 @@
 				E14F4A4B1ACD2B3700270903 /* 登录 */,
 				E11245F91AAAAE4B0014D461 /* AppDelegate.h */,
 				E11245FA1AAAAE4B0014D461 /* AppDelegate.m */,
+				F22A29721C5F1A68002099D5 /* IMMessageDispatcher.h */,
+				F22A29731C5F1A68002099D5 /* IMMessageDispatcher.m */,
 				F24568DD1C3E9CD300DCE7A6 /* Muzzik_coreModel.xcdatamodeld */,
 				F2A3D9301C3F8C1000BC9DC3 /* coreModel */,
 				F27902D11BD249E100B802A7 /* audioPlayerViewController.h */,
@@ -1595,6 +1615,40 @@
 			name = "推荐";
 			sourceTree = "<group>";
 		};
+		F22A29611C5DF4B1002099D5 /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				F24568AE1C3D133C00DCE7A6 /* IMTextCell.h */,
+				F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */,
+				F2241BBC1C51F09600EFFD5B /* IMTextOwnerCell.h */,
+				F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */,
+				F2241BB31C50937100EFFD5B /* IMshareCell.h */,
+				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
+				F22A29621C5DF4FF002099D5 /* ListenCell.h */,
+				F22A29631C5DF4FF002099D5 /* ListenCell.m */,
+			);
+			name = Cell;
+			sourceTree = "<group>";
+		};
+		F22A29681C5E04A0002099D5 /* MessgaeType */ = {
+			isa = PBXGroup;
+			children = (
+				F23BFE261C55CE6600D3EA6E /* IMDeviceContent.h */,
+				F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */,
+				F211310D1C47CBD80041309A /* IMShareMessage.h */,
+				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
+				F22A29651C5E0496002099D5 /* IMListenMessage.h */,
+				F22A29661C5E0496002099D5 /* IMListenMessage.m */,
+				F22A29691C5E073C002099D5 /* IMEnterMessage.h */,
+				F22A296A1C5E073C002099D5 /* IMEnterMessage.m */,
+				F22A296C1C5E37AE002099D5 /* IMSynMusicMessage.h */,
+				F22A296D1C5E37AE002099D5 /* IMSynMusicMessage.m */,
+				F22A296F1C5E3815002099D5 /* IMCancelListenMessage.h */,
+				F22A29701C5E3816002099D5 /* IMCancelListenMessage.m */,
+			);
+			name = MessgaeType;
+			sourceTree = "<group>";
+		};
 		F24568601C3CE09100DCE7A6 /* YYText */ = {
 			isa = PBXGroup;
 			children = (
@@ -1682,18 +1736,10 @@
 				F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */,
 				F21A8F221C34275200B3F70C /* IMConversationViewcontroller.h */,
 				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
+				F22A29611C5DF4B1002099D5 /* Cell */,
 				F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */,
 				F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */,
-				F24568AE1C3D133C00DCE7A6 /* IMTextCell.h */,
-				F24568AF1C3D133C00DCE7A6 /* IMtextCell.m */,
-				F2241BBC1C51F09600EFFD5B /* IMTextOwnerCell.h */,
-				F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */,
-				F2241BB31C50937100EFFD5B /* IMshareCell.h */,
-				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
-				F23BFE261C55CE6600D3EA6E /* IMDeviceContent.h */,
-				F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */,
-				F211310D1C47CBD80041309A /* IMShareMessage.h */,
-				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
+				F22A29681C5E04A0002099D5 /* MessgaeType */,
 			);
 			name = IM;
 			sourceTree = "<group>";
@@ -2127,6 +2173,7 @@
 				F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */,
 				F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */,
 				E1FA12D21AB14CEF005EDA1D /* UIView+Additions.m in Sources */,
+				F22A296B1C5E073C002099D5 /* IMEnterMessage.m in Sources */,
 				F24568A11C3CE09100DCE7A6 /* YYTextRubyAnnotation.m in Sources */,
 				F245689F1C3CE09100DCE7A6 /* YYTextAttribute.m in Sources */,
 				F24F0A681BB320910073F6FA /* JSImagePickerViewController.m in Sources */,
@@ -2206,6 +2253,7 @@
 				E1FA13461AB195E0005EDA1D /* Globle.m in Sources */,
 				F2F7EE4F1AEE80CA00265596 /* TopicModel.m in Sources */,
 				F216ACC91BD62EF40074ADF4 /* MuzzikPlayer.m in Sources */,
+				F22A296E1C5E37AE002099D5 /* IMSynMusicMessage.m in Sources */,
 				F2A5E20C1AD9106E00FD8B3E /* music.m in Sources */,
 				F203733F1C40C475004E30D5 /* UIWebView+AFNetworking.m in Sources */,
 				F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */,
@@ -2247,6 +2295,7 @@
 				F245689D1C3CE09100DCE7A6 /* YYTextSelectionView.m in Sources */,
 				F23BFE281C55CE6600D3EA6E /* IMDeviceContent.m in Sources */,
 				E112468F1AAAB2CD0014D461 /* NormalCell.m in Sources */,
+				F22A29711C5E3816002099D5 /* IMCancelListenMessage.m in Sources */,
 				F20553B91B400D9D0093AE8A /* HotSearchTopicCell.m in Sources */,
 				F20373381C40C475004E30D5 /* AFImageDownloader.m in Sources */,
 				F20553B11B3DED940093AE8A /* NotifyButton.m in Sources */,
@@ -2282,6 +2331,7 @@
 				F21BFD461BDA97F900FE857E /* STKDataSourceWrapper.m in Sources */,
 				E112469B1AAAC02A0014D461 /* BaseNagationViewController.m in Sources */,
 				F245689A1C3CE09100DCE7A6 /* YYTextLayout.m in Sources */,
+				F22A29671C5E0496002099D5 /* IMListenMessage.m in Sources */,
 				F20B682D1AF3E39A0058820D /* MuzzikNoCardCell.m in Sources */,
 				F2AEC69B1B0908B500DA676E /* NotifyObject.m in Sources */,
 				E11246911AAAB2CD0014D461 /* TopicHeaderView.m in Sources */,
@@ -2316,6 +2366,7 @@
 				E11246761AAAB20B0014D461 /* UIImage+GIF.m in Sources */,
 				F24568A81C3CE09100DCE7A6 /* YYTextTransaction.m in Sources */,
 				F25C50531B038AAB00F03A61 /* topicLabel.m in Sources */,
+				F22A29741C5F1A68002099D5 /* IMMessageDispatcher.m in Sources */,
 				F203730A1C3FA1D9004E30D5 /* Conversation.m in Sources */,
 				F2A2E9081B08C69B00D65514 /* suggestCollectionCell.m in Sources */,
 				F20373311C40C475004E30D5 /* AFHTTPSessionManager.m in Sources */,
@@ -2355,6 +2406,7 @@
 				F20373051C3FA1D9004E30D5 /* UserCore+CoreDataProperties.m in Sources */,
 				F26131241ADE1C200042F1D4 /* setNameVc.m in Sources */,
 				F24B8F5B1BCD1CB900FC2597 /* RDVTabBarController.m in Sources */,
+				F22A29641C5DF4FF002099D5 /* ListenCell.m in Sources */,
 				F21A8F211C341E6300B3F70C /* IMFriendListViewController.m in Sources */,
 				E1FA12D11AB14CEF005EDA1D /* NSError+Additions.m in Sources */,
 				F21BFD431BDA97F900FE857E /* STKAutoRecoveringHTTPDataSource.m in Sources */,
