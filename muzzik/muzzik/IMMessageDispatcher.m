@@ -231,15 +231,14 @@
             listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
             muzzik *playMuzzik = [MuzzikPlayer shareClass].playingMuzzik;
             listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:playMuzzik.music.music_id,@"_id",playMuzzik.music.name,@"name",playMuzzik.music.artist,@"artist",playMuzzik.music.key,@"key",user.rootId,@"root", nil]];
-            [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:newUser.user_id content:listenmessage pushContent:nil success:^(long messageId) {
-                NSLog(@"%d",messageId);
-            } error:^(RCErrorCode nErrorCode, long messageId) {
-                NSLog(@"%d",nErrorCode);
-            } ];
+            [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:newUser.user_id content:listenmessage pushContent:nil success:nil error:nil];
         }
         
     }else{
-        [user.listenUser removeObject:newUser];
+        if (![[enterDic objectForKey:@"listento"] boolValue]) {
+            [user.listenUser removeObject:newUser];
+        }
+        
     }
     coreMessage = [appdelegate getNewMessage];
     coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
@@ -380,16 +379,14 @@
     RCUserInfo *info;
     AppDelegate *appdelegate = [UIApplication sharedApplication].delegate;
     
-    IMListenMessage *shareMessage = (IMListenMessage *)message.content;
+    IMListenMessage *listenMessage = (IMListenMessage *)message.content;
     
-    NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:shareMessage.extra];
+    NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:listenMessage.extra];
     
     if (infoDic) {
         info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-        shareMessage.senderUserInfo = info;
-        newUser = [appdelegate getNewUserWithuserinfo:info];
-        if ([user.listenUser containsObject:newUser]) {
-            [user.listenUser removeObject:newUser];
+        if ([user.listenToUid isEqualToString:info.userId]) {
+            user.listenToUid = @"";
         }
         
     }

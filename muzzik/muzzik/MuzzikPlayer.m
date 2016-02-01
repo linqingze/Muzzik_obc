@@ -8,6 +8,9 @@
 
 #import "MuzzikPlayer.h"
 #import "UIImageView+WebCache.h"
+#import "IMSynMusicMessage.h"
+#import "Utils_IM.h"
+#import "IMCancelListenMessage.h"
 @interface MuzzikPlayer ()<STKAudioPlayerDelegate,STKDataSourceDelegate>{
     Globle *globle;
     NSURL *musicUrl;
@@ -72,8 +75,25 @@
         [_player playURL:musicUrl];
     }else if([self.MusicArray count] >1){
         [self playSongWithSongModel:self.MusicArray[self.index +1] Title:self.viewTitle];
+        userInfo *user = [userInfo shareClass];
+        if ([user.listenUser count]>0) {
+            IMSynMusicMessage *listenmessage = [[IMSynMusicMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_playingMuzzik.music.music_id,@"_id",_playingMuzzik.music.name,@"name",_playingMuzzik.music.artist,@"artist",_playingMuzzik.music.key,@"key",user.rootId,@"root", nil]];
+            for (UserCore *coreuser in user.listenUser) {
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+            }
+        }
     }else{
         [_player stop];
+        userInfo *user = [userInfo shareClass];
+        if ([user.listenUser count]>0) {
+            IMCancelListenMessage *listenmessage = [[IMCancelListenMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            for (UserCore *coreuser in user.listenUser) {
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+            }
+        }
     }
 }
 #pragma mark public Action

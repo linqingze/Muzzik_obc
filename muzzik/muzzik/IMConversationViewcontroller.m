@@ -14,7 +14,8 @@
 #import "UIImageView+WebCache.h"
 #import "YYTextView.h"
 #import "userDetailInfo.h"
-
+#import "IMEnterMessage.h"
+#import "Utils_IM.h"
 
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
@@ -65,7 +66,22 @@
     [self settingTableView];
     [self settingTalkView];
     [self settingMessageButton];
+    IMEnterMessage *enter = [[IMEnterMessage alloc] init];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"watch", nil];
+    enter.jsonStr = [Utils_IM DataTOjsonString:dic];
+    enter.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_con.targetUser.name,@"name",_con.targetUser.avatar,@"avatar",_con.targetUser.user_id,@"_id", nil]];
+    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:self.con.targetId content:enter pushContent:nil success:nil error:nil];
     // Do any additional setup after loading the view.
+}
+-(void)viewDidDisappear:(BOOL)animated{
+    [super viewDidDisappear:animated];
+    userInfo *user = [userInfo shareClass];
+    IMEnterMessage *enter = [[IMEnterMessage alloc] init];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO],@"watch",[user.listenToUid isEqualToString:_con.targetId], nil];
+    enter.jsonStr = [Utils_IM DataTOjsonString:dic];
+    enter.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_con.targetUser.name,@"name",_con.targetUser.avatar,@"avatar",_con.targetUser.user_id,@"_id", nil]];
+    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:self.con.targetId content:enter pushContent:nil success:nil error:nil];
+    
 }
 -(void)viewWillAppear:(BOOL)animated{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playnextMuzzikUpdate) name:String_SetSongPlayNextNotification object:nil];
