@@ -392,6 +392,9 @@
     }
 }
 
++(void)processUnkowMessage:(RCMessage *)message{
+    111
+}
 +(NSDictionary *) decodeUserinfoRawdic:(NSString *)rawString{
     if (rawString) {
         NSData *dicData = [rawString dataUsingEncoding:NSUTF8StringEncoding];
