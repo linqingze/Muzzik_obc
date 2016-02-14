@@ -16,5 +16,5 @@
 +(void)processCancelMessageByRCMessage:(RCMessage *) message;
 +(void)processSynMusicMessageByRCMessage:(RCMessage *) message;
 +(void)processListenToMessageByRCMessage:(RCMessage *) message;
-+(void)processUnkowMessage:(RCMessage *) message;
+//+(void)processUnkowMessage:(RCMessage *) message;
 @end

@@ -16,7 +16,7 @@
 #import "userDetailInfo.h"
 #import "IMEnterMessage.h"
 #import "Utils_IM.h"
-
+#import "ListenCell.h"
 @interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
@@ -646,6 +646,26 @@
 }
 -(void)removeCell:(UITableViewCell *)cell{
     
+}
+
+-(void)updateSynMusicMessage:(NSDictionary *)musicDic{
+    if (listenMessage) {
+        listenMessage.messageData = [NSJSONSerialization dataWithJSONObject:musicDic options:kNilOptions error:nil];
+        NSInteger index = [_con.messages indexOfObject:listenMessage];
+        if (messageCount >= _con.messages.count) {
+            ListenCell *cell = [IMTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+            [cell updateMusicMessage];
+        }
+        else{
+            ListenCell *cell = [IMTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]];
+            [cell updateMusicMessage];
+        }
+      
+    }else{
+        AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+        listenMessage = [app getNewMessage];
+        
+    }
 }
 /*
 #pragma mark - Navigation

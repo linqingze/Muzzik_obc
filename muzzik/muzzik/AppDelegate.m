@@ -1812,9 +1812,6 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         else if ([message.content isKindOfClass:[IMSynMusicMessage class]]){
             [IMMessageDispatcher processSynMusicMessageByRCMessage:message];
         }
-        else{
-            [IMMessageDispatcher processUnkowMessage:message];
-        }
     }
     
     

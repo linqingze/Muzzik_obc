@@ -20,6 +20,7 @@
 #import "IMShareMessage.h"
 #import "IMEnterMessage.h"
 #import "IMListenMessage.h"
+#import "IMCancelListenMessage.h"
 #import "Utils_IM.h"
 @implementation IMMessageDispatcher
 
@@ -320,17 +321,17 @@
     RCUserInfo *info;
     AppDelegate *appdelegate = [UIApplication sharedApplication].delegate;
     
-    IMSynMusicMessage *shareMessage = (IMSynMusicMessage *)message.content;
+    IMSynMusicMessage *synMessage = (IMSynMusicMessage *)message.content;
     
-    NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:shareMessage.extra];
+    NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:synMessage.extra];
     
     if (infoDic) {
         info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
-        shareMessage.senderUserInfo = info;
+        synMessage.senderUserInfo = info;
         newUser = [appdelegate getNewUserWithuserinfo:info];
     }
     
-    NSDictionary *musicDic = [NSJSONSerialization JSONObjectWithData:[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
+    NSDictionary *musicDic = [NSJSONSerialization JSONObjectWithData:[synMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
     if (musicDic) {
         if ([info.userId isEqualToString:user.listenToUid]) {
             muzzik *playMuzzik = [MuzzikPlayer shareClass].playingMuzzik;
@@ -375,11 +376,8 @@
 
 +(void)processCancelMessageByRCMessage:(RCMessage *)message{
     userInfo *user = [userInfo shareClass];
-    UserCore *newUser;
     RCUserInfo *info;
-    AppDelegate *appdelegate = [UIApplication sharedApplication].delegate;
-    
-    IMListenMessage *listenMessage = (IMListenMessage *)message.content;
+    IMCancelListenMessage *listenMessage = (IMCancelListenMessage *)message.content;
     
     NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:listenMessage.extra];
     
@@ -392,9 +390,6 @@
     }
 }
 
-+(void)processUnkowMessage:(RCMessage *)message{
-    111
-}
 +(NSDictionary *) decodeUserinfoRawdic:(NSString *)rawString{
     if (rawString) {
         NSData *dicData = [rawString dataUsingEncoding:NSUTF8StringEncoding];

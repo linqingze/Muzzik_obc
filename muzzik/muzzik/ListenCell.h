@@ -18,4 +18,6 @@
 @property (nonatomic,retain) Message *cellMessage;
 @property (nonatomic,retain) muzzik *playMuzzik;
 @property (nonatomic,weak) IMConversationViewcontroller *imvc;
+
+-(void) updateMusicMessage;
 @end
