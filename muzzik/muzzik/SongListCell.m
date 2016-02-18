@@ -53,6 +53,7 @@
 
 -(void)playAction{
     NSLog(@"play");
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.cellMuzzik];
 }
 -(void)CommentAction{

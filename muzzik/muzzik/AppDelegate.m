@@ -406,26 +406,17 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     NSDate *localDate = [dateFormatter dateFromString:time];
-    NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
-    //设置转换后的目标日期时区
-    NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
-    //得到源日期与世界标准时间的偏移量
-    NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
-    //目标日期与本地时区的偏移量
-    NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
-    //得到时间偏移量的差值
-    NSTimeInterval Tinterval = sourceGMTOffset- destinationGMTOffset;
-    //转为现在时间
-    NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+    NSDate *Tdate = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
     
-    //    NSString* timeStr = @"2011-01-26 17:40:50";
+    NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateStyle:NSDateFormatterMediumStyle];
-    [formatter setTimeStyle:NSDateFormatterShortStyle];
-    [formatter setDateFormat:@"MM-dd HH:mm"];
-    return [formatter stringFromDate:destinationDateNow];
+    [formatter setDateFormat:@"yyyy-MM-dd HH:mm"];
+    return [formatter stringFromDate:aimDate];
     
 }
+
 
 #pragma -mark 个推后台推送，消息处理
 //-(void)GexinSdkDidReceivePayload:(NSString *)payloadId fromApplication:(NSString *)appId{
@@ -1670,7 +1661,10 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
                 }
             } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
                 NSLog(@"%@",[error.userInfo objectForKey:@"NSLocalizedDescription"]);
-                if ([[error.userInfo objectForKey:@"NSLocalizedDescription"]isEqualToString:@"Request failed: unauthorized (401)"]) {
+                NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)task.response;
+                NSLog(@"Received HTTP %d", httpResponse.statusCode);
+                
+                if (httpResponse.statusCode == 401) {
                     user.token = @"";
                     user.uid = @"";
                     user.avatar = @"";
@@ -1803,13 +1797,13 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
         }else if ([message.content isKindOfClass:[IMEnterMessage class]]){
             [IMMessageDispatcher processEnterMessageByRCMessage:message];
         }
-        else if ([message.content isKindOfClass:[IMListenMessage class]]){
+        else if ([message.content isKindOfClass:[IMListenMessage class]] && [Utils_IM checkoOldDate:[NSDate dateWithTimeIntervalSince1970:message.sentTime/1000]]){
             [IMMessageDispatcher processListenToMessageByRCMessage:message];
         }
-        else if ([message.content isKindOfClass:[IMCancelListenMessage class]]){
+        else if ([message.content isKindOfClass:[IMCancelListenMessage class]] && [Utils_IM checkoOldDate:[NSDate dateWithTimeIntervalSince1970:message.sentTime/1000]]){
             [IMMessageDispatcher processCancelMessageByRCMessage:message];
         }
-        else if ([message.content isKindOfClass:[IMSynMusicMessage class]]){
+        else if ([message.content isKindOfClass:[IMSynMusicMessage class]] && [Utils_IM checkoOldDate:[NSDate dateWithTimeIntervalSince1970:message.sentTime/1000]]){
             [IMMessageDispatcher processSynMusicMessageByRCMessage:message];
         }
     }
@@ -1997,7 +1991,7 @@ didReceiveLocalNotification:(UILocalNotification *)notification {
 }
 -(Conversation *) getNewConversationWithTargetId:(NSString *) targetId{
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"UserCore" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Conversation" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     // Specify criteria for filtering which objects to fetch
     NSPredicate *predicate = [NSPredicate predicateWithFormat:@"targetId == %@", targetId];

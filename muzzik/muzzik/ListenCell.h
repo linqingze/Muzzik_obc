@@ -17,7 +17,11 @@
 @property (nonatomic,retain) UILabel *songName;
 @property (nonatomic,retain) Message *cellMessage;
 @property (nonatomic,retain) muzzik *playMuzzik;
+@property (nonatomic,retain) UIButton *listenButton;
+@property (nonatomic,retain) UILabel *listenTextLabel;
 @property (nonatomic,weak) IMConversationViewcontroller *imvc;
 
 -(void) updateMusicMessage;
+-(void) configureCellWithMessage:(Message *) message;
+-(void) listenActionInStatue:(NSNumber *)status;
 @end

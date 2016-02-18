@@ -62,6 +62,7 @@
     [self.delegate newMuzzik:self.songModel];
 }
 -(void)playMusic{
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
 }
 @end

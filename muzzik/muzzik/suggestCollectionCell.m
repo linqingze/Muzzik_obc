@@ -106,6 +106,7 @@
     [self.delegate clickOnCell:self.songModel];
 }
 -(void)playAction{
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
 }
 @end

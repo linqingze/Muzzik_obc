@@ -30,6 +30,6 @@
     NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
     [tempSet addObjectsFromArray:[self.myConversation array]];
     [tempSet removeObject:value];
-    self.myConversation = tempSet;
+    self.myConversation = [tempSet copy];
 }
 @end

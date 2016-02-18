@@ -19,4 +19,10 @@
     [tempSet addObject:value];
     self.messages = tempSet;
 }
+-(void)removeMessagesObject:(Message *)value{
+    NSMutableOrderedSet* tempSet = [[NSMutableOrderedSet alloc] init];
+    [tempSet addObjectsFromArray:[self.messages array]];
+    [tempSet removeObject:value];
+    self.messages = [tempSet copy];
+}
 @end

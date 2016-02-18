@@ -81,9 +81,26 @@
             listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
             listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_playingMuzzik.music.music_id,@"_id",_playingMuzzik.music.name,@"name",_playingMuzzik.music.artist,@"artist",_playingMuzzik.music.key,@"key",user.rootId,@"root", nil]];
             for (UserCore *coreuser in user.listenUser) {
-                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+                if (![coreuser.user_id isEqualToString:user.rootId] || ![coreuser.user_id isEqualToString:user.listenToUid] ) {
+                    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+                }
+                
             }
         }
+        
+        if ([user.wacthUser count]>0) {
+            IMSynMusicMessage *listenmessage = [[IMSynMusicMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_playingMuzzik.music.music_id,@"_id",_playingMuzzik.music.name,@"name",_playingMuzzik.music.artist,@"artist",_playingMuzzik.music.key,@"key",user.rootId,@"root", nil]];
+            for (UserCore *coreuser in user.wacthUser) {
+                if (![coreuser.user_id isEqualToString:user.rootId] || ![coreuser.user_id isEqualToString:user.listenToUid] ) {
+                    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+                }
+                
+            }
+        }
+        
+        
     }else{
         [_player stop];
         userInfo *user = [userInfo shareClass];
@@ -94,6 +111,15 @@
                 [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
             }
         }
+        
+        if ([user.wacthUser count]>0) {
+            IMCancelListenMessage *listenmessage = [[IMCancelListenMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            for (UserCore *coreuser in user.wacthUser) {
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+            }
+        }
+        
     }
 }
 #pragma mark public Action

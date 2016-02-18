@@ -1072,6 +1072,7 @@
     [alertSheet showInView:self.view.window];
 }
 -(void)playMusicLocal{
+    [userInfo shareClass].listenToUid = @"";
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     
     center.singleMusic = YES;

@@ -11,5 +11,7 @@
 @interface Utils_IM : NSObject
 +(NSString *) getStringFromIMDate:(NSDate*)date;
 +(BOOL) checkLimitedTime:(NSDate *)new oldDate:(NSDate *)old;
++(BOOL) checkoOldDate:(NSDate *)old;
+
 +(NSString*)DataTOjsonString:(id)object;
 @end

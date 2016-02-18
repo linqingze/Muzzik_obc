@@ -95,7 +95,7 @@
 
 }
 -(void)playMusicAction:(id) sender{
-    NSLog(@"play");
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
 }
 -(void) colorViewWithColorString:(NSString *) colorString{

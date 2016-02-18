@@ -186,7 +186,7 @@
                 return NO;
             }
         }else{
-            if ([self.music.music_id isEqualToString:myMuzzik.music.music_id]) {
+            if ([self.music.key isEqualToString:myMuzzik.music.key]) {
                 return YES;
             }else{
                 return NO;

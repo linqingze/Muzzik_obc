@@ -46,6 +46,15 @@
         return NO;
     }
 }
++(BOOL) checkoOldDate:(NSDate *)old{
+    NSTimeInterval nowInterval = [[NSDate date] timeIntervalSinceReferenceDate];
+    NSTimeInterval oldInterval = [old timeIntervalSinceReferenceDate];
+    if (nowInterval - oldInterval < 20) {
+        return YES;
+    }else{
+        return NO;
+    }
+}
 +(NSString*)DataTOjsonString:(id)object
 {
     NSString *jsonString = nil;

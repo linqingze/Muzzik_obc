@@ -124,12 +124,14 @@
 		F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD711AF75074008A71C0 /* MusicAndArtistCell.m */; };
 		F20FDD751AF77ECE008A71C0 /* searchUserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD741AF77ECE008A71C0 /* searchUserCell.m */; };
 		F20FDD781AF7B243008A71C0 /* SearchtopicCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */; };
-		F211310F1C47CBD80041309A /* IMSshareMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F211310E1C47CBD80041309A /* IMSshareMessage.m */; };
+		F211310F1C47CBD80041309A /* IMShareMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F211310E1C47CBD80041309A /* IMShareMessage.m */; };
 		F212A7691AF4D825005B14DD /* NormalNoCardCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A7681AF4D825005B14DD /* NormalNoCardCell.m */; };
 		F212A76C1AF4E52E005B14DD /* showUserVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76B1AF4E52E005B14DD /* showUserVC.m */; };
 		F212A76F1AF5044A005B14DD /* DetaiMuzzikVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F212A76E1AF5044A005B14DD /* DetaiMuzzikVC.m */; };
 		F216ACC61BD554110074ADF4 /* LineSlider.m in Sources */ = {isa = PBXBuildFile; fileRef = F216ACC51BD554110074ADF4 /* LineSlider.m */; };
 		F216ACC91BD62EF40074ADF4 /* MuzzikPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F216ACC81BD62EF40074ADF4 /* MuzzikPlayer.m */; };
+		F217E0721C75E38E009FF1A2 /* IMPingMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F217E0711C75E38E009FF1A2 /* IMPingMessage.m */; };
+		F217E0751C75E7D3009FF1A2 /* IMFocusMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = F217E0741C75E7D3009FF1A2 /* IMFocusMessage.m */; };
 		F218144F1AF234CE00AA06AA /* HPGrowingTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */; };
 		F21814501AF234CE00AA06AA /* HPTextViewInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = F218144E1AF234CE00AA06AA /* HPTextViewInternal.m */; };
 		F2190DBB1BBA86CA00588A7D /* NLCropViewLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = F2190DB81BBA86CA00588A7D /* NLCropViewLayer.m */; };
@@ -150,6 +152,8 @@
 		F21BFD4C1BDAA32000FE857E /* UIButton+autoCycle.m in Sources */ = {isa = PBXBuildFile; fileRef = F21BFD4B1BDAA32000FE857E /* UIButton+autoCycle.m */; };
 		F21D57CC1C085E4300C7FA45 /* SettingNewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */; };
 		F21EA1CA1ACECC6200F5ED32 /* TopicVC.m in Sources */ = {isa = PBXBuildFile; fileRef = F21EA1C91ACECC6200F5ED32 /* TopicVC.m */; };
+		F22332631C718B7000BFAFC3 /* EnterCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F22332621C718B7000BFAFC3 /* EnterCell.m */; };
+		F22332661C73320800BFAFC3 /* ListenTogetherView.m in Sources */ = {isa = PBXBuildFile; fileRef = F22332651C73320800BFAFC3 /* ListenTogetherView.m */; };
 		F2241BB51C50937100EFFD5B /* IMshareCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BB41C50937100EFFD5B /* IMshareCell.m */; };
 		F2241BBB1C50F65700EFFD5B /* WebViewcontroller.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */; };
 		F2241BBE1C51F09600EFFD5B /* IMTextOwnerCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F2241BBD1C51F09600EFFD5B /* IMTextOwnerCell.m */; };
@@ -568,7 +572,7 @@
 		F20FDD761AF7B243008A71C0 /* SearchtopicCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchtopicCell.h; sourceTree = "<group>"; };
 		F20FDD771AF7B243008A71C0 /* SearchtopicCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchtopicCell.m; sourceTree = "<group>"; };
 		F211310D1C47CBD80041309A /* IMShareMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMShareMessage.h; sourceTree = "<group>"; };
-		F211310E1C47CBD80041309A /* IMSshareMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMSshareMessage.m; sourceTree = "<group>"; };
+		F211310E1C47CBD80041309A /* IMShareMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMShareMessage.m; sourceTree = "<group>"; };
 		F212A7671AF4D825005B14DD /* NormalNoCardCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NormalNoCardCell.h; sourceTree = "<group>"; };
 		F212A7681AF4D825005B14DD /* NormalNoCardCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NormalNoCardCell.m; sourceTree = "<group>"; };
 		F212A76A1AF4E52E005B14DD /* showUserVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = showUserVC.h; sourceTree = "<group>"; };
@@ -579,6 +583,10 @@
 		F216ACC51BD554110074ADF4 /* LineSlider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LineSlider.m; sourceTree = "<group>"; };
 		F216ACC71BD62EF40074ADF4 /* MuzzikPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MuzzikPlayer.h; sourceTree = "<group>"; };
 		F216ACC81BD62EF40074ADF4 /* MuzzikPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MuzzikPlayer.m; sourceTree = "<group>"; };
+		F217E0701C75E38E009FF1A2 /* IMPingMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMPingMessage.h; sourceTree = "<group>"; };
+		F217E0711C75E38E009FF1A2 /* IMPingMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMPingMessage.m; sourceTree = "<group>"; };
+		F217E0731C75E7D3009FF1A2 /* IMFocusMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMFocusMessage.h; sourceTree = "<group>"; };
+		F217E0741C75E7D3009FF1A2 /* IMFocusMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMFocusMessage.m; sourceTree = "<group>"; };
 		F218144B1AF234CE00AA06AA /* HPGrowingTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPGrowingTextView.h; sourceTree = "<group>"; };
 		F218144C1AF234CE00AA06AA /* HPGrowingTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HPGrowingTextView.m; sourceTree = "<group>"; };
 		F218144D1AF234CE00AA06AA /* HPTextViewInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HPTextViewInternal.h; sourceTree = "<group>"; };
@@ -618,6 +626,10 @@
 		F21D57CB1C085E4300C7FA45 /* SettingNewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingNewCell.m; sourceTree = "<group>"; };
 		F21EA1C81ACECC6200F5ED32 /* TopicVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicVC.h; sourceTree = "<group>"; };
 		F21EA1C91ACECC6200F5ED32 /* TopicVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicVC.m; sourceTree = "<group>"; };
+		F22332611C718B7000BFAFC3 /* EnterCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnterCell.h; sourceTree = "<group>"; };
+		F22332621C718B7000BFAFC3 /* EnterCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnterCell.m; sourceTree = "<group>"; };
+		F22332641C73320800BFAFC3 /* ListenTogetherView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListenTogetherView.h; sourceTree = "<group>"; };
+		F22332651C73320800BFAFC3 /* ListenTogetherView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListenTogetherView.m; sourceTree = "<group>"; };
 		F2241BB31C50937100EFFD5B /* IMshareCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IMshareCell.h; sourceTree = "<group>"; };
 		F2241BB41C50937100EFFD5B /* IMshareCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IMshareCell.m; sourceTree = "<group>"; };
 		F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewcontroller.h; sourceTree = "<group>"; };
@@ -1626,6 +1638,8 @@
 				F2241BB41C50937100EFFD5B /* IMshareCell.m */,
 				F22A29621C5DF4FF002099D5 /* ListenCell.h */,
 				F22A29631C5DF4FF002099D5 /* ListenCell.m */,
+				F22332611C718B7000BFAFC3 /* EnterCell.h */,
+				F22332621C718B7000BFAFC3 /* EnterCell.m */,
 			);
 			name = Cell;
 			sourceTree = "<group>";
@@ -1636,7 +1650,11 @@
 				F23BFE261C55CE6600D3EA6E /* IMDeviceContent.h */,
 				F23BFE271C55CE6600D3EA6E /* IMDeviceContent.m */,
 				F211310D1C47CBD80041309A /* IMShareMessage.h */,
-				F211310E1C47CBD80041309A /* IMSshareMessage.m */,
+				F211310E1C47CBD80041309A /* IMShareMessage.m */,
+				F217E0701C75E38E009FF1A2 /* IMPingMessage.h */,
+				F217E0711C75E38E009FF1A2 /* IMPingMessage.m */,
+				F217E0731C75E7D3009FF1A2 /* IMFocusMessage.h */,
+				F217E0741C75E7D3009FF1A2 /* IMFocusMessage.m */,
 				F22A29651C5E0496002099D5 /* IMListenMessage.h */,
 				F22A29661C5E0496002099D5 /* IMListenMessage.m */,
 				F22A29691C5E073C002099D5 /* IMEnterMessage.h */,
@@ -1736,6 +1754,8 @@
 				F21A8F201C341E6300B3F70C /* IMFriendListViewController.m */,
 				F21A8F221C34275200B3F70C /* IMConversationViewcontroller.h */,
 				F21A8F231C34275200B3F70C /* IMConversationViewcontroller.m */,
+				F22332641C73320800BFAFC3 /* ListenTogetherView.h */,
+				F22332651C73320800BFAFC3 /* ListenTogetherView.m */,
 				F22A29611C5DF4B1002099D5 /* Cell */,
 				F2241BB91C50F65700EFFD5B /* WebViewcontroller.h */,
 				F2241BBA1C50F65700EFFD5B /* WebViewcontroller.m */,
@@ -2169,6 +2189,7 @@
 				F24B8F5A1BCD1CB900FC2597 /* RDVTabBar.m in Sources */,
 				F24568A01C3CE09100DCE7A6 /* YYTextParser.m in Sources */,
 				F24B8F5C1BCD1CB900FC2597 /* RDVTabBarItem.m in Sources */,
+				F217E0751C75E7D3009FF1A2 /* IMFocusMessage.m in Sources */,
 				F2A3D94B1C3F952B00BC9DC3 /* MuzzikUser.m in Sources */,
 				F20C4EE61B6A48D100331101 /* IBActionSheet.m in Sources */,
 				F20C4EDD1B68CA5800331101 /* MuzzikUserCell.m in Sources */,
@@ -2177,6 +2198,7 @@
 				F24568A11C3CE09100DCE7A6 /* YYTextRubyAnnotation.m in Sources */,
 				F245689F1C3CE09100DCE7A6 /* YYTextAttribute.m in Sources */,
 				F24F0A681BB320910073F6FA /* JSImagePickerViewController.m in Sources */,
+				F22332661C73320800BFAFC3 /* ListenTogetherView.m in Sources */,
 				F24568951C3CE09100DCE7A6 /* YYTextContainerView.m in Sources */,
 				F2E9A8F71AFFB21000F4F461 /* TopicDetail.m in Sources */,
 				E11246781AAAB20B0014D461 /* UIImage+WebP.m in Sources */,
@@ -2277,7 +2299,7 @@
 				F208EF4B1B1E1D2E00DB5A68 /* RJTextView.m in Sources */,
 				F20373391C40C475004E30D5 /* AFNetworkActivityIndicatorManager.m in Sources */,
 				F2F7EE2A1AEE22B900265596 /* MuzzikObject.m in Sources */,
-				F211310F1C47CBD80041309A /* IMSshareMessage.m in Sources */,
+				F211310F1C47CBD80041309A /* IMShareMessage.m in Sources */,
 				F2641F201AD988CC003BECDD /* registerVC.m in Sources */,
 				F2F7EE3B1AEE23E400265596 /* ChineseToPinyinResource.m in Sources */,
 				F2E558AE1B164D420080F9C9 /* UIView+MJExtension.m in Sources */,
@@ -2309,6 +2331,7 @@
 				F200B7A31B28B727002A6F61 /* SDBaseProgressView.m in Sources */,
 				F2AEC69E1B090FF100DA676E /* NotifyFollowCell.m in Sources */,
 				F2241BBE1C51F09600EFFD5B /* IMTextOwnerCell.m in Sources */,
+				F22332631C718B7000BFAFC3 /* EnterCell.m in Sources */,
 				F24568971C3CE09100DCE7A6 /* YYTextEffectWindow.m in Sources */,
 				F2E558AB1B164D420080F9C9 /* MJRefreshHeaderView.m in Sources */,
 				F20553A21B36B7B70093AE8A /* ZJSwitch.m in Sources */,
@@ -2346,6 +2369,7 @@
 				F27902D31BD249E100B802A7 /* audioPlayerViewController.m in Sources */,
 				E11246791AAAB20B0014D461 /* UIImageView+HighlightedWebCache.m in Sources */,
 				F29A17021AEA98B600200EAE /* SearchLibraryMusicVC.m in Sources */,
+				F217E0721C75E38E009FF1A2 /* IMPingMessage.m in Sources */,
 				F20FDD721AF75074008A71C0 /* MusicAndArtistCell.m in Sources */,
 				F2EDF71D1B0B240800400A85 /* StyledPageControl.m in Sources */,
 				F200B7A71B28B727002A6F61 /* SDRotationLoopProgressView.m in Sources */,

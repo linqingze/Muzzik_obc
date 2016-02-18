@@ -153,7 +153,7 @@
     //[self.homeVc downMusicWithModel:self.songModel];
 }
 -(void)playMusicAction:(id) sender{
-    NSLog(@"play");
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
     userInfo *user = [userInfo shareClass];
     if (_songModel.isNewDataForAttention && !user.hasTeachToFollow && !_songModel.MuzzikUser.isFollow) {

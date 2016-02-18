@@ -222,10 +222,12 @@
     }
     
     NSDictionary *enterDic = [NSJSONSerialization JSONObjectWithData:[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding] options:NSJSONReadingMutableContainers error:nil];
-    NSLog(@"%@",enterDic);
-    NSLog(@"same:%d",[user.listenUser containsObject:newUser]);
-    if ([[enterDic objectForKey:@"watch"] boolValue]) {
-        [user.listenUser addObject:newUser];
+//    NSLog(@"%@",enterDic);
+//    NSLog(@"same:%d",[user.listenUser containsObject:newUser]);
+    if ([[enterDic objectForKey:@"watch"] boolValue] && [Utils_IM checkoOldDate:[NSDate dateWithTimeIntervalSince1970:message.sentTime/1000]]) {
+        if (![user.listenUser containsObject:newUser]) {
+            [user.wacthUser addObject:newUser];
+        }
         
         if ([Globle shareGloble].isPlaying) {
             IMSynMusicMessage *listenmessage = [[IMSynMusicMessage alloc] init];
@@ -235,13 +237,18 @@
             [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:newUser.user_id content:listenmessage pushContent:nil success:nil error:nil];
         }
         
-    }else{
-        if (![[enterDic objectForKey:@"listento"] boolValue]) {
-            [user.listenUser removeObject:newUser];
+    }else if(![[enterDic objectForKey:@"watch"] boolValue] && [Utils_IM checkoOldDate:[NSDate dateWithTimeIntervalSince1970:message.sentTime/1000]]){
+        if ([user.wacthUser containsObject:newUser]) {
+            [user.wacthUser removeObject:newUser];
         }
-        
     }
     coreMessage = [appdelegate getNewMessage];
+    if ([[enterDic objectForKey:@"watch"] boolValue]) {
+        coreMessage.messageContent = @"Ta进来了";
+    }else{
+        coreMessage.messageContent = @"Ta出去了";
+    }
+    
     coreMessage.messageData =[shareMessage.jsonStr  dataUsingEncoding:NSUTF8StringEncoding];
     coreMessage.messageType = Type_IM_Enter;
     coreMessage.messageUser = newUser;
@@ -290,27 +297,35 @@
         coreMessage.needsToShowTime = [NSNumber numberWithBool:NO];
     }
     [appdelegate.managedObjectContext save:nil];
-    if (![user.account.myConversation.firstObject.targetId isEqualToString:message.targetId]) {
-        [user.account removeMyConversationObject:newCon];
-        [user.account insertObject:newCon inMyConversationAtIndex:0];
-    }
-    [appdelegate.managedObjectContext save:nil];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UINavigationController *nac = (UINavigationController *)appdelegate.tabviewController.selectedViewController;
-        if (nac == appdelegate.notifyVC) {
-            if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
-                NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
-                [notifyvc newMessageArrive];
-            }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
-                //handle message
+    if ([newCon.type isEqualToString:Type_Focus]) {
+        if (![user.account.myConversation.firstObject.targetId isEqualToString:message.targetId]) {
+            [user.account removeMyConversationObject:newCon];
+            [user.account insertObject:newCon inMyConversationAtIndex:0];
+        }
+        [appdelegate.managedObjectContext save:nil];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UINavigationController *nac = (UINavigationController *)appdelegate.tabviewController.selectedViewController;
+            if (nac == appdelegate.notifyVC) {
+                if ([nac.viewControllers.lastObject isKindOfClass:[NotificationCenterViewController class]]) {
+                    NotificationCenterViewController *notifyvc = (NotificationCenterViewController *)nac.viewControllers.lastObject ;
+                    [notifyvc newMessageArrive];
+                }else if([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
+                    //handle message
+                    IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
+                    if ([vc.con.targetId isEqualToString:message.targetId]) {
+                        [vc receiveInserCellWithMessage:coreMessage];
+                    }
+                    
+                }
+            }else if ([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]){
                 IMConversationViewcontroller* vc =(IMConversationViewcontroller *)nac.viewControllers.lastObject;
                 if ([vc.con.targetId isEqualToString:message.targetId]) {
                     [vc receiveInserCellWithMessage:coreMessage];
                 }
-                
             }
-        }
-    });
+        });
+
+    }
     
 }
 
@@ -324,7 +339,7 @@
     IMSynMusicMessage *synMessage = (IMSynMusicMessage *)message.content;
     
     NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:synMessage.extra];
-    
+
     if (infoDic) {
         info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
         synMessage.senderUserInfo = info;
@@ -369,7 +384,11 @@
         info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
         shareMessage.senderUserInfo = info;
         newUser = [appdelegate getNewUserWithuserinfo:info];
+        
         [user.listenUser addObject:newUser];
+        if ([user.wacthUser containsObject:newUser]) {
+            [user.wacthUser removeObject:newUser];
+        }
     }
     
 }
@@ -378,13 +397,26 @@
     userInfo *user = [userInfo shareClass];
     RCUserInfo *info;
     IMCancelListenMessage *listenMessage = (IMCancelListenMessage *)message.content;
-    
+    UserCore *newUser;
+    AppDelegate *appdelegate = [UIApplication sharedApplication].delegate;
     NSDictionary *infoDic = [IMMessageDispatcher decodeUserinfoRawdic:listenMessage.extra];
     
     if (infoDic) {
         info = [[RCUserInfo alloc] initWithUserId:[infoDic objectForKey:@"_id"] name:[infoDic objectForKey:@"name"] portrait:[infoDic objectForKey:@"avatar"]];
+        newUser = [appdelegate getNewUserWithuserinfo:info];
         if ([user.listenToUid isEqualToString:info.userId]) {
             user.listenToUid = @"";
+            UINavigationController *nac = (UINavigationController *)appdelegate.tabviewController.selectedViewController;
+            if ([nac.viewControllers.lastObject isKindOfClass:[IMConversationViewcontroller class]]) {
+                IMConversationViewcontroller *imvc = (IMConversationViewcontroller *) nac.viewControllers.lastObject;
+                if ([imvc respondsToSelector:@selector(removeListenMessage)]) {
+                    [imvc removeListenMessage];
+                }
+            }
+        }
+        else if ([user.listenUser containsObject:newUser]) {
+            [user.listenUser removeObject:newUser];
+            [user.wacthUser addObject:newUser];
         }
         
     }

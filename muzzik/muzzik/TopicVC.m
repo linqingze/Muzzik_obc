@@ -736,6 +736,7 @@
 }
 
 -(void)playMusicAction{
+    [userInfo shareClass].listenToUid = @"";
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
     MuzzikPlayer *player = [MuzzikPlayer shareClass];

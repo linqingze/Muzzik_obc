@@ -17,10 +17,12 @@
 #import "IMEnterMessage.h"
 #import "Utils_IM.h"
 #import "ListenCell.h"
-@interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate>{
+#import "EnterCell.h"
+#import "Message.h"
+
+@interface IMConversationViewcontroller ()<UITableViewDataSource,UITableViewDelegate,HPGrowingTextViewDelegate,ListenViewDelegate>{
     UITableView *IMTableView;
     UIView *IMTalkView;
-    NSInteger messageCount;
     UIView *commentView;
     HPGrowingTextView *comnentTextView;
     CGRect tableOriginRect;
@@ -39,7 +41,8 @@
     UILabel *messageLeftLabel;
     NSInteger newMessgaeCount;
     Message *listenMessage;
-
+    NSInteger messageIndex;
+    UIButton *focusButton;
 }
 
 @end
@@ -66,6 +69,7 @@
     [self settingTableView];
     [self settingTalkView];
     [self settingMessageButton];
+    [self setNacButton];
     IMEnterMessage *enter = [[IMEnterMessage alloc] init];
     NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES],@"watch", nil];
     enter.jsonStr = [Utils_IM DataTOjsonString:dic];
@@ -77,10 +81,11 @@
     [super viewDidDisappear:animated];
     userInfo *user = [userInfo shareClass];
     IMEnterMessage *enter = [[IMEnterMessage alloc] init];
-    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO],@"watch",[user.listenToUid isEqualToString:_con.targetId], nil];
+    NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO],@"watch",[NSNumber numberWithBool:[user.listenToUid isEqualToString:_con.targetId]],@"listento", nil];
     enter.jsonStr = [Utils_IM DataTOjsonString:dic];
     enter.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_con.targetUser.name,@"name",_con.targetUser.avatar,@"avatar",_con.targetUser.user_id,@"_id", nil]];
     [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:self.con.targetId content:enter pushContent:nil success:nil error:nil];
+    
     
 }
 -(void)viewWillAppear:(BOOL)animated{
@@ -89,23 +94,26 @@
         NSLog(@"contain");
     }
     [super viewWillAppear:animated];
-    if (messageCount > 0 && !keyBoadShow) {
-        messageCount = messageCount>_con.messages.count ? _con.messages.count :messageCount;
-        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
+    if (_messageArray.count > 0 && !keyBoadShow) {
+        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:_messageArray.count-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:NO];
     }
      AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
-    NSLog(@"%d",app.IMconnectionStatus);
     if (app.IMconnectionStatus == ConnectionStatus_NETWORK_UNAVAILABLE || app.IMconnectionStatus == ConnectionStatus_Unconnected) {
          [self connectionChanged:app.IMconnectionStatus];
     }
-   
+    [self.navigationController.view addSubview:_listenView];
+    [self.navigationController.view addSubview:focusButton];
    
 }
 -(void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
+    AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+    [app.managedObjectContext save:nil];
     if ([_con.messages count] == 0) {
         [[userInfo shareClass].account removeMyConversationObject:_con];
     }
+    [_listenView removeFromSuperview];
+    [focusButton removeFromSuperview];
 }
 -(void) settingTableView{
     IMTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-124)];
@@ -116,19 +124,41 @@
     [IMTableView registerClass:[IMTextCell class] forCellReuseIdentifier:@"IMTextCell"];
     [IMTableView registerClass:[IMshareCell class] forCellReuseIdentifier:@"IMshareCell"];
     [IMTableView registerClass:[IMTextOwnerCell class] forCellReuseIdentifier:@"IMTextOwnerCell"];
+    [IMTableView registerClass:[ListenCell class] forCellReuseIdentifier:@"ListenCell"];
+    [IMTableView registerClass:[EnterCell class] forCellReuseIdentifier:@"EnterCell"];
+    
     [self.view addSubview:IMTableView];
     tableOriginRect = IMTableView.frame;
-    if (_con.messages.count>15) {
+
+    if ([_con.type isEqualToString:Type_Focus]) {
+        if ([_con.messages count]>15) {
+            _messageArray = [NSMutableArray arrayWithArray:[[_con.messages array] subarrayWithRange:NSMakeRange([_con.messages count]-15, 15)]];
+            messageIndex = [_con.messages count]-15;
+        }else{
+            _messageArray = [[_con.messages array] mutableCopy];
+            messageIndex = 0;
+        }
+    }else{
+        _messageArray = [NSMutableArray array];
+        messageIndex = _con.messages.count - 1;
+        while (messageIndex >= 0 && _messageArray.count <= 15) {
+            Message *newMessage = [_con.messages objectAtIndex:messageIndex];
+            if ([newMessage.messageType isEqualToString:Type_IM_Enter]) {
+                messageIndex -- ;
+                continue;
+            }else{
+                [_messageArray insertObject:newMessage atIndex:0];
+                messageIndex -- ;
+            }
+        }
+    }
+    if (messageIndex != 0 ) {
         headerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, 30)];
         [headerView setBackgroundColor:[UIColor whiteColor]];
         activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
         [activityView setFrame:CGRectMake(SCREEN_WIDTH/2-15, 0, 30, 30)];
         [headerView addSubview:activityView];
-        messageCount = 15;
-    }else{
-        messageCount = _con.messages.count;
     }
-    messageCount = 15>_con.messages.count ? _con.messages.count:15;
     
 }
 -(void) settingTalkView{
@@ -175,6 +205,25 @@
     
 }
 
+-(void) setNacButton{
+    
+    _listenView = [[ListenTogetherView alloc] init];
+    _listenView.delegate = self;
+    
+    [_listenView setFrame:CGRectMake(SCREEN_WIDTH - 110, 20, 44, 44)];
+    _listenView.leftAvatarString = [userInfo shareClass].avatar;
+    _listenView.rightAvatarString = _con.targetUser.avatar;
+    _listenView.status = Status_NoMusic;
+    [self.navigationController.view addSubview:_listenView];
+    focusButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-57, 20, 44, 44)];
+    if ([_con.type isEqualToString:Type_Focus]) {
+        [focusButton setImage:[UIImage imageNamed:@"watchselected"] forState:UIControlStateNormal];
+    }else{
+        [focusButton setImage:[UIImage imageNamed:@"watch"] forState:UIControlStateNormal];
+    }
+    
+    [focusButton addTarget:self action:@selector(focusAction) forControlEvents:UIControlEventTouchUpInside];
+}
 -(void) getUnreadMessage{
     newMessgaeCount ++;
     if (newMessgaeCount<=99) {
@@ -187,23 +236,38 @@
     
 }
 -(void)refreshHeader{
-    messageCount +=15;
-    __block NSUInteger moreNum = 15;
+    NSInteger messageCount = 0 ;
+    if ([_con.type isEqualToString:Type_Focus]) {
+        if (messageIndex >= 15) {
+            _messageArray = [NSMutableArray arrayWithArray:[[_con.messages array] subarrayWithRange:NSMakeRange(messageIndex-15, _messageArray.count+15)]];
+            messageIndex = [_con.messages count]-_messageArray.count;
+            messageCount = 14;
+        }else{
+            messageCount = messageIndex;
+            [_messageArray insertObjects:[[_con.messages array] subarrayWithRange:NSMakeRange(0, messageIndex+1)] atIndexes:[[NSIndexSet alloc] initWithIndexesInRange:NSMakeRange(0, messageIndex+1)]];
+            messageIndex = 0;
+        }
+    }else{
+        
+        do{
+            Message *newMessage = [_con.messages objectAtIndex:messageIndex];
+            if ([newMessage.messageType isEqualToString:Type_IM_Enter]) {
+                messageIndex -- ;
+                continue;
+            }else{
+                [_messageArray insertObject:newMessage atIndex:0];
+                messageCount ++;
+                messageIndex -- ;
+            }
+        }while (messageIndex >= 0 && messageCount <= 14 );
+    }
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         loadingMore = NO;
        
         [activityView stopAnimating];
-        if (messageCount > _con.messages.count) {
-            
-            moreNum = 15 - messageCount + _con.messages.count;
-            messageCount = _con.messages.count;
-            [IMTableView reloadData];
-            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:moreNum inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-        }else{
-           
-            [IMTableView reloadData];
-            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:moreNum inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
-        }
+        [IMTableView reloadData];
+        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
         
     });
 }
@@ -245,16 +309,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return _con.messages.count >messageCount ? messageCount : _con.messages.count;
+    return _messageArray.count;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    Message *message;
-    if (messageCount >= _con.messages.count) {
-        message = _con.messages[indexPath.row];
-    }else{
-        message = _con.messages[indexPath.row+_con.messages.count-messageCount];
-    }
+    Message *message = _messageArray[indexPath.row];
     
 //    NSLog(@"%@",message.cellHeight);
     if ([message.cellHeight integerValue] == 0) {
@@ -280,6 +339,12 @@
         }else if ([message.messageType isEqualToString:Type_IM_ShareMuzzik]){
             message.cellHeight = [NSNumber numberWithDouble:height+88];
             [app.managedObjectContext save:nil];
+        }else if ([message.messageType isEqualToString:Type_IM_SynMusic]){
+            message.cellHeight = [NSNumber numberWithDouble:height+88];
+            [app.managedObjectContext save:nil];
+        }else if ([message.messageType isEqualToString:Type_IM_Enter] || [message.messageType isEqualToString:Type_IM_Unknow]){
+            message.cellHeight = [NSNumber numberWithDouble:height+20];
+            [app.managedObjectContext save:nil];
         }
         
         
@@ -288,32 +353,16 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-    Message *message;
-    if (messageCount >= _con.messages.count) {
-        message = _con.messages[indexPath.row];
-    }else{
-        message = _con.messages[indexPath.row+_con.messages.count-messageCount];
-    }
+    Message *message = _messageArray[indexPath.row];
     if ([message.messageType isEqualToString:Type_IM_TextMessage] &&  [message.isOwner boolValue]) {
         IMTextOwnerCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMTextOwnerCell" forIndexPath:indexPath];
         cell.imvc = self;
-        if (messageCount >= _con.messages.count) {
-            message = _con.messages[indexPath.row];
-        }else{
-            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
-        }
         [cell configureCellWithMessage:message];
         return cell;
         
     }else if ([message.messageType isEqualToString:Type_IM_TextMessage] &&  ![message.isOwner boolValue]) {
         IMTextCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMTextCell" forIndexPath:indexPath];
         cell.imvc = self;
-        if (messageCount >= _con.messages.count) {
-            message = _con.messages[indexPath.row];
-        }else{
-            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
-        }
         [cell configureCellWithMessage:message];
         return cell;
         
@@ -321,11 +370,15 @@
     else if ([message.messageType isEqualToString:Type_IM_ShareMuzzik]){
         IMshareCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"IMshareCell" forIndexPath:indexPath];
         cell.imvc = self;
-        if (messageCount >= _con.messages.count) {
-            message = _con.messages[indexPath.row];
-        }else{
-            message = _con.messages[indexPath.row+_con.messages.count-messageCount];
-        }
+        [cell configureCellWithMessage:message];
+        return cell;
+    }else if ([message.messageType isEqualToString:Type_IM_SynMusic]){
+        ListenCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"ListenCell" forIndexPath:indexPath];
+        cell.imvc = self;
+        [cell configureCellWithMessage:message];
+        return cell;
+    }else if ([message.messageType isEqualToString:Type_IM_Enter] || [message.messageType isEqualToString:Type_IM_Unknow]){
+        EnterCell*  cell = [tableView dequeueReusableCellWithIdentifier:@"EnterCell" forIndexPath:indexPath];
         [cell configureCellWithMessage:message];
         return cell;
     }
@@ -418,7 +471,7 @@
     IMTableView.frame = newTableFrame;
     commentView.frame = newInputFieldFrame;
     [UIView commitAnimations];
-    if (messageCount > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height-124) {
+    if (_messageArray.count > 0  && IMTableView.contentSize.height> SCREEN_HEIGHT-keyboardRect.size.height-124) {
         [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
 //        
 //        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:messageCount-1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
@@ -499,20 +552,10 @@
 }
 
 -(void)resetCellByMessage:(Message *)changedMessage{
-    for (Message *newmessage in _con.messages) {
-        if (newmessage  == changedMessage) {
-            NSLog(@"-------------yes---------------");
-        }
-    }
-    if ([_con.messages containsObject:changedMessage]) {
-        NSInteger index = [_con.messages indexOfObject:changedMessage];
-        NSIndexPath *indexpath;
-        if (messageCount >= _con.messages.count) {
-            indexpath =[NSIndexPath indexPathForRow:index inSection:0];
-        }else{
-            indexpath = [NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0];
 
-        }
+    if ([_messageArray containsObject:changedMessage]) {
+        NSInteger index = [_messageArray indexOfObject:changedMessage];
+        NSIndexPath *indexpath =[NSIndexPath indexPathForRow:index inSection:0];
         UITableViewCell *cell = [IMTableView cellForRowAtIndexPath:indexpath];
         if ([cell respondsToSelector:@selector(updateStatus:)]) {
             [cell performSelectorOnMainThread:@selector(updateStatus:) withObject:changedMessage.sendStatue waitUntilDone:YES];
@@ -523,35 +566,38 @@
     
     
 }
-
+-(void)listenActionInStatue:(NSInteger)status{
+    if ([_messageArray containsObject:listenMessage]) {
+        NSInteger index = [_messageArray indexOfObject:listenMessage];
+        NSIndexPath *indexpath =[NSIndexPath indexPathForRow:index inSection:0];
+        UITableViewCell *cell = [IMTableView cellForRowAtIndexPath:indexpath];
+        if ([cell respondsToSelector:@selector(listenActionInStatue:)]) {
+            [cell performSelectorOnMainThread:@selector(listenActionInStatue:) withObject:[NSNumber numberWithInteger:status] waitUntilDone:YES];
+        }
+        
+    }
+}
 -(void)inserCellWithMessage:(Message *)coreMessage{
-    messageCount++;
     _con.unReadMessage = [NSNumber numberWithInt:0];
+    [_messageArray addObject:coreMessage];
     if (![[userInfo shareClass].account.myConversation containsObject:_con]) {
         [[userInfo shareClass].account insertObject:_con inMyConversationAtIndex:0];
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
         [app.managedObjectContext save:nil];
         
         
-    }if ([_con.messages containsObject:coreMessage]) {
-        NSInteger index = [_con.messages indexOfObject:coreMessage];
-        
-        if (messageCount >= _con.messages.count) {
-            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            
-        }else{
-            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-            [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
-            
-        }
+    }
+    if ([_messageArray containsObject:coreMessage]) {
+        NSInteger index = [_messageArray indexOfObject:coreMessage];
+        [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        [IMTableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
     }
     
 }
 
 
 -(void)receiveInserCellWithMessage:(Message *)coreMessage{
-    messageCount++;
+    [_messageArray addObject:coreMessage];
     _con.unReadMessage = [NSNumber numberWithInt:0];
     if (![[userInfo shareClass].account.myConversation containsObject:_con]) {
         [[userInfo shareClass].account insertObject:_con inMyConversationAtIndex:0];
@@ -563,61 +609,36 @@
     NSLog(@"contentSize:%f    contentOffset:%f",IMTableView.contentSize.height, IMTableView.contentOffset.y);
     
     if ([_con.messages containsObject:coreMessage]) {
-        NSInteger index = [_con.messages indexOfObject:coreMessage];
-        
-        
-        if (messageCount >= _con.messages.count) {
-            if (IMTableView.contentSize.height - IMTableView.contentOffset.y <= SCREEN_HEIGHT-124) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [IMTableView beginUpdates];
-                    [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                    [IMTableView endUpdates];
-                });
-                
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
-                    
-                    NSLog(@"%f",IMTableView.contentSize.height);
-                });
-            }else{
+        NSInteger index = [_messageArray indexOfObject:coreMessage];
+        if (IMTableView.contentSize.height - IMTableView.contentOffset.y <= SCREEN_HEIGHT-124) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [IMTableView beginUpdates];
                 [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
                 [IMTableView endUpdates];
-                [self getUnreadMessage];
-            }
+            });
             
-            
-            
-        }else{
-            if (IMTableView.contentSize.height - IMTableView.contentOffset.y <= SCREEN_HEIGHT-124) {
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    [IMTableView beginUpdates];
-                    [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                    [IMTableView endUpdates];
-                });
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
                 
-                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                    
-                    [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
-                    
-                    NSLog(@"%f",IMTableView.contentSize.height);
-                });
-         
-            }else{
-                [IMTableView beginUpdates];
-                [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-                [IMTableView endUpdates];
-                [self getUnreadMessage];
-            }
+                NSLog(@"%f",IMTableView.contentSize.height);
+            });
+        }else{
+            [IMTableView beginUpdates];
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [IMTableView endUpdates];
+            [self getUnreadMessage];
         }
 
     }
 }
 
+-(void)removeListenMessage{
+    NSLog(@"remove");
+}
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     NSLog(@"%f",scrollView.contentOffset.y);
     if (scrollView.contentOffset.y < -10) {
-        if (_con.messages.count>messageCount && !loadingMore) {
+        if (messageIndex>0 && !loadingMore) {
             loadingMore = YES;
             [IMTableView setTableHeaderView:headerView];
             [activityView startAnimating];
@@ -644,29 +665,71 @@
     newMessgaeCount = 0;
     [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
 }
--(void)removeCell:(UITableViewCell *)cell{
+-(void)focusAction{
+    
+    if ([_con.type isEqualToString:Type_Focus]) {
+        _con.type = @"";
+        [focusButton setImage:[UIImage imageNamed:@"watch"] forState:UIControlStateNormal];
+       
+    }else{
+        _con.type = Type_Focus;
+         [focusButton setImage:[UIImage imageNamed:@"watchselected"] forState:UIControlStateNormal];
+        
+    }
+    AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+    [app.managedObjectContext save:nil];
     
 }
-
 -(void)updateSynMusicMessage:(NSDictionary *)musicDic{
     if (listenMessage) {
         listenMessage.messageData = [NSJSONSerialization dataWithJSONObject:musicDic options:kNilOptions error:nil];
+        AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+        [app.managedObjectContext save:nil];
         NSInteger index = [_con.messages indexOfObject:listenMessage];
-        if (messageCount >= _con.messages.count) {
-            ListenCell *cell = [IMTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-            [cell updateMusicMessage];
-        }
-        else{
-            ListenCell *cell = [IMTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index-_con.messages.count+messageCount inSection:0]];
-            [cell updateMusicMessage];
-        }
-      
+        ListenCell *cell = [IMTableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+        [cell updateMusicMessage];
+        _listenView.listenMessage = listenMessage;
     }else{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            _listenView.status = Status_Music;
+        });
+        
         AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
         listenMessage = [app getNewMessage];
+        listenMessage.messageData =[NSJSONSerialization dataWithJSONObject:musicDic options:kNilOptions error:nil];
+        listenMessage.messageType = Type_IM_SynMusic;
+        listenMessage.messageUser = _con.targetUser;
+        listenMessage.sendTime = [NSDate date];
+        listenMessage.messageId = [NSNumber numberWithInteger:[_con.messages.lastObject.messageId integerValue] +1];
+        listenMessage.sendStatue = Statue_OK;
+        
+        listenMessage.isOwner = [NSNumber numberWithBool:NO];
+        [_messageArray addObject:listenMessage];
+        _listenView.listenMessage = listenMessage;
+        NSInteger index = [_messageArray indexOfObject:listenMessage];
+        if (IMTableView.contentSize.height - IMTableView.contentOffset.y <= SCREEN_HEIGHT-124) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.01 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView beginUpdates];
+                [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+                [IMTableView endUpdates];
+            });
+            
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [IMTableView scrollRectToVisible:CGRectMake(0, IMTableView.contentSize.height-1, 1, 1) animated:YES];
+                
+                NSLog(@"%f",IMTableView.contentSize.height);
+            });
+        }else{
+            [IMTableView beginUpdates];
+            [IMTableView insertRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:index inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+            [IMTableView endUpdates];
+            [self getUnreadMessage];
+        }
+        
         
     }
 }
+
 /*
 #pragma mark - Navigation
 
