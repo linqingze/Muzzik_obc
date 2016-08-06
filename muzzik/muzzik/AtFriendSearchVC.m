@@ -11,6 +11,8 @@
 #import "NewSearchCell.h"
 #import "UIImageView+WebCache.h"
 #import "MessageStepViewController.h"
+#import "DetaiMuzzikVC.h"
+#import "DialogVC.h"
 @interface AtFriendSearchVC ()<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate>{
     UIButton *cancelButton;
     UITableView *myTabelView;
@@ -209,11 +211,26 @@
         MuzzikUser *muser = self.searchLocalUsers[indexPath.row];
          message = [message stringByAppendingString:[NSString stringWithFormat:@"@%@ ",muser.name]];
         muzzikobject.tempmessage = message;
-        for (UIViewController *vc in self.navigationController.viewControllers) {
-            if ([vc isKindOfClass:[MessageStepViewController class]]) {
-                [self.navigationController popToViewController:vc animated:YES];
+        for (NSInteger i = self.navigationController.viewControllers.count - 1; i >= 0; i--) {
+            UIViewController *vc = self.navigationController.viewControllers[i];
+            if ([muzzikobject.atFriendFrom isEqualToString:At_From_Message]) {
+                if ([vc isKindOfClass:[MessageStepViewController class]]) {
+                    muzzikobject.atFriendFrom = @"";
+                    [self.navigationController popToViewController:vc animated:YES];
+                }
+            }else if([muzzikobject.atFriendFrom isEqualToString:At_From_detail]){
+                if ([vc isKindOfClass:[DetaiMuzzikVC class]]) {
+                    muzzikobject.atFriendFrom = @"";
+                    [self.navigationController popToViewController:vc animated:YES];
+                }
+            }else if ([muzzikobject.atFriendFrom isEqualToString:At_from_Dialog]){
+                if ([vc isKindOfClass:[DialogVC class]]) {
+                    muzzikobject.atFriendFrom = @"";
+                    [self.navigationController popToViewController:vc animated:YES];
+                }
             }
         }
+        
     }
     
 }

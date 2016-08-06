@@ -252,7 +252,9 @@ static char MJRefreshFooterViewKey;
 {
     self.header.pullToRefreshText = headerPullToRefreshText;
 }
-
+-(void)hideTimeLabel{
+    [self.header.lastUpdateTimeLabel setHidden:YES];
+}
 - (NSString *)headerPullToRefreshText
 {
     return self.header.pullToRefreshText;

@@ -89,6 +89,9 @@
     localMusic.artist = [dic objectForKey:@"music_artist"];
     localMusic.key  =   [dic objectForKey:@"music_key"];
     mobject.music = localMusic;
+    if ([[dic allKeys] containsObject:@"image"]) {
+        mobject.image = [UIImage imageWithData:[dic objectForKey:@"image"]];
+    }
     //[MuzzikItem getLyricByMusic:localMusic];
     
     MessageStepViewController *msgvc = [[MessageStepViewController alloc] init];

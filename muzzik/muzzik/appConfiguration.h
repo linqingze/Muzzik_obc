@@ -16,8 +16,11 @@
 #define URL_Muzzik_download     @"http://www.muzziker.com/download"
 #define URL_Muzzik_SharePage    @"http://www.muzziker.com/app/muzzik/"
 #define URL_Lyric_Me            @"http://geci.me/api/lyric/"
+
 #define BaseURL                 @"http://117.121.26.174/"
-//#define BaseURL                 @"http://192.168.1.110:3000/"
+//#define BaseURL                 @"http://117.121.10.184:4000/"
+#define BaseURL_LUCH            @"http://117.121.26.174:4001/"
+#define BaseURL_GUI             @"http://117.121.26.174:8000/"
 #define BaseURL_audio           @"http://7bvaim.com1.z0.glb.clouddn.com/"
 #define BaseURL_image           @"http://7bvarm.com1.z0.glb.clouddn.com/"
 
@@ -80,7 +83,7 @@
 #define Color_Orange                [UIColor colorWithHexString:@"f26a3d"]
 #define Color_text_gray             [UIColor colorWithHexString:@"666c80"]
 #define Color_search_background     [UIColor colorWithHexString:@"323444"]
-#define Color_Active_Button_1       [UIColor colorWithHexString:@"f26a3d"]
+#define Color_Active_Button_1       [UIColor colorWithHexString:@"f66930"]
 #define Color_Active_Button_2       [UIColor colorWithHexString:@"ff794d"]
 #define Color_Theme_1               [UIColor colorWithHexString:@"201f2a"]
 #define Color_Theme_2               [UIColor colorWithHexString:@"323444"]
@@ -96,6 +99,8 @@
 #define Color_Text_4                [UIColor colorWithHexString:@"bbbbbb"]
 #define Color_line_1                [UIColor colorWithHexString:@"dddddd"]
 #define Color_line_2                [UIColor colorWithHexString:@"f8f8f8"]
+#define Color_line_3                [UIColor colorWithHexString:@"f5f5f5"]
+
 #define Color_Additional_1          [UIColor colorWithHexString:@"b98dd9"]
 #define Color_Additional_2          [UIColor colorWithHexString:@"30bfa7"]
 #define Color_Additional_3          [UIColor colorWithHexString:@"e64e6f"]
@@ -220,7 +225,7 @@
 #define Constant_userInfo_follow    @"follow"
 
 #define MUSIC_FileName              @"muzzik_musicFileForSaving"
-
+#define Muzzik_Login_Info_Token     @"Muzzik_Login_Info_Token"
 #define Image_Size_Small            @"?imageView2/1/w/150/h/150"
 #define Image_Size_Big            @"?imageView2/1/w/500/h/500"
 #endif

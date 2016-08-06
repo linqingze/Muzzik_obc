@@ -11,13 +11,11 @@
 #import "FriendVC.h"
 #import "TopicHotVC.h"
 #import "ChooseMusicVC.h"
-#import "choosImageVC.h"
 #import "HPGrowingTextView.h"
 #import "IBActionSheet.h"
 #import "JSImagePickerViewController.h"
-#import "ChooseLyricVC.h"
 #import "NLImageCropperView.h"
-#import "ShareResultViewController.h"
+#import "ASIFormDataRequest.h"
 #define view_padding 13
 @interface MessageStepViewController ()<UITextViewDelegate,UIActionSheetDelegate, IBActionSheetDelegate,HPGrowingTextViewDelegate,JSImagePickerViewControllerDelegate,NLImageCropperViewDelegate>{
     UILabel *charaterLabel;
@@ -43,6 +41,9 @@
     UIView *separateLineUp;
     
     UIView *separateLineDown;
+    
+    muzzik *newmuzzik;
+    BOOL isSending;
 }
 @end
 
@@ -50,7 +51,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initNagationBar:@"编辑信息" leftBtn:Constant_backImage rightBtn:2];
+    [self initNagationBar:@"编辑信息" leftBtn:Constant_backImage rightBtn:5];
     UIButton *topicButton = [[UIButton alloc] initWithFrame:CGRectMake(view_padding, 16, 80, 20)];
     topicButton.layer.cornerRadius = 3;
     topicButton.clipsToBounds = YES;
@@ -187,7 +188,13 @@
         songName.text = mobject.music.name;
         artist.text = mobject.music.artist;
         [addMusicTipsLabel setHidden:YES];
-        [MuzzikItem getLyricByMusic:mobject.music];
+//        [MuzzikItem getLyricByMusic:mobject.music];
+    }
+    if (mobject.image) {
+        [headImage setImage:mobject.image];
+        userImage = mobject.image;
+        [headerView addSubview:closeButton];
+        
     }
     if ([mobject.tempmessage length]>0) {
         hpTextview.text = [hpTextview.text stringByAppendingString:mobject.tempmessage];
@@ -232,6 +239,55 @@
     }
 }
 #pragma -mark action
+
+-(void)setPoMuzzikMessage:(NSDictionary *)dic{
+    userInfo *user = [userInfo shareClass];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    newmuzzik = [muzzik new];
+    newmuzzik.muzzik_id = [dic objectForKey:@"_id"];
+    newmuzzik.ismoved = NO;
+    newmuzzik.date = [dic objectForKey:@"date"];
+    newmuzzik.message = [dic objectForKey:@"message"];
+    if ([mobject.imageKey length]>0 ) {
+        newmuzzik.image = mobject.imageKey;
+    }
+    
+    newmuzzik.topics = [dic objectForKey:@"topics"];
+    newmuzzik.users = [dic objectForKey:@"users"];
+    newmuzzik.type = [dic objectForKey:@"type"];
+    newmuzzik.onlytext = [[dic objectForKey:@"onlyText"] boolValue];
+    newmuzzik.isReposted = NO;
+    newmuzzik.reposts = [dic objectForKey:@"reposts"];
+    newmuzzik.shares = [dic objectForKey:@"shares"];
+    newmuzzik.comments = [dic objectForKey:@"comments"];
+    newmuzzik.color = [dic objectForKey:@"color"];
+    newmuzzik.moveds = [dic objectForKey:@"moveds"];
+    newmuzzik.isprivate = [[dic objectForKey:@"private"] boolValue];
+    newmuzzik.plays = [dic objectForKey:@"plays"];
+    newmuzzik.repostID = [dic objectForKey:@"repostID"];
+    newmuzzik.title = [dic objectForKey:@"title"];
+    newmuzzik.repostDate = [dic objectForKey:@"repostDate"];
+    newmuzzik.reposter = [MuzzikUser new];
+    newmuzzik.reposter.name = [[dic objectForKey:@"repostUser"] objectForKey:@"name"];
+    newmuzzik.reposter.user_id = [[dic objectForKey:@"repostUser"] objectForKey:@"_id"];
+    newmuzzik.reposter.avatar = [[dic objectForKey:@"repostUser"] objectForKey:@"avatar"];
+    newmuzzik.reposter.gender = [[dic objectForKey:@"repostUser"] objectForKey:@"gender"];
+    
+    newmuzzik.MuzzikUser = [MuzzikUser new];
+    newmuzzik.MuzzikUser.avatar = user.avatar;
+    newmuzzik.MuzzikUser.user_id = user.uid;
+    newmuzzik.MuzzikUser.gender = user.gender;
+    newmuzzik.MuzzikUser.name = user.name;
+    newmuzzik.MuzzikUser.isFollow = NO;
+    newmuzzik.MuzzikUser.isFans = NO;
+    newmuzzik.music = [music new];
+    newmuzzik.music.music_id = mobject.music.music_id;
+    newmuzzik.music.artist = mobject.music.artist;
+    newmuzzik.music.key = mobject.music.key;
+    newmuzzik.music.name = mobject.music.name;
+    [[NSNotificationCenter defaultCenter] postNotificationName:String_SendNewMuzzikDataSource_update object:newmuzzik];
+}
+
 -(void) changePrivateAction{
     if (!isPrivate) {
         [privateButton setImage:[UIImage imageNamed:Image_invisibleImage] forState:UIControlStateNormal];
@@ -254,6 +310,8 @@
 
 -(void)AtFriend{
     FriendVC *friendvc = [[FriendVC alloc] init];
+    MuzzikObject *mobject = [MuzzikObject shareClass];
+    mobject.atFriendFrom = At_From_Message;
     [self.navigationController pushViewController:friendvc animated:YES];
 }
 
@@ -262,18 +320,134 @@
     // Dispose of any resources that can be recreated.
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    MuzzikObject *mobject = [MuzzikObject shareClass];
-    if ([hpTextview.text length]>0) {
-        mobject.message = hpTextview.text;
-    }else{
-        mobject.message = @"I Love This Muzzik!";
+    if (!isSending) {
+        NSDate *  senddate=[NSDate date];
+        
+        NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
+        
+        [dateformatter setDateFormat:@"YYYYMMdd"];
+        NSString *locationString=[dateformatter stringFromDate:senddate];
+        [MuzzikItem addObjectToLocal:locationString ForKey:@"Muzzik_lastShowDateString"];
+        [MuzzikItem addObjectToLocal:@"6" ForKey:@"Muzzik_times_userPoDate"];
+        isSending = YES;
+        userInfo *user = [userInfo shareClass];
+        MuzzikObject *mobject = [MuzzikObject shareClass];
+        if ([hpTextview.text length]>0) {
+            mobject.message = hpTextview.text;
+        }else{
+            mobject.message = @"I Love This Muzzik!";
+        }
+        
+        mobject.isPrivate = isPrivate;
+        if (headImage.image) {
+            ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString : [NSString stringWithFormat:@"%@%@",BaseURL,URL_Upload_Image]]];
+            
+            [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequest = requestForm;
+            [requestForm setCompletionBlock :^{
+                NSLog(@"%@    %@",[weakrequest originalURL],[weakrequest requestHeaders]);
+                NSLog(@"%@",[weakrequest responseHeaders]);
+                NSLog(@"%@",[weakrequest responseString]);
+                NSLog(@"%d",[weakrequest responseStatusCode]);
+                if ([weakrequest responseStatusCode] == 200) {
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequest responseData] options:NSJSONReadingMutableContainers error:nil];
+                    
+                    ASIFormDataRequest *interRequest = [[ASIFormDataRequest alloc] initWithURL:[NSURL URLWithString:[dic objectForKey:@"url"]]];
+                    [ASIFormDataRequest clearSession];
+                    [interRequest setPostFormat:ASIMultipartFormDataPostFormat];
+                    [interRequest setPostValue:[[dic objectForKey:@"data"] objectForKey:@"token"] forKey:@"token"];
+                    NSData *imageData = UIImageJPEGRepresentation(headImage.image, 1);
+                    [interRequest addData:imageData forKey:@"file"];
+                    __weak ASIFormDataRequest *form = interRequest;
+                    [interRequest buildRequestHeaders];
+                    NSLog(@"header:%@",interRequest.requestHeaders);
+                    [interRequest setCompletionBlock:^{
+                        NSDictionary *keydic = [NSJSONSerialization JSONObjectWithData:[form responseData] options:NSJSONReadingMutableContainers error:nil];
+                        mobject.imageKey = [keydic objectForKey:@"key"];
+                        ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
+                        NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
+                        if (mobject.isPrivate) {
+                            [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
+                        }
+                        if ([mobject.imageKey length]>0) {
+                            [requestDic setObject:mobject.imageKey forKey:Parameter_image_key];
+                        }
+                        if ([mobject.message length]>0) {
+                            [requestDic setObject:mobject.message forKey:Parameter_message];
+                        }else{
+                            [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
+                        }
+                        NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
+                        [requestDic setObject:musicDic forKey:@"music"];
+                        [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
+                        __weak ASIHTTPRequest *weakShare = shareRequest;
+                        [shareRequest setCompletionBlock:^{
+                            NSLog(@"data:%@",[weakShare responseString]);
+                            if ([weakShare responseStatusCode] == 200) {
+                                isSending = NO;
+                                
+                                NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
+                                [self setPoMuzzikMessage:muzzikDic];
+                                [mobject clearObject];
+                                [self.navigationController popToViewController:user.poController animated:YES];
+                                user.poController = nil;
+                            }
+                        }];
+                        [shareRequest setFailedBlock:^{
+                            isSending = NO;
+                            [MuzzikItem showNotifyOnView:self.view text:@"muzzik发送失败，请确认网络状态再次重试"];
+                        }];
+                        [shareRequest startAsynchronous];
+                    }];
+                    [interRequest setFailedBlock:^{
+                        isSending = NO;
+                        [MuzzikItem showNotifyOnView:self.view text:@"图片上传请求失败，请确认网络状态再次重试"];
+                    }];
+                    [interRequest startAsynchronous];
+                }
+            }];
+            [requestForm setFailedBlock:^{
+                isSending = NO;
+                [MuzzikItem showNotifyOnView:self.view text:@"图片上传地址请求失败，请确认网络状态再次重试"];
+            }];
+            [requestForm startAsynchronous];
+        }
+        else{
+            ASIHTTPRequest *shareRequest = [[ASIHTTPRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL,URL_Muzzik_new]]];
+            NSMutableDictionary *requestDic = [NSMutableDictionary dictionary];
+            if (mobject.isPrivate) {
+                [requestDic setObject:[NSNumber numberWithBool:YES] forKey:Parameter_private];
+            }
+            if ([mobject.message length]>0) {
+                [requestDic setObject:mobject.message forKey:Parameter_message];
+            }else{
+                [requestDic setObject:@"I Love This Muzzik!" forKey:Parameter_message];
+            }
+            NSDictionary *musicDic = [NSDictionary dictionaryWithObjectsAndKeys:mobject.music.key,@"key",mobject.music.name,@"name",mobject.music.artist,@"artist", nil];
+            [requestDic setObject:musicDic forKey:@"music"];
+            [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
+            __weak ASIHTTPRequest *weakShare = shareRequest;
+            [shareRequest setCompletionBlock:^{
+                NSLog(@"data:%@",[weakShare responseString]);
+                if ([weakShare responseStatusCode] == 200) {
+                    isSending = NO;
+                    
+                    NSDictionary *muzzikDic = [NSJSONSerialization JSONObjectWithData:[weakShare responseData] options:NSJSONReadingMutableContainers error:nil];
+                    [self setPoMuzzikMessage:muzzikDic];
+                    [mobject clearObject];
+                    [self.navigationController popToViewController:user.poController animated:YES];
+                    user.poController = nil;
+                }
+            }];
+            [shareRequest setFailedBlock:^{
+                isSending = NO;
+                [MuzzikItem showNotifyOnView:self.view text:@"muzzik发送失败，请确认网络状态再次重试"];
+            }];
+            [shareRequest startAsynchronous];
+        }
+
     }
     
-    mobject.isPrivate = isPrivate;
-    ShareResultViewController *chooselyricvc = [[ShareResultViewController alloc] init];
-    chooselyricvc.poImage = headImage.image;
-    [self.navigationController pushViewController:chooselyricvc animated:YES];
-
     
 }
 -(void)tapAction:(UITapGestureRecognizer *)tap{
@@ -297,8 +471,12 @@
         NSDateFormatter  *dateformatter=[[NSDateFormatter alloc] init];
         
         [dateformatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
-        
-        NSDictionary *dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
+        NSDictionary *dic;
+        if (userImage) {
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key",UIImagePNGRepresentation(userImage) ,@"image", nil];
+        }else{
+            dic = [NSDictionary dictionaryWithObjectsAndKeys:hpTextview.text,@"message",[dateformatter stringFromDate:senddate],@"lastdate",mobject.music.music_id,@"music_id",mobject.music.name,@"music_name",mobject.music.artist,@"music_artist",mobject.music.key,@"music_key", nil];
+        }
         if ([muzzikDrafts count] == 0) {
             muzzikDrafts = @[dic];
         }else{
@@ -307,15 +485,12 @@
             muzzikDrafts = [mutableArr copy];
         }
         [MuzzikItem addMuzzikDraftsToLocal:muzzikDrafts];
-        mobject.music = nil;
-        mobject.isMessageVCOpen = NO;
-        mobject.tempmessage = @"";
+        [mobject clearObject];
+        
         [self.navigationController popViewControllerAnimated:YES];
     }else if(buttonIndex == 1){
         MuzzikObject *mobject = [MuzzikObject shareClass];
-        mobject.music = nil;
-        mobject.isMessageVCOpen = NO;
-        mobject.tempmessage = @"";
+        [mobject clearObject];
         [self.navigationController popViewControllerAnimated:YES];
     }
     
@@ -328,6 +503,7 @@
     
 }
 -(void)closeImage{
+    userImage = nil;
     [headImage setImage:nil];
     [headerView addSubview:separateLineDown];
     [headerView addSubview:separateLineUp];

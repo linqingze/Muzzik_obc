@@ -30,5 +30,7 @@
     self.isPrivate = NO;
     self.isMessageVCOpen = NO;
     self.lyricArray = nil;
+    self.image = nil;
+    
 }
 @end

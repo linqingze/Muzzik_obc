@@ -250,7 +250,7 @@
 -(void)playMuzzikWithIndex:(NSInteger)index{
     
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = URL_Get_Moved_music;
+    center.subUrlString = [NSString stringWithFormat:@"%@%@",BaseURL,URL_Get_Moved_music];
 
     center.isPage = YES;
     center.singleMusic = NO;

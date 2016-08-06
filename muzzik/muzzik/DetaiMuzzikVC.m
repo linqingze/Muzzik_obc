@@ -25,6 +25,8 @@
 #import "DialogVC.h"
 #import "repostVC.h"
 #import "IBActionSheet.h"
+#import "MuzzikShareView.h"
+#import "IMConversationViewcontroller.h"
 @interface DetaiMuzzikVC ()<UITableViewDataSource,UITableViewDelegate,TTTAttributedLabelDelegate,HPGrowingTextViewDelegate,CellDelegate,PhotoImageViewDelegate,UIActionSheetDelegate,IBActionSheetDelegate>{
     NSMutableDictionary *RefreshDic;
     BOOL isforRepost;
@@ -58,25 +60,19 @@
     NSString *lastID;
     UITapGestureRecognizer *tapOnview;
     
-    //shareView
-    UIView *shareViewFull;
-    UIView *shareView;
-    UIButton *shareToTimeLineButton;
-    UIButton *shareToWeiChatButton;
-    UIButton *shareToWeiboButton;
-    UIButton *shareToQQButton;
-    UIButton *shareToQQZoneButton;
-    CGFloat maxScaleY;
+    MuzzikShareView *muzzikShareView;
     UIAlertView *TipsAlterView;
     UIImage *saveImage;           //保存图片
     BOOL isPrivate;
     UIImageView *MprivateImage;
     IBActionSheet *commentDeleteSheet;
     IBActionSheet *alertSheet;
+    
 }
 @property (nonatomic,retain) muzzik *localmuzzik;
 @property (nonatomic,retain) NSMutableDictionary *profileDic;
 @property(nonatomic,retain)UIImageView *headimage;
+
 @property(nonatomic,retain)UIButton *attentionButton;
 @property(nonatomic,retain)UILabel *nameLabel;
 @property(nonatomic,retain)UIImageView *genderImage;
@@ -90,7 +86,6 @@
 @property(nonatomic,retain)UIImageView *companyImage;
 @property(nonatomic,retain)UILabel *companyLabel;
 @property(nonatomic,retain)UIView *genresView;
-@property(nonatomic,retain)UIView *messageView;
 @property(nonatomic,retain)UILabel *muzzikCount;
 @property(nonatomic,retain)UILabel *followCount;
 @property(nonatomic,retain)UILabel *fansCount;
@@ -145,7 +140,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
     [self initNagationBar:@"详情" leftBtn:Constant_backImage rightBtn:0];
-    [self SettingShareView];
+    muzzikShareView = [[MuzzikShareView alloc] initMyShare];
+    muzzikShareView.ownerVC = self;
     muzzikTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT-119)];
     tableOriginRect = muzzikTableView.frame;
     muzzikTableView.contentInset = UIEdgeInsetsMake(SCREEN_WIDTH/2, 0, 0, 0);
@@ -224,26 +220,26 @@
     _schoolLabel = [[UILabel alloc] initWithFrame:CGRectMake(35, 0, SCREEN_WIDTH/2-50, 20)];
     _descriptionLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, SCREEN_WIDTH-32,0)];
     _muzzikView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT)];
-    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 36, 50, 50)];
+    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 16, 50, 50)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
     
     [_muzzikView addSubview:_userImage];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 15, 96, 9)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 48, 96, 9)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
-    _timeStamp.textAlignment = NSTextAlignmentRight;
+
     
 
     
     
     [_muzzikView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 15, 9, 9)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 50, 8, 8)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [_muzzikView addSubview:_timeImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-96, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, SCREEN_WIDTH-96, 20)];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
@@ -253,7 +249,7 @@
     [_muzzikView addSubview:MprivateImage];
     
     [_muzzikView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 16, 100, SCREEN_WIDTH-32, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 16, 78, SCREEN_WIDTH-32, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     
@@ -298,8 +294,10 @@
         }
         
     }
-   
-    
+    userInfo *user = [userInfo shareClass];
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
+    }
     
 }
 
@@ -373,9 +371,9 @@
         _coverImage.frame = cover;
         
         CGRect d = _attentionButton.frame;
+
         d.origin.y = yOffset+SCREEN_WIDTH/2+16;
         
-        _attentionButton.frame = d;
     }
 }
 
@@ -558,7 +556,7 @@
         }else{
             [requestDic setObject:[NSNumber numberWithBool:NO] forKey:@"private"];
         }
-        [requestDic setObject:commentToMuzzik.muzzik_id forKey:@"reply"];
+        [requestDic setValue:commentToMuzzik.muzzik_id forKey:@"reply"];
         [shareRequest addBodyDataSourceWithJsonByDic:requestDic Method:PutMethod auth:YES];
         __weak ASIHTTPRequest *weakShare = shareRequest;
         [shareRequest setCompletionBlock:^{
@@ -628,6 +626,8 @@
         if (growingTextView.text.length> commentText.length) {
             NSString *temp = [growingTextView.text substringFromIndex:[growingTextView.text length]-1];
             if ([temp isEqualToString:@"@"] || [temp isEqualToString:@"＠"]) {
+                MuzzikObject *mobject = [MuzzikObject shareClass];
+                mobject.atFriendFrom = At_From_detail;
                 FriendVC *friendvc = [[FriendVC alloc] init];
                 [self.navigationController pushViewController:friendvc animated:YES];
             }else if([temp isEqualToString:@"#"] || [temp isEqualToString:@"＃"]){
@@ -933,10 +933,38 @@
     
 }
 -(void)attentionOrVisit{
-    if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
-        userDetailInfo *uInfo = [[userDetailInfo alloc] init];
-        uInfo.uid = self.localmuzzik.MuzzikUser.user_id;
-        [self.navigationController pushViewController:uInfo animated:YES];
+    
+    if ([[_profileDic objectForKey:@"isFollow"] boolValue] && [[_profileDic objectForKey:@"isFans"] boolValue] ) {
+        if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+            [self newConversationAction];
+        }
+    }else if ([[_profileDic objectForKey:@"isFollow"] boolValue]) {
+        
+        
+        userDetailInfo *detailuser = [[userDetailInfo alloc] init];
+        detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:self.localmuzzik.MuzzikUser.user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
+        
     }else{
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
@@ -974,6 +1002,8 @@
     }
 }
 -(void)goToUser{
+    
+    
     userInfo *user = [userInfo shareClass];
     if ([self.localmuzzik.MuzzikUser.user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
@@ -982,7 +1012,27 @@
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = self.localmuzzik.MuzzikUser.user_id;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:self.localmuzzik.MuzzikUser.user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }
 }
 -(void)pushRepost{
@@ -1071,7 +1121,10 @@
     
 }
 -(void)shareAction{
-    [self addShareView];
+    muzzikShareView.cell = _muzzikView;
+    muzzikShareView.shareImage = [self.userImage imageForState:UIControlStateNormal];;
+    muzzikShareView.shareMuzzik = self.localmuzzik;
+    [muzzikShareView showShareView];
 }
 -(void)commentAction{
     [comnentTextView becomeFirstResponder];
@@ -1095,6 +1148,7 @@
     [alertSheet showInView:self.view.window];
 }
 -(void)playMusicLocal{
+    [userInfo shareClass].listenToUid = @"";
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
 
     center.singleMusic = YES;
@@ -1143,11 +1197,32 @@
     userInfo *user = [userInfo shareClass];
     if ([user_id isEqualToString:user.uid]) {
         UserHomePage *home = [[UserHomePage alloc] init];
+        home.isPush = YES;
         [self.navigationController pushViewController:home animated:YES];
     }else{
         userDetailInfo *detailuser = [[userDetailInfo alloc] init];
         detailuser.uid = user_id;
-        [self.navigationController pushViewController:detailuser animated:YES];
+        
+        userDetailInfo *oldInfovc;
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[userDetailInfo class]]) {
+                userDetailInfo *udetail = (userDetailInfo *)vc;
+                if ([udetail.uid isEqualToString:user_id]) {
+                    oldInfovc = udetail;
+                    break;
+                }
+                
+            }
+        }
+        if (oldInfovc) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:oldInfovc]];
+            
+            [array addObject:oldInfovc];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:detailuser animated:YES];
+        }
     }
     
     
@@ -1353,348 +1428,36 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     
 
 }
--(void)SettingShareView{
-    CGFloat screenWidth = SCREEN_WIDTH;
-    
-    CGFloat scaleX = 0.1;
-    CGFloat scaleY = 0.08;
-    userInfo *user = [userInfo shareClass];
-    if (user.WeChatInstalled && user.QQInstalled) {
-        maxScaleY = 0.7;
-    }else{
-        maxScaleY = 0.4;
-    }
-    shareViewFull = [[UIView alloc] initWithFrame:CGRectMake(0, 0, screenWidth, SCREEN_HEIGHT)];
-    [shareViewFull setAlpha:0];
-    [shareViewFull setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.8]];
-    [shareViewFull addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(closeShareView)]];
-    shareView = [[UIView alloc] initWithFrame:CGRectMake(0, SCREEN_HEIGHT, screenWidth, screenWidth*maxScaleY)];
-    [shareView setBackgroundColor:[UIColor colorWithRed:0.125 green:0.121 blue:0.164 alpha:0.85]];
-    if (user.WeChatInstalled) {
-        UIButton *wechatButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.08, screenWidth*0.18, screenWidth*0.18)];
-        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateNormal];
-        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
-        [wechatButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-        [wechatButton setImage:[UIImage imageNamed:Image_wechatImage] forState:UIControlStateHighlighted];
-        [wechatButton addTarget:self action:@selector(shareWeChat) forControlEvents:UIControlEventTouchUpInside];
-        [shareView addSubview:wechatButton];
-        UILabel *weiChatLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.1, screenWidth*0.26, screenWidth*0.18, 20)];
-        weiChatLabel.text = @"微 信";
-        weiChatLabel.textAlignment = NSTextAlignmentCenter;
-        [weiChatLabel setFont:[UIFont systemFontOfSize:12]];
-        weiChatLabel.textColor =  Color_line_2;
-        [shareView addSubview:weiChatLabel];
-        UIButton *timeLineButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
-        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateNormal];
-        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
-        [timeLineButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-        [timeLineButton setImage:[UIImage imageNamed:Image_momentImage] forState:UIControlStateHighlighted];
-        [timeLineButton addTarget:self action:@selector(shareTimeLine) forControlEvents:UIControlEventTouchUpInside];
-        [shareView addSubview:timeLineButton];
-        
-        UILabel *timeLineLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*0.41, screenWidth*0.26, screenWidth*0.18, 20)];
-        timeLineLabel.text = @"朋友圈";
-        timeLineLabel.textAlignment = NSTextAlignmentCenter;
-        [timeLineLabel setFont:[UIFont systemFontOfSize:12]];
-        timeLineLabel.textColor =  Color_line_2;
-        [shareView addSubview:timeLineLabel];
-        scaleX = 0.72;
-    }
-    
-    
-    UIButton *weiboButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.08, SCREEN_WIDTH*0.18, SCREEN_WIDTH*0.18)];
-    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateNormal];
-    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
-    [weiboButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-    [weiboButton setImage:[UIImage imageNamed:Image_weiboImage] forState:UIControlStateHighlighted];
-    [weiboButton addTarget:self action:@selector(shareWeiBo) forControlEvents:UIControlEventTouchUpInside];
-    [shareView addSubview:weiboButton];
-    UILabel *weiBoLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*0.26, screenWidth*0.18, 20)];
-    weiBoLabel.text = @"微 博";
-    weiBoLabel.textAlignment = NSTextAlignmentCenter;
-    [weiBoLabel setFont:[UIFont systemFontOfSize:12]];
-    weiBoLabel.textColor = Color_line_2;
-    [shareView addSubview:weiBoLabel];
-    if (user.WeChatInstalled) {
-        scaleY = 0.39;
-        scaleX = 0.1;
-    }else{
-        scaleX = 0.41;
-    }
-    if (user.QQInstalled) {
-        UIButton *QQButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
-        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateNormal];
-        [QQButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
-        [QQButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-        [QQButton setImage:[UIImage imageNamed:Image_qqImage] forState:UIControlStateHighlighted];
-        [QQButton addTarget:self action:@selector(shareQQ) forControlEvents:UIControlEventTouchUpInside];
-        [shareView addSubview:QQButton];
-        
-        UILabel *QQLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*scaleX, screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
-        QQLabel.text = @"QQ";
-        QQLabel.textAlignment = NSTextAlignmentCenter;
-        [QQLabel setFont:[UIFont systemFontOfSize:12]];
-        QQLabel.textColor = Color_line_2;
-        [shareView addSubview:QQLabel];
-        
-        UIButton *qqZoneButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*scaleY, screenWidth*0.18, screenWidth*0.18)];
-        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateNormal];
-        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_sharebgImage] forState:UIControlStateNormal];
-        [qqZoneButton setBackgroundImage:[UIImage imageNamed:Image_shareclickbgImage] forState:UIControlStateHighlighted];
-        [qqZoneButton setImage:[UIImage imageNamed:Image_q_zoneImage] forState:UIControlStateHighlighted];
-        [qqZoneButton addTarget:self action:@selector(shareQQZone) forControlEvents:UIControlEventTouchUpInside];
-        [shareView addSubview:qqZoneButton];
-        
-        UILabel *QQZoneLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth*(scaleX+0.31), screenWidth*(scaleY+0.18), screenWidth*0.18, 20)];
-        QQZoneLabel.text = @"QQ空间";
-        QQZoneLabel.textAlignment = NSTextAlignmentCenter;
-        [QQZoneLabel setFont:[UIFont systemFontOfSize:12]];
-        QQZoneLabel.textColor = Color_line_2;
-        [shareView addSubview:QQZoneLabel];
-        
-    }
-    
-    [shareViewFull addSubview:shareView];
-    
-    
-    
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *) image cell:(UITableViewCell *)cell{
+    muzzikShareView.cell = cell;
+    muzzikShareView.shareImage = image;
+    muzzikShareView.shareMuzzik = localMuzzik;
+    [muzzikShareView showShareView];
 }
--(void)closeShareView{
-    [UIView animateWithDuration:0.5 animations:^{
-        [shareViewFull setAlpha:0];
-        [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
-    } completion:^(BOOL finished) {
-        [shareViewFull removeFromSuperview];
-        
-    }];
-}
--(void) addShareView{
-    [self.navigationController.view addSubview:shareViewFull];
-    [UIView animateWithDuration:0.3 animations:^{
-        [shareViewFull setAlpha:1];
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:0.5 animations:^{
-            [shareView setFrame:CGRectMake(0, SCREEN_HEIGHT-SCREEN_WIDTH*maxScaleY, SCREEN_WIDTH, SCREEN_WIDTH*maxScaleY)];
-        } ];
-    }];
-}
-
-
-- (WBMessageObject *)messageToShare
-{
-    WBMessageObject *message = [WBMessageObject message];
-    
-    message.text =[NSString stringWithFormat:@"一起来用Muzzik吧 %@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
-    
-    WBImageObject *image = [WBImageObject object];
-    image.imageData = UIImageJPEGRepresentation([MuzzikItem convertViewToImage:_muzzikView], 1.0);
-    message.imageObject = image;
-    return message;
-}
--(void)shareWeiBo{
-    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
-    
-    WBAuthorizeRequest *authRequest = [WBAuthorizeRequest request];
-    authRequest.redirectURI = URL_WeiBo_redirectURI;
-    authRequest.scope = @"all";
-    
-    WBSendMessageToWeiboRequest *request = [WBSendMessageToWeiboRequest requestWithMessage:[self messageToShare] authInfo:authRequest access_token:myDelegate.wbtoken];
-    
-    //    request.shouldOpenWeiboAppInstallPageIfNotInstalled = NO;
-    [WeiboSDK sendRequest:request];
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"weibo",@"channel", nil];
-    
-    ASIHTTPRequest *requestShare = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-    
-    [requestShare addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = requestShare;
-    [requestShare setCompletionBlock :^{
-        
-        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
-    }];
-    [requestShare setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [requestShare startAsynchronous];
-}
--(void) shareQQ{
-    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                                         andDelegate:nil];
-    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
-    //分享图预览图URL地址
-    NSString *previewImageUrl = @"http://muzzik-image.qiniudn.com/FieqckeQDGWACSpDA3P0aDzmGcB6";
-    //音乐播放的网络流媒体地址
-    QQApiAudioObject *audioObj =[QQApiAudioObject objectWithURL:[NSURL URLWithString:url]
-                                                          title:self.localmuzzik.music.name description:self.localmuzzik.music.artist previewImageURL:[NSURL URLWithString:previewImageUrl]];
-    //设置播放流媒体地址
-    audioObj.flashURL=[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",BaseURL_audio,self.localmuzzik.music.key]];
-    SendMessageToQQReq *req = [SendMessageToQQReq reqWithContent:audioObj];
-    //将内容分享到qq
-    
-    QQApiSendResultCode sent = [QQApiInterface sendReq:req];
-    [self handleSendResult:sent];
-    //将被容分享到qzone
-    //QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-    
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"qq",@"channel", nil];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-    
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        
-        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [request startAsynchronous];
-    
-    
-}
-- (void)handleSendResult:(QQApiSendResultCode)sendResult
-{
-    switch (sendResult)
-    {
-        case EQQAPIAPPNOTREGISTED:
-        {
-            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"App未注册" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
-            [msgbox show];
-            
-            
-            break;
-        }
-        case EQQAPIMESSAGECONTENTINVALID:
-        case EQQAPIMESSAGECONTENTNULL:
-        case EQQAPIMESSAGETYPEINVALID:
-        {
-            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送参数错误" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
-            [msgbox show];
-            
-            
-            break;
-        }
-        case EQQAPIQQNOTINSTALLED:
-        {
-            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"未安装手Q" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
-            [msgbox show];
-            
-            
-            break;
-        }
-        case EQQAPIQQNOTSUPPORTAPI:
-        {
-            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"API接口不支持" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
-            [msgbox show];
-            
-            
-            break;
-        }
-        case EQQAPISENDFAILD:
-        {
-            UIAlertView *msgbox = [[UIAlertView alloc] initWithTitle:@"Error" message:@"发送失败" delegate:nil cancelButtonTitle:@"取消" otherButtonTitles:nil];
-            [msgbox show];
-            
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
-}
--(void) shareQQZone{
-    TencentOAuth *tencentOAuth = [[TencentOAuth alloc] initWithAppId:ID_QQ_APP
-                                                         andDelegate:nil];
-    NSURL *previewURL = [NSURL URLWithString:@"http://muzzik-image.qiniudn.com/Fscv0d_e94ij-WgpvIoTiHmPJgu9"];
-    NSString *url = [NSString stringWithFormat:@"%@%@",URL_Muzzik_SharePage,self.localmuzzik.muzzik_id];
-    
-    QQApiNewsObject* img = [QQApiNewsObject objectWithURL:[NSURL URLWithString:url] title:@"在Muzzik上分享了首歌" description:[NSString stringWithFormat:@"%@  %@",self.localmuzzik.music.name,self.localmuzzik.music.artist] previewImageURL:previewURL];
-    SendMessageToQQReq* req = [SendMessageToQQReq reqWithContent:img];
-    
-    
-    //将被容分享到qzone
-    QQApiSendResultCode sent = [QQApiInterface SendReqToQZone:req];
-    [self handleSendResult:sent];
-    
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"qzone",@"channel", nil];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-    
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        
-        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [request startAsynchronous];
-    
-}
--(void) shareTimeLine{
-    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:1 image:[self.userImage imageForState:UIControlStateNormal]];
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"moment",@"channel", nil];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-    
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        
-        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [request startAsynchronous];
-}
-
--(void) shareWeChat{
-    AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
-    [app sendMusicContentByMuzzik:self.localmuzzik scen:0 image:[self.userImage imageForState:UIControlStateNormal]];
-    NSDictionary *requestDic = [NSDictionary dictionaryWithObjectsAndKeys:self.localmuzzik.muzzik_id,@"_id",@"wechat",@"channel", nil];
-    
-    ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Share_Muzzik]]];
-    
-    [request addBodyDataSourceWithJsonByDic:requestDic Method:PostMethod auth:YES];
-    __weak ASIHTTPRequest *weakrequest = request;
-    [request setCompletionBlock :^{
-        
-        self.localmuzzik.shares = [NSString stringWithFormat:@"%d",[self.localmuzzik.shares intValue]+1];
-        [[NSNotificationCenter defaultCenter] postNotificationName:String_MuzzikDataSource_update object:self.localmuzzik];
-    }];
-    [request setFailedBlock:^{
-        NSLog(@"%@",[weakrequest error]);
-    }];
-    [request startAsynchronous];
-}
-
-
 -(void)dataSourceUserUpdate:(NSNotification *)notify{
     MuzzikUser *user = notify.object;
     if ([[_profileDic objectForKey:@"_id"] isEqualToString:user.user_id]) {
             [_profileDic setObject:[NSNumber numberWithBool:user.isFans ]forKey:@"isFans"];
             [_profileDic setObject:[NSNumber numberWithBool:user.isFollow ]forKey:@"isFollow"];
         if (user.isFollow &&user.isFans) {
-            [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+            if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+            }else{
+                [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+            }
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
+            
         }else if(user.isFollow){
             [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefollowed] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-75, 16, 55, 23)];
+
         }else{
             [_addFriendButton setImage:[UIImage imageNamed:Image_detailfollowImage] forState:UIControlStateNormal];
             [_attentionButton setImage:[UIImage imageNamed:Image_profilefollow] forState:UIControlStateNormal];
             [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-65, 16, 45, 23)];
+
         }
     }
 }
@@ -2039,11 +1802,18 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             _addFriendButton.layer.cornerRadius = 3;
             _addFriendButton.clipsToBounds = YES;
             [_addFriendButton addTarget:self action:@selector(attentionOrVisit) forControlEvents:UIControlEventTouchUpInside];
+            
+            
             [cardView addSubview:_addFriendButton];
             if ([[proDic objectForKey:@"isFollow"] boolValue] &&[[proDic objectForKey:@"isFans"] boolValue]) {
-                [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+                if ([[_profileDic objectForKey:@"isSupportChat"] boolValue]) {
+                    [_addFriendButton setImage:[UIImage imageNamed:@"detailchatImage"] forState:UIControlStateNormal];
+                }else{
+                    [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
+                }
                 [_attentionButton setImage:[UIImage imageNamed:Image_profilefolloweacherother] forState:UIControlStateNormal];
                 [_attentionButton setFrame:CGRectMake(SCREEN_WIDTH-85, 16, 65, 23)];
+               
             }else if([[proDic objectForKey:@"isFollow"] boolValue]){
                 
                 [_addFriendButton setImage:[UIImage imageNamed:Image_viewprofileImage] forState:UIControlStateNormal];
@@ -2142,13 +1912,14 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
         // NSLog(@"%@",[weakrequest responseString]);
         NSData *data = [weakrequest responseData];
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-        
+        self.localmuzzik.rawDic = dic;
         self.localmuzzik.ismoved = [[dic objectForKey:@"ismoved"] boolValue];
         self.localmuzzik.date = [dic objectForKey:@"date"];
         self.localmuzzik.message = [dic objectForKey:@"message"];
         if ([[dic allKeys] containsObject:@"image"] ) {
             self.localmuzzik.image = [dic objectForKey:@"image"];
         }
+        self.localmuzzik.type = [dic objectForKey:@"type"];
         self.localmuzzik.muzzik_id = [dic objectForKey:@"_id"];
         self.localmuzzik.topics = [dic objectForKey:@"topics"];
         self.localmuzzik.users = [dic objectForKey:@"users"];
@@ -2198,11 +1969,14 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
             _repostUserName.text = self.localmuzzik.reposter.name;
             [_muzzikView addSubview:_repostUserName];
             _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.repostDate];
+            
         }else{
             _timeStamp.text = [MuzzikItem transtromTime:self.localmuzzik.date];
         }
+        [_timeStamp sizeToFit];
+        [_timeImage setFrame:CGRectMake(CGRectGetMaxX(_timeStamp.frame)+3, _timeImage.frame.origin.y, _timeImage.frame.size.width, _timeImage.frame.size.height)];
         
-        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,self.localmuzzik.MuzzikUser.user_id]]];
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL_LUCH,self.localmuzzik.MuzzikUser.user_id]]];
         [requestForm addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
         __weak ASIHTTPRequest *weakreq = requestForm;
         [requestForm setCompletionBlock :^{
@@ -2309,6 +2083,7 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
                 [_attentionButton addTarget:self action:@selector(attentionAction) forControlEvents:UIControlEventTouchUpInside];
                 [headView addSubview:_attentionButton];
                 
+                
                 _nameLabel = [[UILabel alloc] initWithFrame:CGRectMake(16, SCREEN_WIDTH/2, 30, 30)];
                 [_nameLabel setFont:[UIFont fontWithName:Font_Next_DemiBold size:20]];
                 _nameLabel.textColor = [UIColor whiteColor];
@@ -2382,6 +2157,42 @@ didSelectLinkWithTransitInformation:(NSDictionary *)components{
     [request startAsynchronous];
     
     
+    
+}
+-(void)newConversationAction{
+    RCUserInfo *targetUserinfo;
+    if ([[_profileDic objectForKey:@"_id"] length] >0 && [[_profileDic objectForKey:@"avatar"] length] >0 && [[_profileDic objectForKey:@"name"] length] >0) {
+        BOOL isContained = NO;
+        IMConversationViewcontroller *imVC = [[IMConversationViewcontroller alloc] init];
+        
+        
+        AppDelegate *app = (AppDelegate *) [UIApplication sharedApplication].delegate;
+        targetUserinfo = [[RCUserInfo alloc] initWithUserId:[_profileDic objectForKey:@"_id"] name:[_profileDic objectForKey:@"name"]  portrait:[_profileDic objectForKey:@"avatar"] ];
+        imVC.con = [app getConversationByUserInfo:targetUserinfo];
+        imVC.con.unReadMessage = [NSNumber numberWithInt:0];
+        imVC.title = imVC.con.targetUser.name;
+        [app.managedObjectContext save:nil];
+        
+        
+        for (UIViewController *vc in self.navigationController.viewControllers) {
+            if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                isContained = YES;
+                break;
+            }
+        }
+        if (isContained) {
+            NSMutableArray *array = [self.navigationController.viewControllers mutableCopy];
+            for (UIViewController *vc in self.navigationController.viewControllers) {
+                if ([vc isKindOfClass:[IMConversationViewcontroller class]]) {
+                    [array removeObjectAtIndex:[self.navigationController.viewControllers indexOfObject:vc]];
+                }
+            }
+            [array addObject:imVC];
+            [self.navigationController setViewControllers:array animated:YES];
+        }else{
+            [self.navigationController pushViewController:imVC animated:YES];
+        }
+    }
     
 }
 -(void)rightBtnAction:(UIButton *)sender{

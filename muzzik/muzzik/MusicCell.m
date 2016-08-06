@@ -47,6 +47,7 @@
 
 -(void)playAction{
     NSLog(@"play");
+    [userInfo shareClass].listenToUid = @"";
     [self.songVC playMuzzikWithIndex:self.index];
 }
 -(void)DeleAction{

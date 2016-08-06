@@ -13,4 +13,5 @@
 @property (nonatomic,retain) NSMutableArray *localUsers;
 @property (nonatomic,retain) NSMutableArray *searchLocalUsers;
 @property (nonatomic,retain) NSMutableArray *friendArray;
+
 @end

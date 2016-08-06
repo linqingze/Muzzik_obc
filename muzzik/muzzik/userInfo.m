@@ -30,9 +30,9 @@
     if(self){
         _playList = [NSMutableDictionary dictionary];
         NSMutableDictionary *square = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"广场列表",@"descrip",@"square",@"type", nil];
-        
         [_playList setValue:square forKey:Constant_userInfo_square];
-        
+        _listenUser = [NSMutableArray array];
+        _wacthUser = [NSMutableArray array];
         NSMutableDictionary *follow = [NSMutableDictionary dictionaryWithObjectsAndKeys:[NSMutableArray array],@"muzziks",@"关注列表",@"descrip",@"follow",@"type", nil];
         [_playList setValue:follow forKey:Constant_userInfo_follow];
         

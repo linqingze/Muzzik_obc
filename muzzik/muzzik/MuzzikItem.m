@@ -10,7 +10,6 @@
 #import "MuzzikObject.h"
 #import <CoreText/CTFontManager.h>
 #import "NotifyButton.h"
-#import "ChooseLyricVC.h"
 @implementation MuzzikItem
 static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 +(MuzzikItem *) shareClass{
@@ -529,13 +528,6 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                                 mobject.GeiLyricType = @"yes";
                                 mobject.lyricArray = tempLyric;
                                 
-                                AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-                                UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-                                if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                                    ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                                    [choosevc reloadLyricTableView];
-                                    [choosevc hideTips];
-                                }
                             }else{
                                 mobject.GeiLyricType = @"error";
                             }
@@ -547,12 +539,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
                         [lyricRequest1 setFailedBlock:^{
                             MuzzikObject *mobject = [MuzzikObject shareClass];
                             mobject.GeiLyricType = @"error";
-                            AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-                            UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-                            if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                                ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                                [choosevc Notips];
-                            }
+                            
                             
                             NSLog(@"%@",lrcRequest1.error);
                         }];
@@ -571,12 +558,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [requestForm1 setFailedBlock:^{
             MuzzikObject *mobject = [MuzzikObject shareClass];
             mobject.GeiLyricType = @"error";
-            AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
-            UINavigationController *nac = (UINavigationController*)app.window.rootViewController;
-            if ([nac.viewControllers.lastObject isKindOfClass:[ChooseLyricVC class]]) {
-                ChooseLyricVC *choosevc = (ChooseLyricVC *)nac.viewControllers.lastObject;
-                [choosevc Notips];
-            }
+            
             NSLog(@"URL:%@     status:%d",[weakrequest1 originalURL],[weakrequest1 responseStatusCode]);
             NSLog(@"  kkk%@",[weakrequest1 error]);
         }];
@@ -905,7 +887,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         [alterLabel setBackgroundColor:Color_NavigationBar];
         alterLabel.text = text;
         [alterLabel sizeToFit];
-        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
+        [alterLabel setFrame:CGRectMake(SCREEN_WIDTH/2-alterLabel.frame.size.width/2-10, SCREEN_HEIGHT-180, alterLabel.frame.size.width+20, alterLabel.frame.size.height+20)];
         alterLabel.layer.cornerRadius = 5;
         alterLabel.clipsToBounds = YES;
         alterLabel.layer.shadowColor = [UIColor blackColor].CGColor;//shadowColor阴影颜色
@@ -953,7 +935,7 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }
     mobject.lyricTipsLabel.text = text;
     [mobject.lyricTipsLabel sizeToFit];
-    [mobject.lyricTipsLabel setFrame:CGRectMake(SCREEN_WIDTH/2-mobject.lyricTipsLabel.frame.size.width/2-10, SCREEN_HEIGHT-150, mobject.lyricTipsLabel.frame.size.width+20, mobject.lyricTipsLabel.frame.size.height+20)];
+    [mobject.lyricTipsLabel setFrame:CGRectMake(SCREEN_WIDTH/2-mobject.lyricTipsLabel.frame.size.width/2-10, SCREEN_HEIGHT-180, mobject.lyricTipsLabel.frame.size.width+20, mobject.lyricTipsLabel.frame.size.height+20)];
     mobject.lyricTipsLabel.layer.cornerRadius = 5;
     mobject.lyricTipsLabel.clipsToBounds = YES;
     [mobject.lyricTipsLabel setAlpha:0];
@@ -1026,14 +1008,27 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     //设置阴影路径
     [mobject.notifyBUtton setTitle:text forState:UIControlStateNormal];
     [mobject.notifyBUtton sizeToFit];
-    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-100, mobject.notifyBUtton.frame.size.width+34, 34)];
-    AppDelegate *myDelegate =(AppDelegate*)[[UIApplication sharedApplication] delegate];
+    [mobject.notifyBUtton setFrame:CGRectMake(20 , SCREEN_HEIGHT-164, mobject.notifyBUtton.frame.size.width+34, 34)];
+    
+    userInfo *user = [userInfo shareClass];
+    
+    mobject.notifyBUtton.notificationType = user.notificationType;
+    mobject.notifyBUtton.notificationMessage = user.notificationMessage;
+    mobject.notifyBUtton.targetUserinfo = user.targetUserinfo;
+    
+    user.notificationType = 0;
+    user.targetUserinfo = nil;
+    user.notificationMessage = @"";
+    AppDelegate *app = (AppDelegate*)[UIApplication sharedApplication].delegate;
+    UINavigationController *nac = (UINavigationController *)app.tabviewController.selectedViewController;
     [mobject.notifyBUtton setAlpha:0];
-    [myDelegate.window.rootViewController.view addSubview:mobject.notifyBUtton];
+    NSLog(@"%@",nac.viewControllers.lastObject);
+    [nac.viewControllers.lastObject.view addSubview:mobject.notifyBUtton];
     [UIView animateWithDuration:0.4 animations:^{
         [mobject.notifyBUtton setAlpha:0.8];
     } completion:^(BOOL finished) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(10.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            
             [mobject.notifyBUtton removeFromSuperview];
             
         });
@@ -1189,90 +1184,119 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
         NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
         [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
         NSDate *localDate = [dateFormatter dateFromString:time];
-        NSTimeZone* sourceTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];//或GMT
-        //设置转换后的目标日期时区
-        NSTimeZone* destinationTimeZone = [NSTimeZone localTimeZone];
-        //得到源日期与世界标准时间的偏移量
-        NSInteger sourceGMTOffset = [sourceTimeZone secondsFromGMTForDate:localDate];
-        //目标日期与本地时区的偏移量
-        NSInteger destinationGMTOffset = [destinationTimeZone secondsFromGMTForDate:localDate];
-        //得到时间偏移量的差值
-        NSTimeInterval Tinterval = destinationGMTOffset - sourceGMTOffset;
-        //转为现在时间
-        NSDate* destinationDateNow = [[NSDate alloc] initWithTimeInterval:Tinterval sinceDate:localDate];
+        NSDate *Tdate = [NSDate date];
+        NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+        NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
         
-        //    NSString* timeStr = @"2011-01-26 17:40:50";
+        NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
+        NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setDateStyle:NSDateFormatterMediumStyle];
-        [formatter setTimeStyle:NSDateFormatterShortStyle];
-        [formatter setDateFormat:@"YYYY-MM-dd'T'HH:mm:ss.SSS'Z'"]; // ----------设置你想要的格式,hh与HH的区别:分别表示12小时制,24小时制
-        NSLocale *locale=[NSLocale systemLocale];
-        [formatter setLocale:locale];
-        //    NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"Asia/Shanghai"];
-        //    [formatter setTimeZone:timeZone];
-        NSTimeInterval interval = fabs([destinationDateNow timeIntervalSinceNow]);
-        NSString *timestring = [NSString stringWithFormat:@"%@",destinationDateNow];
-        NSArray *timearray = [timestring componentsSeparatedByString:@" "];
-        timestring = timearray[1];
-        timestring = [timestring substringToIndex:5];
-        NSDate *now = [NSDate date];
         [formatter setDateFormat:@"HH:mm"];
+        NSTimeInterval interval = fabs([localDate timeIntervalSinceNow]);
         NSString *nowString = [formatter stringFromDate:now];
-        BOOL result = [nowString compare:timestring] == NSOrderedAscending;
+        NSString *timeString = [formatter stringFromDate:aimDate];
+        
+        BOOL result = [nowString compare:timeString] == NSOrderedAscending;
         if (interval<24*60*60 && !result) {
-            return timestring;
+            return timeString;
         }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
-            return @"昨天";
+            return [NSString stringWithFormat:@"昨天 %@",timeString];
         }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-            return @"2天前";
-        }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-            return @"3天前";
-        }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-            return @"4天前";
-        }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-            return @"5天前";
-        }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-            return @"6天前";
+            return [NSString stringWithFormat:@"前天 %@",timeString];
         }else {
-            return @"N天前";
+            [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
+            nowString = [formatter stringFromDate:aimDate];
+            
+            return nowString;
         }
-    }else{
-        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:[time doubleValue]];
+    }else if([time isKindOfClass:[NSNumber class]]){
+        double num = [time doubleValue];
+        NSDate *Tdate = [NSDate date];
+        
+        NSTimeZone *zone = [NSTimeZone systemTimeZone];
+        
+        NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
+        
+        NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num+Tinterval];
         NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateFormat:@"HH:mm"];
-        NSDate *now = [NSDate date];
+        NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
         NSString *nowString = [formatter stringFromDate:now];
         NSString *timeString = [formatter stringFromDate:date];
         BOOL result = [nowString compare:timeString] == NSOrderedAscending;
         if (interval<24*60*60 && !result) {
             return timeString;
         }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
-            return @"昨天";
+            return [NSString stringWithFormat:@"昨天 %@",timeString];
         }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
-            return @"2天前";
-        }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
-            return @"3天前";
-        }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
-            return @"4天前";
-        }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
-            return @"5天前";
-        }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
-            return @"6天前";
+            return [NSString stringWithFormat:@"前天 %@",timeString];
         }else {
-            return @"N天前";
+            [formatter setDateFormat:@"yyyy.MM.dd  HH:mm"];
+            nowString = [formatter stringFromDate:date];
+            
+            return nowString;
         }
         
         return @"";
     }
     
+    return @"";
 }
+
++ (NSString *)transtromTimeNday:(id)time
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *localDate = [dateFormatter dateFromString:time];
+    NSDate *Tdate = [NSDate date];
+    NSTimeZone *zone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
+    NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
+    
+    NSDate *aimDate = [localDate  dateByAddingTimeInterval: Tinterval];
+    NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"HH:mm"];
+    NSTimeInterval interval = fabs([localDate timeIntervalSinceNow]);
+    NSString *nowString = [formatter stringFromDate:now];
+    NSString *timeString = [formatter stringFromDate:aimDate];
+    
+    BOOL result = [nowString compare:timeString] == NSOrderedAscending;
+    if (interval<24*60*60 && !result) {
+        return timeString;
+    }else if((interval<24*60*60 && result) ||(interval<2*24*60*60 && !result)){ //一天之外
+        return @"昨天";
+    }else if((interval<2*24*60*60 && result) ||(interval<3*24*60*60 && !result)){ //一天之外
+        return @"2天前";
+    }else if((interval<3*24*60*60 && result) ||(interval<4*24*60*60 && !result)){ //一天之外
+        return @"3天前";
+    }else if((interval<4*24*60*60 && result) ||(interval<5*24*60*60 && !result)){ //一天之外
+        return @"4天前";
+    }else if((interval<5*24*60*60 && result) ||(interval<6*24*60*60 && !result)){ //一天之外
+        return @"5天前";
+    }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
+        return @"6天前";
+    }else {
+        [formatter setDateFormat:@"MM.dd"];
+        nowString = [formatter stringFromDate:aimDate];
+        
+        return nowString;
+    }
+    
+}
+
 +(NSString *)transtromTimeWithNum:(double)num{
-    NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num];
+    NSDate *Tdate = [NSDate date];
+    
+    NSTimeZone *zone = [NSTimeZone systemTimeZone];
+    
+    NSInteger Tinterval = [zone secondsFromGMTForDate: Tdate];
+    
+    NSDate *date = [[NSDate alloc] initWithTimeIntervalSince1970:num+Tinterval];
     NSTimeInterval interval = fabs([date timeIntervalSinceNow]);
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
     [formatter setDateFormat:@"HH:mm"];
-    NSDate *now = [NSDate date];
+    NSDate *now = [Tdate  dateByAddingTimeInterval: Tinterval];
     NSString *nowString = [formatter stringFromDate:now];
     NSString *timeString = [formatter stringFromDate:date];
     BOOL result = [nowString compare:timeString] == NSOrderedAscending;
@@ -1291,7 +1315,10 @@ static const char encodingTable[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopq
     }else if((interval<6*24*60*60 && result) ||(interval<7*24*60*60 && !result)){ //一天之外
         return @"6天前";
     }else {
-        return @"N天前";
+        [formatter setDateFormat:@"yyyy.MM.dd"];
+        timeString = [formatter stringFromDate:date];
+
+        return timeString;
     }
     
     return @"";

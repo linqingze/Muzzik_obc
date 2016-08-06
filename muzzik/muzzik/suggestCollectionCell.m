@@ -92,7 +92,7 @@
 }
 -(void)shareAction{
     NSLog(@"share");
-    [self.delegate shareActionWithMuzzik:self.songModel image:[self.headImage imageForState:UIControlStateNormal] ];
+    [self.delegate shareActionWithMuzzik:self.songModel image:[self.headImage imageForState:UIControlStateNormal] cell:self];
 }
 -(void)commentAction{
     [self.delegate commentAtMuzzik:self.songModel];
@@ -106,6 +106,7 @@
     [self.delegate clickOnCell:self.songModel];
 }
 -(void)playAction{
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
 }
 @end

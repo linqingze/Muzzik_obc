@@ -11,6 +11,7 @@
 #import <Foundation/Foundation.h>
 
 @interface muzzik : NSObject
+@property (nonatomic,retain) NSDictionary *rawDic;
 @property (nonatomic,copy) NSString *muzzik_id;
 @property (nonatomic,copy) NSString *date;
 @property (nonatomic,assign) BOOL ismoved;
@@ -36,8 +37,9 @@
 @property (nonatomic,copy) NSString *repostDate;
 @property (nonatomic,assign) BOOL isReposted;
 @property (nonatomic,assign) BOOL isCheckFollow;
+@property (nonatomic,assign) BOOL isNewDataForAttention;
 @property (nonatomic,copy) NSString *replystring;
 -(NSMutableArray*)makeMuzziksByMuzzikArray:(NSMutableArray *)array;
 -(NSMutableArray*)makeMuzziksByMusicArray:(NSMutableArray *)array;
-
+-(NSMutableArray*)makeMuzziksNeedsSetUserByMuzzikArray:(NSMutableArray *)array;
 @end

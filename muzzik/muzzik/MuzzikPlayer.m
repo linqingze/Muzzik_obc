@@ -8,6 +8,9 @@
 
 #import "MuzzikPlayer.h"
 #import "UIImageView+WebCache.h"
+#import "IMSynMusicMessage.h"
+#import "Utils_IM.h"
+#import "IMCancelListenMessage.h"
 @interface MuzzikPlayer ()<STKAudioPlayerDelegate,STKDataSourceDelegate>{
     Globle *globle;
     NSURL *musicUrl;
@@ -61,6 +64,7 @@
 -(void)playNext{
     if (self.index == self.MusicArray.count-1 && [self.MusicArray count] >1) {
         self.playingMuzzik = self.MusicArray[0];
+        self.index = 0;
         if ([MuzzikItem isLocalMusicContainKey:_playingMuzzik.music.key]) {
             NSString *path = [[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:MUSIC_FileName] stringByAppendingPathComponent:_playingMuzzik.music.key];
             musicUrl = [NSURL URLWithString:[NSString stringWithFormat:@"file://%@",path]];
@@ -71,8 +75,51 @@
         [_player playURL:musicUrl];
     }else if([self.MusicArray count] >1){
         [self playSongWithSongModel:self.MusicArray[self.index +1] Title:self.viewTitle];
+        userInfo *user = [userInfo shareClass];
+        if ([user.listenUser count]>0) {
+            IMSynMusicMessage *listenmessage = [[IMSynMusicMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_playingMuzzik.music.music_id,@"_id",_playingMuzzik.music.name,@"name",_playingMuzzik.music.artist,@"artist",_playingMuzzik.music.key,@"key",user.rootId,@"root", nil]];
+            for (UserCore *coreuser in user.listenUser) {
+                if (![coreuser.user_id isEqualToString:user.rootId] || ![coreuser.user_id isEqualToString:user.listenToUid] ) {
+                    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+                }
+                
+            }
+        }
+        
+        if ([user.wacthUser count]>0) {
+            IMSynMusicMessage *listenmessage = [[IMSynMusicMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            listenmessage.jsonStr = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:_playingMuzzik.music.music_id,@"_id",_playingMuzzik.music.name,@"name",_playingMuzzik.music.artist,@"artist",_playingMuzzik.music.key,@"key",user.rootId,@"root", nil]];
+            for (UserCore *coreuser in user.wacthUser) {
+                if (![coreuser.user_id isEqualToString:user.rootId] || ![coreuser.user_id isEqualToString:user.listenToUid] ) {
+                    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+                }
+                
+            }
+        }
+        
+        
     }else{
         [_player stop];
+        userInfo *user = [userInfo shareClass];
+        if ([user.listenUser count]>0) {
+            IMCancelListenMessage *listenmessage = [[IMCancelListenMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            for (UserCore *coreuser in user.listenUser) {
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+            }
+        }
+        
+        if ([user.wacthUser count]>0) {
+            IMCancelListenMessage *listenmessage = [[IMCancelListenMessage alloc] init];
+            listenmessage.extra = [Utils_IM DataTOjsonString:[NSDictionary dictionaryWithObjectsAndKeys:user.name,@"name",user.avatar,@"avatar",user.uid,@"_id", nil]];
+            for (UserCore *coreuser in user.wacthUser) {
+                [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE targetId:coreuser.user_id content:listenmessage pushContent:nil success:nil error:nil];
+            }
+        }
+        
     }
 }
 #pragma mark public Action
@@ -98,7 +145,7 @@
         [_player playURL:musicUrl];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"Muzzik_Player_PlayNewSong" object:nil userInfo:nil];
         muzzik *lastMuzzik = [self.MusicArray lastObject];
-        if ([lastMuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([lastMuzzik.muzzik_id length] == 0 && [lastMuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) {
+        if (([lastMuzzik.muzzik_id isEqualToString:playMuzzik.muzzik_id] ||([lastMuzzik.muzzik_id length] == 0 && [lastMuzzik.music.music_id isEqualToString:playMuzzik.music.music_id])) && _MusicArray.count >1) {
             MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
             [center requestToAddMoreMuzziks:self.MusicArray];
         }
@@ -259,6 +306,7 @@
         if (_isPlayBack) {
             [self playnow];
         }else{
+            [self.player stop];
             [self playNext];
             [[NSNotificationCenter defaultCenter] postNotificationName:@"Muzzik_Player_PlayNewSong" object:nil];
         }

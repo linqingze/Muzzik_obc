@@ -23,8 +23,7 @@
 #define Image_textblackImage            @"textblackImage"
 #define Image_addedpicImage             @"addedpicImage"
 #define Image_SwitchingImage            @"SwitchingImage"
-#define Image_Textcover                 @"Textcover"
-#define Image_Cover                     @"Cover"
+
 #define Image_SuggestUserImage          @"SuggestUserImage"
 #define Image_nopictweetImage           @"nopictweetImage"
 #define Image_followImageNormal         @"recommendfollow"
@@ -232,4 +231,29 @@
 
 #define Constant_Comment            @"Coment"
 #define Constant_showComment        @"showComment"
+
+#define Friend_follow_Each                  @"3"
+#define Friend_Isfans                       @"1"
+#define Friend_isFollow                     @"2"
+#define Friend_strange                      @"0"
+
+#define At_From_detail                      @"1"
+#define At_from_Dialog                      @"2"
+#define At_From_Message                     @"3"
+
+
+
+
+#define Type_IM_TextMessage     @"text"
+#define Type_IM_ShareMuzzik     @"shareMuzzik"
+#define Type_IM_Enter           @"Enter"
+#define Type_IM_ListenTo        @"ListenTo"
+#define Type_IM_SynMusic        @"SynMusic"
+#define Type_IM_Unknow          @"unknow"
+#define Type_Focus              @"focus"
+
+
+#define Statue_OK           @"ok"
+#define Statue_Failed       @"failed"
+#define Statue_Sending      @"sending"
 #endif

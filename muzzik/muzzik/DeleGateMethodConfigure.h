@@ -23,7 +23,7 @@
 -(void)downMusicWithModel:(muzzik *)model;
 -(void)moveMuzzik:(muzzik *) tempMuzzik;
 -(void)repostActionWithMuzzik:(muzzik *) tempMuzzik;
--(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *)image;
+-(void)shareActionWithMuzzik:(muzzik *)localMuzzik image:(UIImage *)image cell:(UIView *) cell;
 -(void)reloadMuzzikSource;
 -(void)payAttention:(NSString *)uid;
 -(void)showFollow:(NSString *)uid;
@@ -32,6 +32,7 @@
 -(void)attention:(NSInteger)index;
 -(void)newMuzzik:(muzzik *)localMzzik;
 -(void)clickOnCell:(muzzik *)tempMuzzik;
+-(void)userDetail:(NSString *)uid holdeImage:(UIImage *)image avatarKey:(NSString *)key;
 @end
 
 #endif

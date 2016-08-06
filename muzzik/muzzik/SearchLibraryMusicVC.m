@@ -229,7 +229,7 @@
 }
 -(void)playSongWithSongModel:(muzzik *)songModel{
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
-    center.subUrlString = URL_Music_Search;
+    center.subUrlString = [NSString stringWithFormat:@"%@%@",BaseURL,URL_Music_Search];
     if ([_searchText length]>0) {
         center.requestDic = [NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"%ld",(long)page],Parameter_page,[_searchText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding],@"q", nil];
         center.MuzzikType = Type_Muzzik_Music;

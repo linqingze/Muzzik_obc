@@ -303,7 +303,7 @@
         if (!recentArray) {
             recentArray = [NSMutableArray array];
         }
-        [recentArray insertObject:tempTopic atIndex:0];
+        [recentArray insertObject:[NSDictionary dictionaryWithObject:[tempTopic objectForKey:@"name"] forKey:@"name"] atIndex:0];
     }
     if ([recentArray count]>5) {
         [recentArray removeLastObject];

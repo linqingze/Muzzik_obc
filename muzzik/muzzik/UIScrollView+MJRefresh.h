@@ -74,7 +74,7 @@
  *  移除上拉刷新尾部控件
  */
 - (void)removeFooter;
-
+-(void)hideTimeLabel;
 /**
  *  主动让上拉刷新尾部控件进入刷新状态
  */

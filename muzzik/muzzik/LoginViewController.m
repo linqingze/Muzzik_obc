@@ -14,6 +14,8 @@
 #import "registerVC.h"
 #import "NSString+MD5.h"
 #import "phoneForResetVC.h"
+#import "IMShareMessage.h"
+
 @interface LoginViewController ()<TencentSessionDelegate,TencentLoginDelegate,UITextFieldDelegate>{
     CGFloat scaleHeight;
     UIImageView *backGroundImage;
@@ -302,10 +304,10 @@
     [requestsquare addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObjectsAndKeys:phoneText.text,@"phone",passwordInMD5,@"hashedPassword",nil] Method:PostMethod auth:YES];
     __weak ASIHTTPRequest *weakrequestsquare = requestsquare;
     [requestsquare setCompletionBlock :^{
+        loginButton.userInteractionEnabled = YES;
         if ([weakrequestsquare responseStatusCode] == 200) {
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            [MuzzikItem addMessageToLocal:responseObject];
             user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -326,16 +328,17 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-            }
+            [self registerRongClound];
+            [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         else if ([weakrequestsquare responseStatusCode] == 400)
         {
             [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+            loginButton.userInteractionEnabled = YES;
         }
         else{
             [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+            loginButton.userInteractionEnabled = YES;
         }
         
         if ([user.token length]>0) {
@@ -353,6 +356,7 @@
         }
     }];
     [requestsquare setFailedBlock:^{
+        loginButton.userInteractionEnabled = YES;
         [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败"];
     }];
     [requestsquare startAsynchronous];
@@ -390,7 +394,6 @@
         if ([weakrequestsquare responseStatusCode] == 200) {
             NSData *data = [weakrequestsquare responseData];
             NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-            [MuzzikItem addMessageToLocal:responseObject];
             user.isSwitchUser = YES;
             
             if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -411,9 +414,8 @@
             if ([[responseObject allKeys] containsObject:@"name"]) {
                 user.name = [responseObject objectForKey:@"name"];
             }
-            if ([[responseObject allKeys] containsObject:@"token"]) {
-                user.token = [responseObject objectForKey:@"token"];
-            }
+            [self registerRongClound];
+           [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
         }
         if ([user.token length]>0) {
             ASIHTTPRequest *request = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_Set_Notify]]];
@@ -475,7 +477,6 @@
             if ([weakrequestsquare responseStatusCode] == 200) {
                 NSData *data = [weakrequestsquare responseData];
                 NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                [MuzzikItem addMessageToLocal:responseObject];
                 
                 
                 if ([[responseObject allKeys] containsObject:@"token"]) {
@@ -496,16 +497,17 @@
                 if ([[responseObject allKeys] containsObject:@"name"]) {
                     user.name = [responseObject objectForKey:@"name"];
                 }
-                if ([[responseObject allKeys] containsObject:@"token"]) {
-                    user.token = [responseObject objectForKey:@"token"];
-                }
+                [self registerRongClound];
+                [MuzzikItem addMessageToLocal:[NSDictionary dictionaryWithObjectsAndKeys:user.token,@"token",user.avatar,@"avatar",user.name,@"name",user.uid,@"_id",user.gender,@"gender",nil]];
             }
             else if ([weakrequestsquare responseStatusCode] == 400)
             {
                 [MuzzikItem showNotifyOnView:self.view text:@"请输入正确的手机号"];
+                loginButton.userInteractionEnabled = YES;
             }
             else{
                 [MuzzikItem showNotifyOnView:self.view text:@"账号密码错误"];
+                loginButton.userInteractionEnabled = YES;
             }
             
             if ([user.token length]>0) {
@@ -523,21 +525,54 @@
             }
         }];
         [requestsquare setFailedBlock:^{
+            NSLog(@"%@",[weakrequestsquare error]);
             [MuzzikItem showNotifyOnView:self.view text:@"网络请求失败"];
+            loginButton.userInteractionEnabled = YES;
         }];
         [requestsquare startAsynchronous];
     }
     [textField resignFirstResponder];
     return YES;
 }
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(void) registerRongClound{
+    
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
+        AppDelegate *app = (AppDelegate *)[UIApplication sharedApplication].delegate;
+        user.account = [app getAccountByUserName:user.name userId:user.uid userToken:user.token Avatar:user.avatar];
+        if (user.account) {
+            AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+            [manager GET:URL_RongClound_Token parameters:nil progress:NULL success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+                if( responseObject){
+                    [[RCIMClient sharedRCIMClient] connectWithToken:[responseObject objectForKey:@"token"] success:^(NSString *userId) {
+                        NSLog(@"登陆成功。当前登录的用户ID：%@", userId);
+                        RCUserInfo *userInfo = [[RCUserInfo alloc] initWithUserId:user.uid name:user.name portrait:user.avatar];
+                        [[RCIMClient sharedRCIMClient] setCurrentUserInfo:userInfo];
+                    } error:^(RCConnectErrorCode status) {
+                        NSLog(@"登陆的错误码为:%d", status);
+                    } tokenIncorrect:^{
+                        
+                        //token过期或者不正确。
+                        //如果设置了token有效期并且token过期，请重新请求您的服务器获取新的token
+                        //如果没有设置token有效期却提示token错误，请检查您客户端和服务器的appkey是否匹配，还有检查您获取token的流程。
+                        NSLog(@"token错误");
+                    }];
+                }
+            } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+                NSLog(@"%@",error);
+            }];
+        }else{
+            if ([user.token length]>0 && [user.name length]>0 && [user.uid length]>0 && [user.avatar length]>0) {
+                 [self registerRongClound];
+            }
+           
+        }
+    }
+    
+    
+    
 }
-*/
+
 
 @end

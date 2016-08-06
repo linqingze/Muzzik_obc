@@ -47,14 +47,10 @@
     [settingTable reloadData];
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:nil];
-    cell.textLabel.textColor = Color_Text_1;
-    [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-    [cell.textLabel setFont:[UIFont systemFontOfSize:14]];
-    [MuzzikItem addLineOnView:cell heightPoint:59 toLeft:13 toRight:13 withColor:Color_line_1];
-
+    
+    SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
     if (indexPath.row == 0) {
-        SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
+        
         Scell.label.text = @"摇一摇切歌";
         Scell.cellKeeper = self;
         [Scell.shakeSwitch setHidden:NO];
@@ -67,40 +63,48 @@
             _isClosed = YES;
             [Scell.shakeSwitch setOn:NO];
         }
-        return Scell;
-        
     }else if (indexPath.row == 1) {
-        cell.textLabel.text = @"草稿箱";
+        Scell.label.text = @"草稿箱";
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
     }
     else if (indexPath.row == 2) {
-        cell.textLabel.text = @"邀请好友一起来Muzzik";
+        Scell.label.text = @"邀请好友一起来Muzzik";
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
     }
     else if (indexPath.row == 3) {
-        cell.textLabel.text = @"赏Muzzik 好评";
+        Scell.label.text = @"赏Muzzik 好评";
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
         
     }else if (indexPath.row == 4) {
-        cell.textLabel.text = @"意见反馈";
+        Scell.label.text = @"意见反馈";
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
     }else if (indexPath.row == 5) {
-        cell.textLabel.text = @"关于Muzzik";
+        Scell.label.text = @"关于Muzzik";
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
     }else if (indexPath.row == 6) {
-        SettingCell *Scell = [tableView dequeueReusableCellWithIdentifier:@"SettingCell" forIndexPath:indexPath];
         [Scell.shakeSwitch setHidden:YES];
          [Scell.dataNum setHidden:NO];
         float totalSize = [[SDImageCache sharedImageCache] getSize]/(1024.0*1024);
 
         Scell.label.text = @"清除图片缓存数据";
         Scell.dataNum.text = [NSString stringWithFormat:@"%.2f M",totalSize];
-        return Scell;
     }
     else if(indexPath.row == 7){
         userInfo *user = [userInfo shareClass];
         if ([user.token length]>0) {
-            cell.textLabel.text = @"退出账号";
+            Scell.label.text = @"退出账号";
         }else{
-            cell.textLabel.text = @"登录账号";
+            Scell.label.text = @"登录账号";
         }
+        [Scell.shakeSwitch setHidden:YES];
+        [Scell.dataNum setHidden:YES];
     }
-    return cell;
+    return Scell;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -171,6 +175,7 @@
 
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
     if (alertView == cleanAlert) {
         if (buttonIndex == 1) {
             [[SDImageCache sharedImageCache] clearDisk];
@@ -193,13 +198,14 @@
                 NSLog(@"%d",[weakrequest responseStatusCode]);
                 if ([weakrequest responseStatusCode] == 200) {
                     userInfo *user = [userInfo shareClass];
-                    
                     user.token = @"";
                     user.uid = @"";
                     user.avatar = @"";
                     user.name = @"";
                     user.gender = @"";
                     user.isSwitchUser = YES;
+                    user.account = nil;
+                    [[RCIMClient sharedRCIMClient] logout];
                     [MuzzikItem removeMessageFromLocal:@"LoginAcess"];
                     
                     [settingTable reloadData];

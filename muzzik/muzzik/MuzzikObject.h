@@ -21,6 +21,9 @@
 @property (nonatomic,retain) NotifyButton *notifyBUtton;
 @property (nonatomic,retain) UILabel *lyricTipsLabel;
 @property (nonatomic,copy) NSString *GeiLyricType;
+@property (nonatomic,retain) UIImage *image;
+@property (nonatomic,copy) NSString *atFriendFrom;    //@好友回跳区别参数
+
 +(MuzzikObject *) shareClass;
 -(void) clearObject;
 @end

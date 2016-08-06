@@ -66,7 +66,7 @@
 +(UIImage*)convertViewToImage:(UIView*)v;
 + (NSString *)transtromTime:(id)time;
 +(NSString *)transtromTimeWithNum:(double)num;
-
++ (NSString *)transtromTimeNday:(id)time;
 +(void) showNotifyOnView:(UIView *)view text:(NSString *)text;
 +(void) showNotifyOnViewUpon:(UIView *)view text:(NSString *)text;
 +(void) showOnView:(UIView *)view Text:(NSString *)string pointY:(CGFloat) pointY;

@@ -5,8 +5,18 @@
 //  Created by kevin's mac on 14-8-1.
 //  Copyright (c) 2014年 IOS. All rights reserved.
 //
-
+#import "Account.h"
 #import <Foundation/Foundation.h>
+#import <RongIMLib/RongIMLib.h>
+typedef NS_ENUM(NSInteger, NotificationType) {
+    NotificationType_reply = 1,
+    NotificationType_moved,
+    NotificationType_at,
+    NotificationType_follow,
+    NotificationType_repost,
+    NotificationType_topic,
+    NotificationType_IM
+};
 @protocol searchSource <NSObject>
 
 
@@ -18,7 +28,6 @@
 @end
 
 @interface userInfo : NSObject
-@property (nonatomic,assign) BOOL fixTitle;
 @property (nonatomic,assign) BOOL launched;
 @property (nonatomic,retain) muzzik *poMuzzik;
 @property (nonatomic,copy) NSString *token;
@@ -58,6 +67,19 @@
 @property (nonatomic,assign) NSInteger notificationNumParticipationTopic;
 @property (nonatomic,assign) BOOL notificationNumParticipationTopicNew;
 @property (nonatomic,retain) UIImageView *playNowImageView;
+@property (nonatomic,assign) BOOL hasTeachToFollow;
+@property (nonatomic,retain) NSMutableDictionary *followDic;
+@property (nonatomic,retain) Account *account;
+@property (nonatomic,copy) NSString *rongCloundToken;
+@property (nonatomic,assign) NotificationType notificationType;
+@property (nonatomic,copy) NSString *notificationMessage;
+@property (nonatomic,retain) RCUserInfo *targetUserinfo;
+@property (nonatomic,retain) NSMutableArray *listenUser;
+@property (nonatomic,retain) NSMutableArray *wacthUser;
+
+@property (nonatomic,retain) NSMutableArray *focusArray;    //关心用户列表
+@property (nonatomic,copy) NSString *rootId;                //一起听歌root用户 id
+@property (nonatomic,copy) NSString *listenToUid;           //正在听的user用户 id
 +(userInfo *) shareClass;
 +(void)checkLoginWithVC:(UIViewController *)vc;
 @end

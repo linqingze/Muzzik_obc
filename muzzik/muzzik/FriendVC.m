@@ -8,7 +8,6 @@
 
 #import "FriendVC.h"
 #import "TransfromTime.h"
-#import "ASIFormDataRequest.h"
 #import "UIImageView+WebCache.h"
 #import "AtFriendSearchVC.h"
 @interface FriendVC ()<UITableViewDataSource,UITableViewDelegate,BATableViewDelegate>{
@@ -54,6 +53,9 @@
         NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestRecent responseData] options:NSJSONReadingMutableContainers error:nil];
         recentContactArray = [[MuzzikUser new] makeMuzziksByUserArray:[dic objectForKey:@"users"]];
         [self requestForFriend];
+    }];
+    [requestRecent setFailedBlock:^{
+        NSLog(@"%@",[weakrequestRecent error]);
     }];
     [requestRecent startAsynchronous];
     
@@ -227,12 +229,12 @@
         MuzzikUser *muzzikuser = [friendArray[[array[0] integerValue] ][[array[1] integerValue]] objectForKey:@"user"];
         message = [message stringByAppendingString:[NSString stringWithFormat:@"@%@ ",muzzikuser.name]];
     }
-
+    muzzikobject.atFriendFrom = @"";
     muzzikobject.tempmessage = message;
     [self.navigationController popViewControllerAnimated:YES];
 }
 -(void)rightBtnAction:(UIButton *)sender{
-    AtFriendSearchVC *atsearch = [[AtFriendSearchVC alloc]  init];
+    AtFriendSearchVC *atsearch = [[AtFriendSearchVC alloc] init];
     atsearch.friendArray = friendArray;
     atsearch.Fdictionary = Fdictionary;
     atsearch.localUsers = allUsers;

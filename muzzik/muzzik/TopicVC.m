@@ -166,6 +166,10 @@
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.rdv_tabBarController setTabBarHidden:NO animated:YES];
+    userInfo *user = [userInfo shareClass];
+    if ([user.notificationMessage length]>0) {
+        [MuzzikItem showNewNotifyByText:user.notificationMessage];
+    }
 //    userView.frame = CGRectMake(8, 16, SCREEN_WIDTH-16, (NSInteger)(58+SCREEN_WIDTH*2/3));
 //    MainMuzzikView.frame = CGRectMake(0, (NSInteger)(94+SCREEN_WIDTH*2/3), SCREEN_WIDTH-16, MainMuzzikView.frame.size.height);
 //    topicView.frame = CGRectMake(8, 114+(NSInteger)(SCREEN_WIDTH*2/3+MainMuzzikView.frame.size.height), SCREEN_WIDTH-16, 234);
@@ -732,6 +736,7 @@
 }
 
 -(void)playMusicAction{
+    [userInfo shareClass].listenToUid = @"";
     MuzzikRequestCenter *center = [MuzzikRequestCenter shareClass];
     center.singleMusic = YES;
     MuzzikPlayer *player = [MuzzikPlayer shareClass];

@@ -151,7 +151,6 @@
     [self.blurView addSubview:self.playView];
     [self initPlayList];
     userInfo *user = [userInfo shareClass];
-    user.fixTitle = YES;
     // Do any additional setup after loading the view.
 }
 
@@ -315,6 +314,7 @@
     [self.blurView addSubview:nextButton];
 }
 -(void)resetPlayView{
+    userInfo *user = [userInfo shareClass];
     if ([_player.playingMuzzik.image length] >0) {
         [backTransImage sd_setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@%@",BaseURL_image,_player.playingMuzzik.image,Image_Size_Big]] placeholderImage:[UIImage imageNamed:Image_placeholdImage] options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
             
@@ -342,7 +342,7 @@
     if (_player.playingMuzzik.MuzzikUser) {
         if ([_player.listType isEqualToString:feedList]) {
             [attentionButton setHidden:YES];
-        }else{
+        }else {
             [attentionButton setHidden:NO];
         }
         
@@ -367,7 +367,7 @@
         nickLabel.text = @"Muzzik";
         [headerImage setBackgroundImage:[UIImage imageNamed:@"logo"] forState:UIControlStateNormal];
     }
-    if (![userInfo shareClass].hideLyric) {
+    if (!user.hideLyric) {
         [lyricArray removeAllObjects];
         [lyricTableView reloadData];
         if ([[Reachability reachabilityForLocalWiFi] currentReachabilityStatus] == kReachableViaWiFi) {
@@ -610,28 +610,57 @@
     
     
     
-    if (([[userInfo shareClass].uid length]>0 &&[_player.playingMuzzik.MuzzikUser.user_id isEqualToString:[userInfo shareClass].uid]) ||[_player.listType isEqualToString:feedList]) {
+    if (([user.uid length]>0 &&[_player.playingMuzzik.MuzzikUser.user_id isEqualToString:user.uid]) ||[_player.listType isEqualToString:feedList]) {
         [attentionButton setHidden:YES];
     }else if(_player.playingMuzzik.MuzzikUser.user_id){
-        ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_player.playingMuzzik.MuzzikUser.user_id]]];
-        [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
-        __weak ASIHTTPRequest *weakrequestUser = requestUser;
-        [requestUser setCompletionBlock :^{
-            NSLog(@"%@",[weakrequestUser responseString]);
-            NSLog(@"%d",[weakrequestUser responseStatusCode]);
-            if ([weakrequestUser responseStatusCode] == 200) {
-                NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
-                if (![[dic objectForKey:@"isFollow"] boolValue]) {
-                    [attentionButton setHidden:NO];
-                }else{
-                    [attentionButton setHidden:YES];
-                }
+        if ([[user.followDic allKeys] containsObject:_player.playingMuzzik.MuzzikUser.user_id]) {
+            NSString *tempFollow = [user.followDic objectForKey:_player.playingMuzzik.MuzzikUser.user_id];
+            if ([tempFollow isEqualToString:Friend_follow_Each]) {
+                _player.playingMuzzik.MuzzikUser.isFollow = YES;
+                _player.playingMuzzik.MuzzikUser.isFans = YES;
+                [attentionButton setHidden:YES];
+            }else if([tempFollow isEqualToString:Friend_isFollow]){
+                _player.playingMuzzik.MuzzikUser.isFollow = YES;
+                _player.playingMuzzik.MuzzikUser.isFans = NO;
+                [attentionButton setHidden:YES];
+            }else if([tempFollow isEqualToString:Friend_Isfans]){
+                _player.playingMuzzik.MuzzikUser.isFollow = NO;
+                _player.playingMuzzik.MuzzikUser.isFans = YES;
+                [attentionButton setHidden:NO];
+            }else if([tempFollow isEqualToString:Friend_strange]){
+                _player.playingMuzzik.MuzzikUser.isFollow = NO;
+                _player.playingMuzzik.MuzzikUser.isFans = NO;
+                [attentionButton setHidden:NO];
             }
-        }];
-        [requestUser setFailedBlock:^{
-            NSLog(@"%@",[weakrequestUser error]);
-        }];
-        [requestUser startAsynchronous];
+        }else{
+            ASIHTTPRequest *requestUser = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@api/user/%@",BaseURL,_player.playingMuzzik.MuzzikUser.user_id]]];
+            [requestUser addBodyDataSourceWithJsonByDic:nil Method:GetMethod auth:YES];
+            __weak ASIHTTPRequest *weakrequestUser = requestUser;
+            [requestUser setCompletionBlock :^{
+                NSLog(@"%@",[weakrequestUser responseString]);
+                NSLog(@"%d",[weakrequestUser responseStatusCode]);
+                if ([weakrequestUser responseStatusCode] == 200) {
+                    NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:[weakrequestUser responseData]  options:NSJSONReadingMutableContainers error:nil];
+                    if (![[dic objectForKey:@"isFollow"] boolValue]) {
+                        _player.playingMuzzik.MuzzikUser.isFollow = NO;
+                        [attentionButton setHidden:NO];
+                    }else{
+                        _player.playingMuzzik.MuzzikUser.isFollow = YES;
+                        [attentionButton setHidden:YES];
+                    }
+                    if (![[dic objectForKey:@"isFans"] boolValue]) {
+                         _player.playingMuzzik.MuzzikUser.isFans = NO;
+                    }else{
+                         _player.playingMuzzik.MuzzikUser.isFans = YES;
+                    }
+                }
+            }];
+            [requestUser setFailedBlock:^{
+                NSLog(@"%@",[weakrequestUser error]);
+            }];
+            [requestUser startAsynchronous];
+        }
+        
     }
     //
     if ([_player.playingMuzzik.message length]>0) {
@@ -778,6 +807,7 @@
 -(void) attentionAction{
     if ([[userInfo shareClass].token length]>0) {
         _player.playingMuzzik.MuzzikUser.isFollow = YES;
+        
         [attentionButton setHidden:YES];
         [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:_player.playingMuzzik.MuzzikUser];
         ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
@@ -786,9 +816,9 @@
         [requestForm setCompletionBlock :^{
             NSLog(@"%@",[weakrequest responseString]);
             NSLog(@"%d",[weakrequest responseStatusCode]);
-            
+            userInfo *user = [userInfo shareClass];
             if ([weakrequest responseStatusCode] == 200) {
-                
+                 [user.followDic setValue:[NSString stringWithFormat:@"%ld",([[user.followDic objectForKey:@"_songModel.MuzzikUser.user_id]"] integerValue] | 2)] forKey:_player.playingMuzzik.MuzzikUser.user_id];
             }
             else{
                 
@@ -1098,7 +1128,7 @@
     }
     if ([lyricArray count]>0) {
         for (NSDictionary *dic in lyricArray) {
-            if ([[[dic allKeys] objectAtIndex:0] isEqualToString:itemStr]) {
+            if ([[dic allKeys] count] >0 &&[[[dic allKeys] objectAtIndex:0] isEqualToString:itemStr]) {
                 [self performSelector:@selector(scrolllyric:) withObject:dic afterDelay:0.5];
                 
                 break;

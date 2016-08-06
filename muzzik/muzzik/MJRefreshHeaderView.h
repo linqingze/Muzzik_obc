@@ -14,4 +14,5 @@
 
 @interface MJRefreshHeaderView : MJRefreshBaseView
 + (instancetype)header;
+@property (nonatomic, weak) UILabel *lastUpdateTimeLabel;
 @end

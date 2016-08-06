@@ -22,27 +22,26 @@
 -(void)setup{
     [self setBackgroundColor:[UIColor whiteColor]];
     [self setSelectionStyle:UITableViewCellSelectionStyleNone];
-    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 36, 50, 50)];
+    _userImage = [[UIButton alloc] initWithFrame:CGRectMake(16, 16, 50, 50)];
     [_userImage addTarget:self action:@selector(goToUser) forControlEvents:UIControlEventTouchUpInside];
     _userImage.layer.cornerRadius = 25;
     _userImage.layer.masksToBounds = YES;
     //    _userImage.layer.borderColor = [UIColor whiteColor].CGColor;
     //    _userImage.layer.borderWidth = 2.0f;
     [self addSubview:_userImage];
-    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 39, 8, 8)];
+    _repostImage = [[UIImageView alloc] initWithFrame:CGRectMake(66, 17, 8, 8)];
     [self addSubview:_repostImage];
-    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 38, 150, 10)];
+    _repostUserName = [[UILabel alloc] initWithFrame:CGRectMake(80, 16, 150, 10)];
     [_repostUserName setTextColor:Color_Additional_5];
     [_repostUserName setFont:[UIFont fontWithName:Font_Next_DemiBold size:9]];
     [self addSubview:_repostUserName];
     
     _songModel = [muzzik new];
-    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-130, 15, 96, 9)];
+    _timeStamp = [[UILabel alloc] initWithFrame:CGRectMake(80, 50, 96, 9)];
     [_timeStamp setTextColor:Color_Additional_5];
     [_timeStamp setFont:[UIFont fontWithName:Font_Next_medium size:9]];
-    _timeStamp.textAlignment = NSTextAlignmentRight;
     [self.contentView addSubview:_timeStamp];
-    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-30, 15, 9, 9)];
+    _timeImage = [[UIImageView alloc] initWithFrame:CGRectMake(180, 52, 8, 8)];
     [_timeImage setImage:[UIImage imageNamed:Image_timeImage]];
     [self.contentView addSubview:_timeImage];
     
@@ -51,12 +50,17 @@
     [_privateImage setHidden:YES];
     [self addSubview:_privateImage];
     
-    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 55, SCREEN_WIDTH-120, 20)];
+    _userName = [[UILabel alloc] initWithFrame:CGRectMake(80, 27, SCREEN_WIDTH-160, 20)];
+    _attentionButton = [[UIButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-61, 26, 45, 23)];
+    [_attentionButton setImage:[UIImage imageNamed:@"followImageSQ"] forState:UIControlStateNormal];
+    [_attentionButton setHidden:YES];
+    [_attentionButton addTarget:self action:@selector(getAttention) forControlEvents:UIControlEventTouchUpInside];
+    [self.contentView addSubview:_attentionButton];
     //  [_userName setTextColor:Color_LightGray];
     [_userName setFont:[UIFont fontWithName:Font_Next_DemiBold size:Font_size_userName]];
     [_userName setTextColor:Color_Text_1];
     [self.contentView addSubview:_userName];
-    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 83, SCREEN_WIDTH-110, 2000)];
+    _muzzikMessage = [[TTTAttributedLabel alloc] initWithFrame:CGRectMake( 80, 71, SCREEN_WIDTH-110, 2000)];
     [_muzzikMessage setTextColor:Color_Text_2];
     [_muzzikMessage setFont:[UIFont systemFontOfSize:Font_Size_Muzzik_Message]];
     [self.contentView addSubview:_muzzikMessage];
@@ -149,10 +153,63 @@
     //[self.homeVc downMusicWithModel:self.songModel];
 }
 -(void)playMusicAction:(id) sender{
-
-    NSLog(@"play");
+    [userInfo shareClass].listenToUid = @"";
     [self.delegate playSongWithSongModel:self.songModel];
+    userInfo *user = [userInfo shareClass];
+    if (_songModel.isNewDataForAttention && !user.hasTeachToFollow && !_songModel.MuzzikUser.isFollow) {
+        user.hasTeachToFollow = YES;
+        [MuzzikItem addObjectToLocal:[NSNumber numberWithBool:YES] ForKey:@"User_first_Listen_song"];
+        if ([self convertPoint:CGPointMake(0, 0) toView:self.delegate.view].y<0) {
+            if ([self.delegate respondsToSelector:@selector(scrollCell:)]) {
+                [self.delegate performSelector:@selector(scrollCell:) withObject:self.indexpath];
+            }
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
+                [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
+                [self.contentView addSubview:_notifyBtn];
+                [UIView beginAnimations:@"leftAndRight" context:NULL];
+                [UIView setAnimationDuration:1];
+                
+                [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationRepeatAutoreverses:YES];
+                [UIView setAnimationRepeatCount:3];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
+                [UIView commitAnimations];
+            });
+        }else{
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                _notifyBtn = [[NotifyButton alloc] initWithFrame:CGRectMake(SCREEN_WIDTH-210, _attentionButton.frame.origin.y-5, 130, 34)];
+                [_notifyBtn setImage:[UIImage imageNamed:@"followguide"] forState:UIControlStateNormal];
+                [self.contentView addSubview:_notifyBtn];
+                [UIView beginAnimations:@"leftAndRight" context:NULL];
+                [UIView setAnimationDuration:1];
+                
+                [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+                [UIView setAnimationDelegate:self];
+                [UIView setAnimationRepeatAutoreverses:YES];
+                [UIView setAnimationRepeatCount:3];
+                [_notifyBtn setFrame:CGRectMake(SCREEN_WIDTH-195, _attentionButton.frame.origin.y-5, 130, 34)];
+                [UIView commitAnimations];
+            });
+        }
+        
+    }
 }
+-(void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag{
+    NSLog(@"%@",anim.description);
+    if ([anim.description isEqualToString:@"leftAndRight"]) {
+        [UIView animateWithDuration:0.5 animations:^{
+            [_notifyBtn setAlpha:0];
+        } completion:^(BOOL finished) {
+            [_notifyBtn setHidden:YES];
+            [_notifyBtn removeFromSuperview];
+        }];
+    }
+    
+    
+}
+
 -(void) colorViewWithColorString:(NSString *) colorString{
     self.colorstring = colorString;
     UIColor *color;
@@ -249,7 +306,7 @@
 }
 -(void)shareAction{
     NSLog(@"share");
-    [self.delegate shareActionWithMuzzik:self.songModel image:[self.userImage imageForState:UIControlStateNormal] ];
+    [self.delegate shareActionWithMuzzik:self.songModel image:[self.userImage imageForState:UIControlStateNormal] cell:self];
 }
 -(void)commentAction{
     [self.delegate commentAtMuzzik:self.songModel];
@@ -269,6 +326,66 @@
 
 
 -(void)goToUser{
-    [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+    if ([self.delegate respondsToSelector:@selector(userDetail:holdeImage:avatarKey:)]) {
+        [self.delegate userDetail:self.songModel.MuzzikUser.user_id holdeImage:[self.userImage imageForState:UIControlStateNormal] avatarKey:self.songModel.MuzzikUser.avatar];
+    }else{
+        [self.delegate userDetail:self.songModel.MuzzikUser.user_id];
+    }
+    
 }
+-(void)setIsFollow:(BOOL)isFollow{
+    
+    if (isFollow) {
+        [self.attentionButton setHidden:YES];
+    }else{
+        [self.attentionButton setHidden:NO];
+        
+    }
+}
+-(void) getAttention{
+    userInfo *user = [userInfo shareClass];
+    if ([user.token length]>0) {
+        [_attentionButton setImage:[UIImage imageNamed:@"followedImageSQ"] forState:UIControlStateNormal];
+        [UIView animateWithDuration:1 animations:^{
+            [_attentionButton setAlpha:0];
+        } completion:^(BOOL finished) {
+            [_attentionButton setImage:[UIImage imageNamed:@"followImageSQ"] forState:UIControlStateNormal];
+            [_attentionButton setHidden:YES];
+            [_attentionButton setAlpha:1];
+        }];
+        [user.followDic setValue:[NSString stringWithFormat:@"%ld",([[user.followDic objectForKey:@"_songModel.MuzzikUser.user_id]"] integerValue] | 2)] forKey:_songModel.MuzzikUser.user_id];
+        
+        MuzzikUser *attentionuser = [MuzzikUser new];
+        attentionuser.user_id = _songModel.MuzzikUser.user_id;
+        attentionuser.isFans = _songModel.MuzzikUser.isFans;
+        attentionuser.isFollow = YES;
+        [[NSNotificationCenter defaultCenter] postNotificationName:String_UserDataSource_update object:attentionuser];
+        
+        ASIHTTPRequest *requestForm = [[ASIHTTPRequest alloc] initWithURL:[ NSURL URLWithString :[NSString stringWithFormat:@"%@%@",BaseURL,URL_User_Follow]]];
+        [requestForm addBodyDataSourceWithJsonByDic:[NSDictionary dictionaryWithObject:_songModel.MuzzikUser.user_id forKey:@"_id"] Method:PostMethod auth:YES];
+        __weak ASIHTTPRequest *weakrequest = requestForm;
+        [requestForm setCompletionBlock :^{
+            NSLog(@"%@",[weakrequest responseString]);
+            NSLog(@"%d",[weakrequest responseStatusCode]);
+            
+            if ([weakrequest responseStatusCode] == 200) {
+                
+            }
+            else{
+                //[SVProgressHUD showErrorWithStatus:[dic objectForKey:@"message"]];
+            }
+        }];
+        [requestForm setFailedBlock:^{
+            NSLog(@"%@",[weakrequest error]);
+            NSLog(@"hhhh%@  kkk%@",[weakrequest responseString],[weakrequest responseHeaders]);
+            
+        }];
+        [requestForm startAsynchronous];
+        
+    }else{
+        
+        [userInfo checkLoginWithVC:self.delegate];
+    }
+}
+
 @end
